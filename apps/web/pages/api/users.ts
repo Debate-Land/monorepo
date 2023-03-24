@@ -17,7 +17,15 @@ export default async function handler(
   }
 
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.team.findMany({
+      'include': {
+        'competitors': true,
+        'aliases': true,
+        'rounds': true,
+        'rankings': true,
+        'records': true,
+      }
+    });
     if (!users)
       throw {
         message: "Failed to retrieve users",

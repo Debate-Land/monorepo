@@ -29,7 +29,7 @@
   "devDependencies": {
     "config": "*",
     "eslint": "^8.12.0",
-    "prisma": "^3.10.0",
+    "prisma": "^4.9.0",
     "rimraf": "^3.0.2",
     "tsconfig": "*",
     "tsup": "^5.11.13",

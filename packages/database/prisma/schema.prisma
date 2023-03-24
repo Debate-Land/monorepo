@@ -1,20 +1,335 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  provider     = "mysql"
+  url          = env("DATABASE_URL_SECURE")
+  relationMode = "prisma"
 }
 
 generator client {
-  provider = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
+/// API Management Enums
+
+enum UserType {
+  Admin
+  User
+}
+
+enum AccessLevel {
+  God
+  App
+  User
+  Unauthenticated
+}
+
+enum ApiModelStatus {
+  Active
+  Paused
+  Disabled
+  Deleted
+}
+
+/// Debate Data Enums
+
+enum ElimRoundName {
+  Finals
+  Semifinals
+  Quarterfinals
+  Octafinals
+  DoubleOctafinals
+  TripleOctafinals
+  QuadrupleOctafinals
+}
+
+enum Event {
+  PublicForum
+  LincolnDouglas
+  Policy
+}
+
+enum Side {
+  Pro
+  Con
+  Aff
+  Neg
+  Bye
+}
+
+enum Result {
+  Win
+  Loss
+  Split
+}
+
+enum RoundType {
+  Prelim
+  Elim
+}
+
+/// API Management Models
+
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
+  id      String         @id
+  type    UserType       @default(User)
+  status  ApiModelStatus @default(Active)
+  name    String
+  email   String?        @unique
+  authSub String         @unique @map("auth_sub")
+  apiKeys ApiKey[]
+}
+
+model Product {
+  id           Int         @id @default(autoincrement())
+  accessLevel  AccessLevel @map("access_level")
+  readAllowed  Boolean
+  writeAllowed Boolean
+  rateLimit    Int         @map("rate_limit")
+  devPrice     String      @unique @map("dev_price")
+  prodPrice    String      @unique @map("prod_price")
+  ApiKey       ApiKey[]
+}
+
+model ApiKey {
+  id               String         @id
+  role             AccessLevel
+  user             User           @relation(fields: [userId], references: [id])
+  userId           String
+  subscription     String         @unique
+  subscriptionItem String?        @map("subscription_item")
+  product          Product?       @relation(fields: [productId], references: [id])
+  productId        Int
+  status           ApiModelStatus @default(Active)
+
+  @@index([userId])
+  @@index([productId])
+}
+
+/// Debate Data Models
+model Season {
+  id             Int              @id
+  circuits       Circuit[]
+  CircuitRanking CircuitRanking[]
+  Tournament     Tournament[]
+  teams          Team[]
+
+  @@map("seasons")
+}
+
+model Circuit {
+  id              Int              @id @default(autoincrement())
+  name            String           @unique
+  event           Event            @default(PublicForum)
+  circuitRankings CircuitRanking[]
+  tournaments     Tournament[]
+  seasons         Season[]
+  teams           Team[]
+
+  @@index([name])
+  @@map("circuits")
+}
+
+model CircuitRanking {
+  id        Int     @id @default(autoincrement())
+  season    Season  @relation(fields: [seasonId], references: [id])
+  seasonId  Int     @default(2023)
+  team      Team    @relation(fields: [teamId], references: [id])
+  teamId    String
+  otr       Float
+  circuit   Circuit @relation(fields: [circuitId], references: [id])
+  circuitId Int
+
+  @@unique([teamId, circuitId, seasonId])
+  @@index([teamId])
+  @@index([circuitId])
+  @@index([seasonId])
+  @@map("circuit_rankings")
+}
+
+model Tournament {
+  id             Int                @id @default(autoincrement())
+  name           String
+  start          Int
+  end            Int
+  event          Event
+  tabEventId     Int                @map("tab_event_id")
+  tabTournId     Int                @map("tab_tourn_id")
+  location       String
+  isTocQualifier Boolean            @map("is_toc_qualifier")
+  bidLevel       ElimRoundName?     @map("bid_level")
+  hasElimRounds  Boolean            @map("has_elim_rounds")
+  boost          Float              @map("boost")
+  season         Season             @relation(fields: [seasonId], references: [id])
+  circuits       Circuit[]
+  results        TournamentResult[]
+  judgeRecords   JudgeRecord[]
+  seasonId       Int                @default(2023)
+
+  @@unique([tabTournId, tabEventId])
+  @@index([seasonId])
+  @@fulltext([name])
+  @@map("tournaments")
+}
+
+model School {
+  id                Int                @id @default(autoincrement())
+  name              String             @unique
+  tournamentResults TournamentResult[]
+
+  @@fulltext([name])
+  @@map("schools")
+}
+
+model Competitor {
+  id                       String                    @id
+  name                     String
+  teams                    Team[]
+  roundSpeakerResults      RoundSpeakerResult[]
+  tournamentSpeakerResults TournamentSpeakerResult[]
+
+  @@fulltext([name])
+  @@map("competitors")
+}
+
+model TournamentSpeakerResult {
+  id                 Int              @id @default(autoincrement())
+  competitor         Competitor       @relation(fields: [competitorId], references: [id])
+  competitorId       String           @map("competitor_id")
+  rawAvgPoints       Float            @map("raw_avg_points")
+  adjAvgPoints       Float            @map("adj_avg_points")
+  tournamentResult   TournamentResult @relation(fields: [tournamentResultId], references: [id])
+  tournamentResultId Int              @map("tournament_result_id")
+
+  @@index([competitorId])
+  @@index([tournamentResultId])
+  @@map("tournament_speaker_results")
+}
+
+model Alias {
+  id                Int                @id @default(autoincrement())
+  code              String
+  team              Team               @relation(fields: [teamId], references: [id])
+  teamId            String             @map("team_id")
+  tournamentResults TournamentResult[]
+
+  @@unique([code, teamId])
+  @@index([teamId])
+  @@map("aliases")
+}
+
+model TournamentResult {
+  id                Int                       @id @default(autoincrement())
+  tournament        Tournament                @relation(fields: [tournamentId], references: [id])
+  tournamentId      Int                       @map("tournament_id")
+  tabEntryId        Int                       @map("tab_entry_id")
+  alias             Alias                     @relation(fields: [aliasId], references: [id])
+  prelimPos         Int                       @map("prelim_pos")
+  prelimPoolSize    Int                       @map("prelim_pool_size")
+  prelimWins        Float                     @map("prelim_wins")
+  prelimLosses      Float                     @map("prelim_losses")
+  prelimBallotsWon  Int                       @map("prelim_ballots_won")
+  prelimBallotsLost Int                       @map("prelim_ballots_lost")
+  elimWins          Int?                      @map("elim_wins")
+  elimLosses        Int?                      @map("elim_losses")
+  elimBallotsWon    Int?                      @map("elim_ballots_won")
+  elimBallotsLost   Int?                      @map("elim_ballots_lost")
+  school            School                    @relation(fields: [schoolId], references: [id])
+  bid               Int?
+  isGhostBid        Boolean?                  @map("is_ghost_bid")
+  opWpm             Float                     @map("op_wpm")
+  rounds            Round[]
+  otrComp           Float                     @map("otr_comp")
+  team              Team                      @relation(fields: [teamId], references: [id])
+  teamId            String                    @map("team_id")
+  speaking          TournamentSpeakerResult[]
+  aliasId           Int                       @map("alias_id")
+  schoolId          Int
+
+  @@unique([teamId, tabEntryId])
+  @@index([tournamentId])
+  @@index([teamId])
+  @@index([aliasId])
+  @@index([schoolId])
+  @@map("tournament_results")
+}
+
+model RoundSpeakerResult {
+  id           Int        @id @default(autoincrement())
+  competitor   Competitor @relation(fields: [competitorId], references: [id])
+  competitorId String     @map("competitor_id")
+  judge        Judge      @relation(fields: [judgeId], references: [id])
+  judgeId      String     @map("judge_id")
+  points       Float
+  round        Round      @relation(fields: [roundId], references: [id])
+  roundId      String     @map("round_id")
+
+  @@index([judgeId])
+  @@index([competitorId])
+  @@index([roundId])
+  @@map("round_speaker_results")
+}
+
+model Round {
+  id                 String               @id
+  name               String
+  type               RoundType
+  side               Side
+  nameStd            String               @map("name_std")
+  result             Result
+  ballotsWon         Int                  @map("ballots_won")
+  ballotsLost        Int                  @map("ballots_lost")
+  opponent           Team?                @relation(fields: [opponentId], references: [id])
+  opponentId         String?
+  tournamentResult   TournamentResult     @relation(fields: [tournamentResultId], references: [id])
+  tournamentResultId Int                  @map("tournament_result_id")
+  judgeRecords       JudgeRecord[]
+  speaking           RoundSpeakerResult[]
+
+  @@index([tournamentResultId])
+  @@index([opponentId])
+  @@map("rounds")
+}
+
+model Team {
+  id          String             @id
+  competitors Competitor[]
+  results     TournamentResult[]
+  rounds      Round[]
+  aliases     Alias[]
+  rankings    CircuitRanking[]
+  records     JudgeRecord[]
+  circuits    Circuit[]
+  seasons     Season[]
+
+  @@map("entries")
+}
+
+model Judge {
+  id                  String               @id
+  name                String
+  records             JudgeRecord[]
+  roundSpeakerResults RoundSpeakerResult[]
+
+  @@fulltext([name])
+  @@map("judges")
+}
+
+model JudgeRecord {
+  id               Int        @id @default(autoincrement())
+  decision         Side
+  avgSpeakerPoints Float
+  wasSquirrel      Boolean?
+  judge            Judge      @relation(fields: [judgeId], references: [id])
+  judgeId          String
+  tabJudgeId       Int
+  teams            Team[]
+  winnerId         String     @map("winner_id")
+  rounds           Round[]
+  type             RoundType
+  event            Event
+  tournament       Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId     Int
+
+  @@index([tournamentId])
+  @@index([judgeId])
 }
