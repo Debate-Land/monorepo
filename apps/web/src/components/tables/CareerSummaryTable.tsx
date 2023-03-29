@@ -1,9 +1,6 @@
-import TournamentResult from '@src/types/tournament-result'
 import React from 'react'
 import { TbListDetails } from 'react-icons/tb'
-import Tournament from '@src/types/tournament'
-import { asTable } from './general/Table'
-import Card from './general/Card'
+import {Tournament, TournamentResult} from 'database'
 import {Card, asTable} from 'components'
 
 export interface CareerSummaryTableProps {
