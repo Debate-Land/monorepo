@@ -1,12 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./pages/**/*.{js,jsx,ts,tsx}', './src/**/*.{js,jsx,ts,tsx}'],
+  content: ['./pages/**/*.{js,jsx,ts,tsx}', './src/**/*.{js,jsx,ts,tsx}', '../../packages/**/*.{js,jsx,ts,tsx}'],
   darkMode: 'class',
   theme: {
     fontFamily: {
       sans: ['Poppins', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
     },
-    plugins: [require('tailwindcss-animate')],
+    plugins: [],
     extend: {
       colors: {
         luka: {
