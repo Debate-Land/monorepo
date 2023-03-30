@@ -1,5 +1,6 @@
 import '@src/styles/globals.css'
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
+import { trpc } from '@src/utils/trpc'
 import { ThemeProvider } from 'next-themes'
 import Script from 'next/script'
 import type { AppProps } from 'next/app'
@@ -48,4 +49,4 @@ const App = ({ Component, router, pageProps }: AppProps) => {
   )
 }
 
-export default App;
+export default trpc.withTRPC(App);
