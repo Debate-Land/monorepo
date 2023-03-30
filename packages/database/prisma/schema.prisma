@@ -234,7 +234,7 @@ model TournamentResult {
   elimBallotsWon    Int?                      @map("elim_ballots_won")
   elimBallotsLost   Int?                      @map("elim_ballots_lost")
   school            School                    @relation(fields: [schoolId], references: [id])
-  bid               Int?
+  bid               Float?
   isGhostBid        Boolean?                  @map("is_ghost_bid")
   opWpm             Float                     @map("op_wpm")
   rounds            Round[]
@@ -318,7 +318,7 @@ model Judge {
 model JudgeRecord {
   id               Int        @id @default(autoincrement())
   decision         Side
-  avgSpeakerPoints Float
+  avgSpeakerPoints Float?
   wasSquirrel      Boolean?
   judge            Judge      @relation(fields: [judgeId], references: [id])
   judgeId          String
