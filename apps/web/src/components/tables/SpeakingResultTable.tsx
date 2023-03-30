@@ -1,6 +1,6 @@
 import React from 'react'
 import { Round, RoundSpeakerResult } from 'database'
-import { Text, asTable } from 'components'
+import { Text, asTable } from '@shared/components'
 
 export interface SpeakingResultProps {
     data: RoundSpeakerResult[] //| ((page: number, limit: number) => TournamentResult)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Input, Card, Select, Label } from 'components'
+import { Button, Input, Card, Select, Label } from '@shared/components'
 import { FaSearch } from 'react-icons/fa'
 import { VscTelescope } from 'react-icons/vsc'
 import DATASETS from '../const/datasets'

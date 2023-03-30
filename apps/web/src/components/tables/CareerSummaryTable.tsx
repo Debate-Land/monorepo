@@ -1,7 +1,7 @@
 import React from 'react'
 import { TbListDetails } from 'react-icons/tb'
-import {Tournament, TournamentResult} from 'database'
-import {Card, asTable} from 'components'
+import { Tournament, TournamentResult } from '@shared/database'
+import { Card, asTable } from '@shared/components'
 
 export interface CareerSummaryTableProps {
   data: TournamentResult[] // | ((page: number, limit: number) => TournamentResult)

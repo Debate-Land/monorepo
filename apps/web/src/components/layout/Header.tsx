@@ -6,7 +6,7 @@ import { withRouter } from 'next/router'
 import { useScrollYPosition } from 'react-use-scroll-position'
 import clsx from 'clsx'
 import Logo32 from '../../../public/assets/img/logo_32.png'
-import { Text, Button, Link } from 'components'
+import { Text, Button, Link } from '@shared/components'
 
 const Header = ({ router }: any) => {
 	const { theme, setTheme } = useTheme()

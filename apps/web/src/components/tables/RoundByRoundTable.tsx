@@ -1,6 +1,6 @@
 import React from 'react'
-import { Round } from 'database'
-import { Text, asTable } from 'components'
+import { Round } from '@shared/database'
+import { Text, asTable } from '@shared/components'
 import SpeakingResultTable from './SpeakingResultTable'
 
 export interface RoundByRoundTableProps {

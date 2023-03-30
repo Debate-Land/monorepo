@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, Button, Input, Group, Card, Select, Label } from 'components'
+import { Text, Button, Input, Group, Card, Select, Label } from '@shared/components'
 import { FaRegCompass, FaSearch } from 'react-icons/fa'
 import DATASETS from '../const/datasets'
 

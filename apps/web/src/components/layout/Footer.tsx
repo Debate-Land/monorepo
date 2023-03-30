@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, Link } from 'components'
+import { Text, Link } from '@shared/components'
 import { BsGithub, BsApple } from 'react-icons/bs'
 import { DiAndroid } from 'react-icons/di'
 

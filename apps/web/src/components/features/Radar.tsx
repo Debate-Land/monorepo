@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, Button, Input, Card, Select, Label } from 'components'
+import { Text, Button, Input, Card, Select, Label } from '@shared/components'
 import { FaSearch } from 'react-icons/fa'
 import { BiRadar } from 'react-icons/bi'
 import DATASETS from '../const/datasets'
