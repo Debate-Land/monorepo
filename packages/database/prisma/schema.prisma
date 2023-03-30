@@ -300,6 +300,7 @@ model Team {
   records     JudgeRecord[]
   circuits    Circuit[]
   seasons     Season[]
+  // events here?
 
   @@map("entries")
 }

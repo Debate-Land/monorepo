@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, Button, Input, Group, Card, Select, Label } from '@shared/components'
 import { FaRegCompass, FaSearch } from 'react-icons/fa'
-import DATASETS from '../const/datasets'
+import DATASETS from '@src/const/datasets'
 
 const Compass = () => {
   const body = { event: 'Public Forum', circuit: 'National', season: '2020-21' }

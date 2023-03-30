@@ -1,24 +1,93 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { prisma } from '@shared/database';
+import { Event, prisma } from '@shared/database';
 
 export const appRouter = router({
-  hello: procedure
+  team: procedure
     .input(
       z.object({
-        text: z.string(),
-      }),
+        id: z.string(),
+        seasons: z.array(z.number()).optional(),
+        circuits: z.array(z.number()).optional(),
+        event: z.string().refine((data) => Object.values(Event).includes(data as Event)),
+      })
     )
-    .query(async ({ ctx, input }) => {
-      const tournament = await prisma.tournament.findFirst({
-        select: {
-          name: true,
+    .query(async ({ input }) => {
+      const team = await prisma.team.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          competitors: true,
+          results: {
+            include: {
+              tournament: {
+                include: {
+                  circuits: true
+                }
+              },
+              alias: true,
+              school: true,
+              speaking: true,
+            },
+            where: {
+              tournament: {
+                event: {
+                  equals: input.event as Event
+                },
+                ...(input.circuits && {
+                  circuits: {
+                    some: {
+                      id: {
+                        in: input.circuits
+                      }
+                    }
+                  }
+                }),
+                ...(input.seasons && {
+                  seasonId: {
+                    in: input.seasons
+                  }
+                }),
+              },
+            }
+          },
+          aliases: {
+            take: 1,
+            select: {
+              code: true,
+            }
+          },
+          rankings: {
+            include: {
+              season: true,
+              circuit: true,
+            },
+            where: {
+              ...(input.circuits && {
+                circuit: {
+                  id: {
+                    in: input.circuits
+                  },
+                  event: {
+                    in: input.event as Event
+                  }
+                }
+              }),
+              ...(input.seasons && {
+                seasonId: {
+                  in: input.seasons
+                }
+              }),
+            }
+          },
+          circuits: true,
+          seasons: true,
         }
       });
-      return {
-        greeting: `hello ${tournament ? tournament.name : 'no tournament :('}`,
-      };
-    }),
+
+      return team;
+    })
 });
 
 // export type definition of API

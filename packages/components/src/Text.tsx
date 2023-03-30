@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react'
 export interface TextProps {
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'legend' | 'th' | 'tr'
   capitalize?: boolean
-  children: string | ReactNode
+  children: string | ReactNode | ReactNode[]
   font?: 'sans' | 'serif' | 'mono'
   italic?: boolean
   weight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold'

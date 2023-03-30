@@ -33,6 +33,7 @@ const App = ({ Component, router, pageProps }: AppProps) => {
         })}
       >
         <Header />
+        <div className="mt-[3rem]"/>
         <Component {...pageProps} />
         <Footer />
       </div>

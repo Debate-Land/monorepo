@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Input, Card, Select, Label } from '@shared/components'
 import { FaSearch } from 'react-icons/fa'
 import { VscTelescope } from 'react-icons/vsc'
-import DATASETS from '../const/datasets'
+import DATASETS from '@src/const/datasets'
 
 const Telescope = () => {
   const [query, setQuery] = React.useState('');
