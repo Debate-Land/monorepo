@@ -121,10 +121,14 @@ export const appRouter = router({
             select: {
               decision: true,
               tabJudgeId: true,
-              judge: true
+              judge: true,
             }
           },
-          speaking: true
+          speaking: {
+            include: {
+              competitor: true,
+            }
+          }
         }
       });
 
@@ -133,7 +137,7 @@ export const appRouter = router({
       }
 
       return rounds;
-    })
+    }),
 });
 
 // export type definition of API

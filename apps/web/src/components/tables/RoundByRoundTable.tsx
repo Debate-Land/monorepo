@@ -1,16 +1,23 @@
 import React from 'react'
-import { Alias, Judge, Round, RoundSpeakerResult, Side } from '@shared/database'
+import { Alias, Competitor, Judge, Round, RoundSpeakerResult, Side } from '@shared/database'
 import { Text, asTable } from '@shared/components'
 import SpeakingResultTable from './SpeakingResultTable'
 import { trpc } from '@src/utils/trpc'
+import RoundTable from './RoundTable'
 
-type ExpandedRound = Round & {
-  judgeRecords: {
-      judge: Judge;
-      decision: Side;
-      tabJudgeId: number;
-  }[];
-  speaking: RoundSpeakerResult[];
+export type ExpandedRoundJudgeRecord = {
+  judge: Judge;
+  decision: Side;
+  tabJudgeId: number;
+};
+
+export type ExpandedRoundSpeakerResult = RoundSpeakerResult & {
+  competitor: Competitor;
+}
+
+export type ExpandedRound = Round & {
+  judgeRecords: ExpandedRoundJudgeRecord[];
+  speaking: ExpandedRoundSpeakerResult[];
   opponent: {
       id: string;
       aliases: Alias[];
@@ -28,7 +35,10 @@ const RoundByRoundTable = ({ tournamentResultId: id }: RoundByRoundTableProps) =
   if (!rounds) return <></>;
 
   return (
-    <Table data={(rounds)}>
+    <Table
+      data={(rounds)}
+      expand={(d) => <RoundTable data={d} />}
+    >
       <Attribute
         header="Rnd"
         value={{ literal: (d) => d.nameStd }}

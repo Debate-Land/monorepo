@@ -157,8 +157,8 @@ export const TableBody = <T,>({
                         {
                           attribute.sortable && sorted.index === idx ?
                             sorted.ascending
-                              ? <AiOutlineArrowUp />
-                              : <AiOutlineArrowDown />
+                              ? <AiOutlineArrowDown />
+                              : <AiOutlineArrowUp />
                             : null
                         }
                       </span>
@@ -199,7 +199,6 @@ export const TableBody = <T,>({
                             : attribute.value.literal
 
                           if (typeof value === 'number') {
-                            console.log(attribute.summarizable)
                             if (
                               Object.keys(summary).includes(attribute.header)
                               && attribute.summarizable
