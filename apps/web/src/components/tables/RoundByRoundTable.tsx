@@ -21,20 +21,22 @@ export interface RoundByRoundTableProps {
   tournamentResultId: number //| ((page: number, limit: number) => TournamentResult)
 }
 
-const RoundByRoundTable = async ({ tournamentResultId: id }: RoundByRoundTableProps) => {
+const RoundByRoundTable = ({ tournamentResultId: id }: RoundByRoundTableProps) => {
   const { Table, Attribute } = asTable<ExpandedRound>();
   const {data: rounds} = trpc.rounds.useQuery({id})
 
+  if (!rounds) return <></>;
+
   return (
-    <Table data={rounds}>
+    <Table data={(rounds)}>
       <Attribute
         header="Rnd"
-        value={{ literal: (d) => d.name_std }}
+        value={{ literal: (d) => d.nameStd }}
         description='Standardized round name'
       />
       <Attribute
         header="Opp"
-        value={{ literal: (d) => d.opponent as string }}
+        value={{ literal: (d) => d.opponent?.aliases[0].code as string }}
         description='Opponent'
       />
       <Attribute
@@ -42,7 +44,7 @@ const RoundByRoundTable = async ({ tournamentResultId: id }: RoundByRoundTablePr
         value={{ literal: (d) => d.result }}
         description='Round result'
       />
-      <Attribute
+      {/* <Attribute
         header="Dec"
         value={{
           literal: (d) => d.decision[0],
@@ -50,26 +52,26 @@ const RoundByRoundTable = async ({ tournamentResultId: id }: RoundByRoundTablePr
         }}
         description='Decision'
         priority='sm'
-      />
+      /> */}
       <Attribute
         header="Side"
         value={{ literal: (d) => d.side }}
         description='Side in round'
       />
-      <Attribute
+      {/* <Attribute
         header="OpWP"
-        value={{ literal: (d) => d.op_wp, percentage: true }}
+        value={{ literal: (d) => d.opWpm, percentage: true }}
         description='Opponent win percentage'
-      />
+      /> */}
       <Attribute
         header="Jud"
-        value={{ literal: (d) => d.judges[0] as string }}
+        value={{ literal: (d) => d.judgeRecords[0]?.decision || '--' }}
       />
       <Attribute
         header="Spks"
         value={{
           literal: (d) => 1,
-          display: (dParent) => <SpeakingResultTable data={dParent.speaking_results} />
+          display: (d) => <SpeakingResultTable data={d.speaking} />
         }}
         description='Speaker point results'
         priority="md"

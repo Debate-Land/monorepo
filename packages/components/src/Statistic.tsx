@@ -11,10 +11,16 @@ export interface StatisticProps {
     inner?: string
     value?: string
     description?: string
-  }
+  },
+  round?: number;
+  isPercentage?: boolean;
 }
 
-const Statistic = ({ value, description, primary, className }: StatisticProps) => {
+const Statistic = ({ value, description, primary, className, round, isPercentage }: StatisticProps) => {
+  if (round) {
+    value = Math.round(value as number * (isPercentage ? 100 : 0) * Math.pow(10, round)) / Math.pow(10, round);
+  }
+
   return (
     <div className={clsx('flex flex-col bg-sblack', className?.wrapper, { 'h-full py-4 border-gray-300/40 md:border-r': primary })}>
       <div
@@ -28,7 +34,7 @@ const Statistic = ({ value, description, primary, className }: StatisticProps) =
         )}
       >
         <Text bold className={clsx('foo', { 'text-xl sm:text-2xl md:text-3xl': primary }, className?.value)}>
-          {value}
+          {value}{isPercentage ? '%' : ''}
         </Text>
         <Text size="xs" className={clsx('text-center px-2', className?.description)}>
           {description}

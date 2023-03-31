@@ -15,7 +15,7 @@ const Team = () => {
   });
 
   if (!data) return;
-  console.log(data.results[0])
+  console.log(data)
   return (
     <>
       <NextSeo
@@ -95,55 +95,73 @@ const Team = () => {
               className="grid grid-cols-1 divide-y md:divide-y-0 border-gray-300/40 border-x divide-gray-500 md:grid-cols-2 w-full md:max-w-[800px]"
             >
               <div id="stats-main" className="grid grid-cols-4 w-full max-w-[400px] mx-auto">
-                <Statistic value={4.1} description="OTR Score" primary />
-                <Statistic value="#3" description="Ntl. Rank" primary />
-                <Statistic value={8.5} description="TOC Bids" primary />
                 <Statistic
-                  value="97%"
-                  description="Spkr. Pctl."
+                  value={Math.round(data.statistics.otr * 100) / 100}
+                  description="OTR Score" primary
+                />
+                <Statistic value="#3" description="Ntl. Rank" primary />
+                <Statistic
+                  value={data.statistics.bids}
+                  description={`TOC Bid${data.statistics.bids > 1 ? 's' : ''}`}
+                  primary
+                />
+                <Statistic
+                  value={Math.round(data.statistics.avgSpeaks * 10)/10}
+                  description="Avg. Spkr."
                   className={{ wrapper: '!border-r-0', inner: '!border-r-0' }}
                   primary
                 />
               </div>
               <div id="stats-advanced" className="grid grid-cols-2 sm:grid-cols-4">
                 <Statistic
-                  value={21}
+                  value={data.results.length}
                   description="Tournaments"
                   className={{
                     wrapper: 'border-gray-300/40 border-b border-r md:border-l',
                   }}
                 />
                 <Statistic
-                  value={103}
+                  value={data._count.rounds}
                   description="Rounds"
                   className={{ wrapper: 'border-gray-300/40 border-b sm:border-r' }}
                 />
                 <Statistic
-                  value="70.1%"
-                  description="True Win Pct."
+                  value={data.statistics.lastActive}
+                  description="Last Active"
                   className={{ wrapper: 'border-gray-300/40 border-b border-r' }}
+
                 />
                 <Statistic
-                  value="100%"
-                  description="Break Pct."
+                  value={Math.round(data.statistics.avgOpWpM * 1000)/1000}
+                  description="Avg. OpWpM"
                   className={{ wrapper: 'border-gray-300/40 border-b' }}
+
                 />
                 <Statistic
-                  value="40.2%"
-                  description="Avg. OpWPM"
+                  value={`${data.statistics.pRecord[0]}-${data.statistics.pRecord[1]}`}
+                  description="Prelim Rcd."
                   className={{ wrapper: 'border-gray-300/40 border-b sm:border-b-0 border-r md:border-l' }}
                 />
                 <Statistic
-                  value="6W"
-                  description="Streak"
+                  value={data.statistics.pWp}
+                  isPercentage={true}
+                  round={1}
+                  description="Prelim Win Pct."
                   className={{ wrapper: 'border-gray-300/40 border-b sm:border-b-0 sm:border-r' }}
                 />
                 <Statistic
-                  value="2 mo."
-                  description="Last Active"
+                  value={data.statistics.breakPct}
+                  isPercentage={true}
+                  round={1}
+                  description="Break Pct."
                   className={{ wrapper: 'border-gray-300/40 border-r' }}
                 />
-                <Statistic value="75.4%" description="Prelim Win Pct." />
+                <Statistic
+                  value={data.statistics.tWp}
+                  description="True Win Pct."
+                  isPercentage={true}
+                  round={1}
+                />
               </div>
             </div>
           </div>

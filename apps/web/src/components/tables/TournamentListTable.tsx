@@ -11,7 +11,7 @@ type ExpandedTournamentResult = TournamentResult & {
   };
   alias: Alias;
   school: School;
-  speaking: TournamentSpeakerResult;
+  speaking: TournamentSpeakerResult[];
 }
 
 export interface TournamentListTableProps {
@@ -25,7 +25,7 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
     <Card icon={<BsJournalBookmark />} title="Tournament History" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
-        expand={(d) => <RoundByRoundTable data={d.id} />}
+        expand={(d) => <RoundByRoundTable tournamentResultId={d.id} />}
         className={{ wrapper: 'max-w-[800px]' }}
       >
         <Attribute
@@ -97,13 +97,6 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
           description="Elim. Win-Loss Record"
           priority="md"
         />
-        {/* <Attribute
-          header="E.In"
-          value={{
-            literal: (d) => (d.elim_rounds.length ? (d.elim_rounds[0] as Round).name_std : 'Prelims'),
-          }}
-          description="Eliminated In"
-        /> */}
         <Attribute
           header="Bid"
           value={{

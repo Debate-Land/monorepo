@@ -1,5 +1,5 @@
 import React from 'react'
-import { Round, RoundSpeakerResult } from 'database'
+import { Round, RoundSpeakerResult } from '@shared/database'
 import { Text, asTable } from '@shared/components'
 
 export interface SpeakingResultProps {
@@ -14,22 +14,15 @@ const SpeakingResultTable = ({ data: speakingResults }: SpeakingResultProps) => 
             <Attribute
                 header="Comp"
                 value={{
-                    literal: (dChild) => dChild._id,
-                    display: (dChild) => <Text size="sm">{dChild._id}</Text>
+                    literal: (d) => d.competitorId,
+                    display: (dChild) => <Text size="sm">{dChild.competitorId}</Text>
                 }}
             />
             <Attribute
-                header="Raw"
+                header="Pts"
                 value={{
-                    literal: (dChild) => dChild.raw_avg,
-                    display: (dChild) => <Text size="sm">{dChild.raw_avg}</Text>
-                }}
-            />
-            <Attribute
-                header="Adj"
-                value={{
-                    literal: (dChild) => dChild.adj_avg,
-                    display: (dChild) => <Text size="sm">{dChild.adj_avg}</Text>
+                    literal: (dChild) => dChild.points,
+                    display: (dChild) => <Text size="sm">{dChild.points}</Text>
                 }}
             />
         </Table>
