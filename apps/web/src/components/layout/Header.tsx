@@ -21,12 +21,13 @@ const Header = ({ router }: any) => {
 				'backdrop-blur-xl': scrollY > 33,
 			})}
 		>
+			{/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
 			<a
-				className="flex items-center space-x-2 min-w-[200px] bg-gradient-to-r from-sky-500 via-purple-600 to-violet-500 px-2 py-1 rounded-lg"
+				className="flex items-center space-x-2 min-w-[170px] bg-gradient-to-r from-sky-500 via-purple-600 to-violet-500 px-2 py-1 rounded-lg"
 				href="/"
 			>
 				<Image src={Logo32} draggable={false} alt="Debate Land" />
-				<Text size="2xl" className="mt-[1px] !text-white">
+				<Text className="mt-[1px] !text-white text-lg font-semibold">
 					Debate Land
 				</Text>
 			</a>
