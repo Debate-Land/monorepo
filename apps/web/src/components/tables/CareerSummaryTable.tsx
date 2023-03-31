@@ -1,10 +1,16 @@
 import React from 'react'
 import { TbListDetails } from 'react-icons/tb'
-import { Tournament, TournamentResult } from '@shared/database'
+import { TournamentResult, Tournament, Circuit } from '@shared/database'
 import { Card, asTable } from '@shared/components'
 
+type ExpandedTournamentResult = TournamentResult & {
+  tournament: Tournament & {
+      circuits: Circuit[];
+  };
+}
+
 export interface CareerSummaryTableProps {
-  data: TournamentResult[] // | ((page: number, limit: number) => TournamentResult)
+  data: ExpandedTournamentResult[] // | ((page: number, limit: number) => TournamentResult)
 }
 
 interface TournamentBySeason {
@@ -12,15 +18,15 @@ interface TournamentBySeason {
   tournaments: TournamentResult[]
 }
 
-const CareerSummaryTable = ({ data }: CareerSummaryTableProps) => {
+const CareerSummaryTable = ({ data: results }: CareerSummaryTableProps) => {
   const [seasons, setSeasons] = React.useState<TournamentBySeason[]>([])
   const { Table, Attribute } = asTable<TournamentBySeason>()
 
   React.useEffect(() => {
     const newSeasons: TournamentBySeason[] = []
-    data.forEach((result) => {
-      const tourn = result.tournament as Tournament
-      const { season } = tourn
+    results.forEach((result) => {
+      const tourn = result.tournament
+      const season = tourn.seasonId
       const seasonIndex = newSeasons.findIndex((s) => s.season === season)
       if (seasonIndex === -1) {
         newSeasons.push({ season, tournaments: [result] })
@@ -29,7 +35,7 @@ const CareerSummaryTable = ({ data }: CareerSummaryTableProps) => {
       }
     })
     setSeasons(newSeasons)
-  }, [data])
+  }, [results])
 
   return (
     <Card icon={<TbListDetails />} title="Career Summary" className="max-w-[800px] mx-auto my-16">

@@ -15,7 +15,7 @@ const Team = () => {
   });
 
   if (!data) return;
-
+  console.log(data.results[0])
   return (
     <>
       <NextSeo
@@ -45,7 +45,7 @@ const Team = () => {
                 </Text>
                 {data.competitors.map((competitor, idx) => {
                   return (
-                    <div className="flex space-x-1 z-10">
+                    <div className="flex space-x-1 z-10" key={idx}>
                       <Link
                         document
                         key={competitor.id}
@@ -148,8 +148,8 @@ const Team = () => {
             </div>
           </div>
         </div>
-        {/* <CareerSummaryTable data={data.tournaments as unknown as TournamentResult[]} />
-        <TournamentListTable data={data.tournaments as unknown as TournamentResult[]} /> */}
+        <CareerSummaryTable data={data.results} />
+        <TournamentListTable data={data.results} />
       </div>
     </>
   )

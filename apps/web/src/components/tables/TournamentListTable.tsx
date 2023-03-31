@@ -1,41 +1,50 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react'
 import { BsJournalBookmark } from 'react-icons/bs'
-import { Tournament, TournamentResult, Round } from '@shared/database'
+import { Tournament, TournamentResult, Round, Circuit, Alias, School, TournamentSpeakerResult } from '@shared/database'
 import { Text, asTable, Card } from '@shared/components'
 import RoundByRoundTable from './RoundByRoundTable'
 
+type ExpandedTournamentResult = TournamentResult & {
+  tournament: Tournament & {
+      circuits: Circuit[];
+  };
+  alias: Alias;
+  school: School;
+  speaking: TournamentSpeakerResult;
+}
+
 export interface TournamentListTableProps {
-  data: TournamentResult[] // | ((page: number, limit: number) => TournamentResult)
+  data: ExpandedTournamentResult[] // | ((page: number, limit: number) => TournamentResult)
 }
 
 const TournamentListTable = ({ data }: TournamentListTableProps) => {
-  const { Table, Attribute } = asTable<TournamentResult>()
+  const { Table, Attribute } = asTable<ExpandedTournamentResult>()
 
   return (
     <Card icon={<BsJournalBookmark />} title="Tournament History" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
-        expand={(d) => <RoundByRoundTable data={d.prelim_rounds.concat(d.elim_rounds) as Round[]} />}
+        // expand={(d) => <RoundByRoundTable data={d.prel.concat(d.elim_rounds) as Round[]} />}
         className={{ wrapper: 'max-w-[800px]' }}
       >
         <Attribute
           header="Tourn"
           value={{
-            literal: (d) => (d.tournament as Tournament).name,
+            literal: (d) => d.tournament.name,
           }}
           description="Tournament name"
         />
         <Attribute
           header="Dur"
           value={{
-            literal: (d) => (d.tournament as Tournament).start_date,
+            literal: (d) => d.tournament.start,
             display: (d) => {
               const tourn = d.tournament as Tournament
               return (
                 <Text size="sm">
-                  {new Date(tourn.start_date).toLocaleDateString('en-us')}-
-                  {new Date(tourn.end_date).toLocaleDateString('en-us')}
+                  {new Date(d.tournament.start).toLocaleDateString('en-us')}-
+                  {new Date(d.tournament.end).toLocaleDateString('en-us')}
                 </Text>
               )
             },
@@ -44,10 +53,10 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
         <Attribute
           header="P.Rk"
           value={{
-            literal: (d) => d.prelim_rank[0],
+            literal: (d) => d.prelimPos,
             display: (d) => (
               <Text size="sm">
-                {d.prelim_rank[0]}/{d.prelim_rank[1]}
+                {d.prelimPos}/{d.prelimPoolSize}
               </Text>
             ),
           }}
@@ -57,10 +66,10 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
         <Attribute
           header="P.Rc"
           value={{
-            literal: (d) => d.prelim_record[0],
+            literal: (d) => d.prelimBallotsWon,
             display: (d) => (
               <Text size="sm">
-                {d.prelim_record[0]}-{d.prelim_record[1]}
+                {d.prelimBallotsWon}-{d.prelimBallotsLost}
               </Text>
             ),
           }}
@@ -69,7 +78,7 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
         <Attribute
           header="P.Wp"
           value={{
-            literal: (d) => d.prelim_record[0] / (d.prelim_record[0] + d.prelim_record[1]),
+            literal: (d) => d.prelimBallotsWon / (d.prelimBallotsWon + d.prelimBallotsLost),
             percentage: true,
           }}
           description="Prelim. Win Percentage"
@@ -78,27 +87,27 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
         <Attribute
           header="E.Rc"
           value={{
-            literal: (d) => d.elim_record[0],
+            literal: (d) => d.elimWins || 0,
             display: (d) => (
               <Text size="sm">
-                {d.elim_record[0]}-{d.elim_record[1]}
+                {d.tournament.hasElimRounds ? `${d.elimWins}-${d.elimLosses}` : '--'}
               </Text>
             ),
           }}
           description="Elim. Win-Loss Record"
           priority="md"
         />
-        <Attribute
+        {/* <Attribute
           header="E.In"
           value={{
             literal: (d) => (d.elim_rounds.length ? (d.elim_rounds[0] as Round).name_std : 'Prelims'),
           }}
           description="Eliminated In"
-        />
+        /> */}
         <Attribute
           header="Bid"
           value={{
-            literal: (d) => d.bid || 'None',
+            literal: (d) => d.bid ? (d.bid == 1 ? 'Full' : 'Partial') : 'None',
           }}
           description="Bid"
         />
