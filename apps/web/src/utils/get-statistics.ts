@@ -37,6 +37,16 @@ function getAvg(arr: number[]) {
   return sum / arr.length;
 }
 
+function getDeflator(tourns: number) {
+  let N = 1;
+  let Y0 = 0.15;
+  let K = 1.3;
+
+  return Math.round(
+    N / ((N / Y0 - 1) * Math.pow(Math.E, -K * tourns) + 1) * 100
+  ) / 100;
+}
+
 export default function getStatistics(data: ExpandedTeam) {
   let statistics: any = {
     lastActive: '', //
@@ -94,7 +104,7 @@ export default function getStatistics(data: ExpandedTeam) {
   statistics.madeElims = statistics.breakPct[0];
   statistics.breakPct = statistics.breakPct[0] / (statistics.breakPct[0] + statistics.breakPct[1]);
 
-  statistics.otr = getAvg(statistics.otr);
+  statistics.otr = getDeflator(data.results.length) * getAvg(statistics.otr);
   statistics.avgOpWpM = getAvg(statistics.avgOpWpM);
   statistics.avgSpeaks = getAvg(statistics.avgSpeaks);
 

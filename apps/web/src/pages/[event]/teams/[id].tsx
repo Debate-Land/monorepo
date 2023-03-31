@@ -99,7 +99,7 @@ const Team = () => {
                   value={Math.round(data.statistics.otr * 100) / 100}
                   description="OTR Score" primary
                 />
-                <Statistic value="#3" description="Ntl. Rank" primary />
+                <Statistic value="--" description="Ntl. Rank" primary />
                 <Statistic
                   value={data.statistics.bids}
                   description={`TOC Bid${data.statistics.bids > 1 ? 's' : ''}`}
