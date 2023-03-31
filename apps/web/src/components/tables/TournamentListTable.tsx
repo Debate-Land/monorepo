@@ -36,15 +36,15 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
           description="Tournament name"
         />
         <Attribute
-          header="Dur"
+          header="Date"
+          sortable
           value={{
             literal: (d) => d.tournament.start,
             display: (d) => {
               const tourn = d.tournament as Tournament
               return (
                 <Text size="sm">
-                  {new Date(d.tournament.start).toLocaleDateString('en-us')}-
-                  {new Date(d.tournament.end).toLocaleDateString('en-us')}
+                  {new Date(d.tournament.start * 1000).toLocaleDateString('en-us')}
                 </Text>
               )
             },

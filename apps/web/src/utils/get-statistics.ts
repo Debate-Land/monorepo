@@ -79,8 +79,8 @@ export default function getStatistics(data: ExpandedTeam) {
     if (result.bid) statistics.bids += result.bid;
   });
 
-  data.results.sort((a, b) => a.tournament.start - b.tournament.start);
-  statistics.lastActive = getRelativeTime(data.results[0].tournament.start);
+  data.results.sort((a, b) => a.tournament.start - b.tournament.start).reverse();
+  statistics.lastActive = getRelativeTime(data.results[0].tournament.start * 1000);
 
   let numPrelims = statistics.pRecord[0] + statistics.pRecord[1];
   let numElims = statistics.eRecord[0] + statistics.eRecord[1];
