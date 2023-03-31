@@ -1,14 +1,29 @@
 import React from 'react'
-import { Round } from '@shared/database'
+import { Alias, Judge, Round, RoundSpeakerResult, Side } from '@shared/database'
 import { Text, asTable } from '@shared/components'
 import SpeakingResultTable from './SpeakingResultTable'
+import { trpc } from '@src/utils/trpc'
 
-export interface RoundByRoundTableProps {
-  data: Round[] //| ((page: number, limit: number) => TournamentResult)
+type ExpandedRound = Round & {
+  judgeRecords: {
+      judge: Judge;
+      decision: Side;
+      tabJudgeId: number;
+  }[];
+  speaking: RoundSpeakerResult[];
+  opponent: {
+      id: string;
+      aliases: Alias[];
+  } | null;
 }
 
-const RoundByRoundTable = ({ data: rounds }: RoundByRoundTableProps) => {
-  const { Table, Attribute } = asTable<Round>()
+export interface RoundByRoundTableProps {
+  tournamentResultId: number //| ((page: number, limit: number) => TournamentResult)
+}
+
+const RoundByRoundTable = async ({ tournamentResultId: id }: RoundByRoundTableProps) => {
+  const { Table, Attribute } = asTable<ExpandedRound>();
+  const {data: rounds} = trpc.rounds.useQuery({id})
 
   return (
     <Table data={rounds}>
@@ -20,7 +35,7 @@ const RoundByRoundTable = ({ data: rounds }: RoundByRoundTableProps) => {
       <Attribute
         header="Opp"
         value={{ literal: (d) => d.opponent as string }}
-        description='Standardized round name'
+        description='Opponent'
       />
       <Attribute
         header="Res"

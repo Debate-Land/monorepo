@@ -25,7 +25,7 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
     <Card icon={<BsJournalBookmark />} title="Tournament History" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
-        // expand={(d) => <RoundByRoundTable data={d.prel.concat(d.elim_rounds) as Round[]} />}
+        expand={(d) => <RoundByRoundTable data={d.id} />}
         className={{ wrapper: 'max-w-[800px]' }}
       >
         <Attribute

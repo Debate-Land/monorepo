@@ -87,6 +87,39 @@ export const appRouter = router({
       });
 
       return team;
+    }),
+  rounds: procedure
+    .input(
+      z.object({
+        id: z.number()
+      })
+    )
+    .query(async ({ input }) => {
+      const rounds = await prisma.round.findMany({
+        where: {
+          tournamentResultId: input.id
+        },
+        include: {
+          opponent: {
+            select: {
+              aliases: {
+                take: 1
+              },
+              id: true,
+            }
+          },
+          judgeRecords: {
+            select: {
+              decision: true,
+              tabJudgeId: true,
+              judge: true
+            }
+          },
+          speaking: true
+        }
+      });
+
+      return rounds;
     })
 });
 
