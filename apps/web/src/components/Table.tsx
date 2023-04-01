@@ -1,7 +1,7 @@
 import { Alias } from '@shared/database';
 import { trpc } from '@src/utils/trpc'
-import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import React from 'react'
+import { createColumnHelper, flexRender, getCoreRowModel, PaginationState, useReactTable } from '@tanstack/react-table';
+import React, { useMemo, useState } from 'react'
 
 type Data = {
   team: {
@@ -12,12 +12,27 @@ type Data = {
 };
 
 const Table = () => {
-  const { data } = trpc.leaderboard.useQuery({
-    season: 2023,
-    circuit: 11,
-    page: 0,
-    limit: 10,
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
   });
+
+  const { data } = trpc.leaderboard.useQuery(
+    {
+      season: 2023,
+      circuit: 11,
+      page: pageIndex,
+      limit: pageSize,
+    },
+    {
+      keepPreviousData: true,
+    }
+  );
+
+  const pagination = useMemo(() => ({
+    pageIndex,
+    pageSize
+  }), [pageIndex, pageSize]);
 
   const column = createColumnHelper<Data>();
 
@@ -35,10 +50,17 @@ const Table = () => {
   const table = useReactTable({
     data: data || [],
     columns,
-    getCoreRowModel: getCoreRowModel()
+    getCoreRowModel: getCoreRowModel(),
+    pageCount: -1,
+    state: {
+      pagination
+    },
+    onPaginationChange: setPagination,
+    manualPagination: true,
   })
 
   return (
+    <>
     <table className="table-auto">
       <thead>
         {
@@ -111,7 +133,11 @@ const Table = () => {
           )
         }
       </tfoot>
-    </table>
+      </table>
+      <button onClick={table.previousPage}>{'<'}</button>
+      <button onClick={table.nextPage}>{'>'}</button>
+
+    </>
   )
 }
 
