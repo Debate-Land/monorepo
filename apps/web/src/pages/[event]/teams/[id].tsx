@@ -7,15 +7,22 @@ import { NextSeo } from 'next-seo';
 
 const Team = () => {
   const { query, isReady } = useRouter();
-  if (!isReady) return; // FIXME: Bad for SEO
-
-  const { data } = trpc.team.useQuery({
-    id: query.id as string,
-    event: query.event as string,
-  });
+  const { data } = trpc.team.useQuery(
+    {
+      id: query.id as string,
+      event: query.event as string,
+    },
+    {
+      enabled: isReady,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 60 * 24,
+    }
+  );
 
   if (!data) return;
-  console.log(data)
+
   return (
     <>
       <NextSeo
@@ -58,23 +65,6 @@ const Team = () => {
                     )
                   }
                 </Text>
-                {/* {data.competitors.map((competitor, idx) => {
-                  return (
-                    <span className="flex space-x-1 z-10" key={idx}>
-                      <Link
-                        document
-                        key={competitor.id}
-                        className="text-xl sm:text-3xl lg:text-4xl"
-                        href={`/competitors/${competitor.id}`}
-                      >
-                        {competitor.name}
-                      </Link>
-                      <Text className="!text-white text-xl sm:text-3xl lg:text-4xl">
-                        {idx < data.competitors.length - 1 ? ' & ' : ''}
-                      </Text>
-                    </span>
-                  )
-                })} */}
                 {/* <Text size="sm" className="!text-gray-300/70 hidden md:inline mt-2 max-w-[500px] pr-4">
                   {data.competitors.length === 1
                     ? data.competitors[0].name.split(' ')[0]
@@ -99,9 +89,10 @@ const Team = () => {
                   {data.results.length > 1 ? 'tournaments' : 'tournament'}, amassing {5} TOC bids.
                 </Text> */}
               </span>
-              {/* <Text size="lg" className="!text-indigo-300 md:mt-4">
-                {query.event} | {data.circuits[0]} | {data.seasons[0]}-{data.seasons[data.seasons.length - 1]}
-              </Text> */}
+              <Text size="lg" className="!text-indigo-3`00 md:mt-4">
+                Public Forum | IL Varsity | 2023
+                {/* {query.event} | {data.circuits[0].name} | {data.seasons[0].id}-{data.seasons[data.seasons.length - 1].id} */}
+              </Text>
             </div>
           </div>
           <div className="w-full flex justify-center border-y border-gray-300/40 bg-luka-200 z-20">

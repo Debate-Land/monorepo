@@ -1,6 +1,6 @@
 import React from 'react'
 import { Alias, Competitor, Judge, Round, RoundSpeakerResult, Side } from '@shared/database'
-import { Text, asTable } from '@shared/components'
+import { asTable } from '@shared/components'
 import SpeakingResultTable from './SpeakingResultTable'
 import { trpc } from '@src/utils/trpc'
 import RoundTable from './RoundTable'
@@ -30,7 +30,15 @@ export interface RoundByRoundTableProps {
 
 const RoundByRoundTable = ({ tournamentResultId: id }: RoundByRoundTableProps) => {
   const { Table, Attribute } = asTable<ExpandedRound>();
-  const {data: rounds} = trpc.rounds.useQuery({id})
+  const { data: rounds } = trpc.rounds.useQuery(
+    { id },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 60 * 24,
+    }
+  );
 
   if (!rounds) return <></>;
 
