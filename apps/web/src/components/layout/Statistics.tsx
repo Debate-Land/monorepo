@@ -1,5 +1,6 @@
 import React from 'react'
 import { Statistic } from '@shared/components';
+import clsx from 'clsx';
 
 interface RestrictedStatisticProp {
   value: string | number
@@ -14,12 +15,20 @@ interface StatisticsProps {
 }
 
 const Statistics = ({primary, advanced}: StatisticsProps) => {
+
   return (
     <div
       id="stats"
-      className="grid grid-cols-1 divide-y md:divide-y-0 border-gray-300/40 border-x divide-gray-500 md:grid-cols-2 w-full md:max-w-[800px]"
+      className={
+        clsx(
+          'grid grid-cols-1 divide-y md:divide-y-0 border-gray-300/40 divide-gray-500 w-full md:max-w-[800px]',
+          {
+            'md:grid-cols-2 border-x': advanced
+          }
+        )
+      }
     >
-      <div id="stats-main" className="grid grid-cols-4 w-full max-w-[400px] mx-auto">
+      <div id="stats-main" className="grid grid-cols-4 !w-full max-w-[400px] mx-auto">
         <Statistic
           {...primary[0]}
           primary
@@ -34,6 +43,9 @@ const Statistics = ({primary, advanced}: StatisticsProps) => {
         />
         <Statistic
           {...primary[3]}
+          className={{
+            wrapper: clsx({'!border-r-0': !advanced})
+          }}
           primary
         />
       </div>
