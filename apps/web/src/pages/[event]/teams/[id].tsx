@@ -1,7 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc';
-import { Statistic, Link, Text } from '@shared/components';
 import { CareerSummaryTable, TournamentListTable } from '@src/components/tables'
 import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';

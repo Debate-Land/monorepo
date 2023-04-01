@@ -438,6 +438,41 @@ export const appRouter = router({
         judges: data[11],
         numJudges: data[12],
       };
+    }),
+  leaderboard: procedure
+    .input(
+      z.object({
+        circuit: z.number(),
+        season: z.number(),
+        page: z.number(),
+        limit: z.number()
+      })
+    )
+    .query(async ({ input }) => {
+      const result = await prisma.circuitRanking.findMany({
+        where: {
+          seasonId: input.season,
+          circuitId: input.circuit,
+        },
+        orderBy: {
+          otr: "desc"
+        },
+        select: {
+          team: {
+            select: {
+              aliases: {
+                take: 1
+              },
+              id: true,
+            },
+          },
+          otr: true,
+        },
+        skip: input.page * input.limit,
+        take: input.limit
+      });
+
+      return result;
     })
 });
 
