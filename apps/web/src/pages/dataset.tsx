@@ -7,6 +7,7 @@ import Statistics from '@src/components/layout/Statistics';
 import LeaderboardTable from '@src/components/tables/LeaderboardTable';
 import SchoolTable from '@src/components/tables/SchoolTable';
 import TournamentTable from '@src/components/tables/TournamentTable';
+import Table from '@src/components/Table';
 
 const Dataset = () => {
   const { query, isReady } = useRouter();
@@ -66,6 +67,7 @@ const Dataset = () => {
             />
           }
         />
+        <Table/>
         <LeaderboardTable data={data.leaderboard} />
         <TournamentTable data={data.tournaments} />
         <SchoolTable data={data.schools} />
