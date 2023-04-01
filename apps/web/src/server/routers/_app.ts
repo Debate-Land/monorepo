@@ -235,6 +235,9 @@ export const appRouter = router({
             seasonId: {
               equals: input.season
             }
+          },
+          orderBy: {
+            start: "asc"
           }
         }),
         // Competitors

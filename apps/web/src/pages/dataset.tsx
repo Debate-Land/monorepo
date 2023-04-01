@@ -4,10 +4,12 @@ import { trpc } from '@src/utils/trpc'
 import { useRouter } from 'next/router';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
+import LeaderboardTable from '@src/components/tables/LeaderboardTable';
+import SchoolTable from '@src/components/tables/SchoolTable';
+import TournamentTable from '@src/components/tables/TournamentTable';
 
 const Dataset = () => {
   const { query, isReady } = useRouter();
-
   const { data } = trpc.dataset.useQuery(
     {
       circuit: parseInt(query.circuit as string),
@@ -64,6 +66,9 @@ const Dataset = () => {
             />
           }
         />
+        <LeaderboardTable data={data.leaderboard} />
+        <TournamentTable data={data.tournaments} />
+        <SchoolTable data={data.schools} />
       </div>
     </>
   )

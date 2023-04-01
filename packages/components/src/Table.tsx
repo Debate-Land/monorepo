@@ -6,6 +6,16 @@ import Text from './Text'
 import omit from 'lodash/omit'
 import { AiOutlineArrowDown, AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineArrowUp, AiOutlineBackward, AiOutlineForward } from 'react-icons/ai'
 
+/**
+ * TODO: Fix sorting by attr
+ * TODO: Fix hover effects
+ * TODO: Add position attribute with idx + 1 and custom attribute name
+ * TODO: Pagination
+ * TODO: Only 1 attr is OK
+ * TODO: Make literal not required
+ * TODO: Initial sort with function, then just .reverse() it
+ */
+
 type Priority = 'sm' | 'md' | 'lg' | 'xl'
 
 const collapseConfig = (priority: Priority | undefined) => {
