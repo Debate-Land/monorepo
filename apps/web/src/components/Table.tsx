@@ -3,15 +3,49 @@ import { Alias } from '@shared/database';
 import { trpc } from '@src/utils/trpc';
 import { FaSort, FaSortUp, FaSortDown, FaChevronCircleDown, FaChevronCircleUp} from 'react-icons/fa';
 import { FiChevronRight, FiChevronsRight, FiChevronLeft, FiChevronsLeft } from 'react-icons/fi';
-
-import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, Table, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, useReactTable } from '@tanstack/react-table';
 import React, { Fragment, useState, Dispatch, SetStateAction, useEffect } from 'react';
 
+const getPositionColumn = <T,>(pagination: PaginationState = { pageIndex: 0, pageSize: 0 }) => (
+  {
+    id: "position",
+    header: "Pos.",
+    cell: ({ row }: { row: Row<T> }) => pagination.pageIndex * pagination.pageSize + row.index + 1
+  }
+);
+
+const getExpandingColumn = <T,>() => (
+  {
+    id: "expander",
+    header: "Details",
+    cell: ({ row }: { row: Row<T> }) => (
+      row.getCanExpand()
+        ? <button onClick={row.getToggleExpandedHandler()} className="w-full flex flex-row items-center justify-start px-4">
+          {
+            row.getIsExpanded()
+              ? <FaChevronCircleUp/>
+              : <FaChevronCircleDown/>
+          }
+        </button>
+        : <>--</>
+    )
+  } as ColumnDef<T>
+);
+
 interface TableProps<T> {
-  definition: Table<T>;
+  data: T[] | undefined;
+  columns: ColumnDef<T>[];
+  paginationConfig?: {
+    pagination: PaginationState;
+    setPagination: Dispatch<SetStateAction<PaginationState>>;
+    totalPages?: number;
+  };
+  sortingConfig?: {
+    sorting: SortingState;
+    setSorting: Dispatch<SetStateAction<SortingState>>;
+  };
   child?: (props: { row: T }) => JSX.Element;
-  sortable?: boolean;
-  paginateable?: boolean;
+  showPosition?: boolean
 }
 
 const classNames = {
@@ -24,14 +58,38 @@ const classNames = {
     button: "hover:bg-luka-200/50 text-center w-[50px] text-xl py-3 flex items-center justify-center",
     textWrapper: "flex flex-row justify-center items-center w-[100px]",
   }
-}
+};
 
-/* TODO: Move useCustomTable inside of here and have props be passed down to the table component directly?
-/* Then we can make expandable column as idx 0, position column as idx 1, etc... automagically.
-*/
 // TODO: Add page limit selection (10, 20, 50) after seeing how performance is impacted
-const Table = <T,>({ definition: table, child: ExpandedRow, sortable: tableIsSortable, paginateable: tableIsPaginateable }: TableProps<T>) => {
+const Table = <T,>({ child: ExpandedRow, data, columns, paginationConfig, sortingConfig, showPosition }: TableProps<T>) => {
+  if (showPosition) columns = [getPositionColumn(paginationConfig?.pagination), ...columns];
+  if (ExpandedRow) columns = [getExpandingColumn(), ...columns];
+
+  const table = useReactTable({
+    data: data || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getRowCanExpand: () => true,
+    state: {
+      ...(paginationConfig && { pagination: paginationConfig.pagination }),
+      ...(sortingConfig && { sorting: sortingConfig.sorting })
+    },
+    ...(paginationConfig && {
+      getPaginationRowModel: getPaginationRowModel(),
+      onPaginationChange: paginationConfig.setPagination,
+      manualPagination: true,
+      pageCount: paginationConfig.totalPages || -1
+    }),
+    ...(sortingConfig && {
+      getSortedRowModel: getSortedRowModel(),
+      onSortingChange: sortingConfig.setSorting,
+    })
+  });
+
   const currentPage = table.getState().pagination.pageIndex;
+  const tableIsSortable = sortingConfig === undefined;
+  const tableIsPaginateable = paginationConfig === undefined;
 
   useEffect(() => {
     table.resetExpanded(false);
@@ -182,70 +240,6 @@ const Table = <T,>({ definition: table, child: ExpandedRow, sortable: tableIsSor
   );
 };
 
-interface UseCustomTableOptions<T> {
-  data: T[] | undefined;
-  columns: ColumnDef<T>[];
-  paginationConfig?: {
-    paginationState: PaginationState;
-    setPaginationState: Dispatch<SetStateAction<PaginationState>>;
-    totalPages?: number;
-  };
-  sortingConfig?: {
-    sortingState: SortingState;
-    setSortingState: Dispatch<SetStateAction<SortingState>>;
-  };
-}
-
-const useCustomTable = <T,>({ data, columns, paginationConfig, sortingConfig }: UseCustomTableOptions<T>) => (
-  useReactTable({
-    data: data || [],
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getRowCanExpand: () => true,
-    state: {
-      ...(paginationConfig && { pagination: paginationConfig.paginationState }),
-      ...(sortingConfig && { sorting: sortingConfig.sortingState})
-    },
-    ...(paginationConfig && {
-      getPaginationRowModel: getPaginationRowModel(),
-      onPaginationChange: paginationConfig.setPaginationState,
-      manualPagination: true,
-      pageCount: paginationConfig.totalPages || -1
-    }),
-    ...(sortingConfig && {
-      getSortedRowModel: getSortedRowModel(),
-      onSortingChange: sortingConfig.setSortingState,
-    })
-  })
-);
-
-const getPositionColumn = <T,>(pagination: PaginationState) => (
-  {
-    id: "position",
-    header: "Pos.",
-    cell: ({ row }: { row: Row<T> }) => pagination.pageIndex * pagination.pageSize + row.index + 1
-  }
-);
-
-const getExpandingColumn = <T,>() => (
-  {
-    id: "expander",
-    header: "Details",
-    cell: ({ row }: { row: Row<T> }) => (
-      row.getCanExpand()
-        ? <button onClick={row.getToggleExpandedHandler()} className="w-full flex flex-row items-center justify-start px-4">
-          {
-            row.getIsExpanded()
-              ? <FaChevronCircleUp/>
-              : <FaChevronCircleDown/>
-          }
-        </button>
-        : <>--</>
-    )
-  } as ColumnDef<T>
-);
-
 // Testing
 
 type Data = {
@@ -289,35 +283,30 @@ const LeaderboardTable = () => {
   const column = createColumnHelper<Data>();
 
   return <Table<Data>
-    definition={
-      useCustomTable({
-        data,
-        columns: [
-          getExpandingColumn<Data>(),
-          getPositionColumn<Data>(pagination),
-          column.accessor("otr", {
-            header: "OTR",
-            cell: props => props.getValue().toFixed(3),
-          }),
-          column.accessor("team.aliases", {
-            header: "Team",
-            cell: props => props.getValue()[0].code,
-            enableSorting: false,
-          })
-        ] as ColumnDef<Data>[],
-        paginationConfig: {
-          paginationState: pagination,
-          setPaginationState: setPagination,
-        },
-        sortingConfig: {
-          sortingState: sorting,
-          setSortingState: setSorting
-        }
-      })
+    data={data}
+    columns={
+      [
+        column.accessor("otr", {
+          header: "OTR",
+          cell: props => props.getValue().toFixed(3),
+        }),
+        column.accessor("team.aliases", {
+          header: "Team",
+          cell: props => props.getValue()[0].code,
+          enableSorting: false,
+        })
+      ] as ColumnDef<Data>[]
     }
+    paginationConfig={{
+      pagination,
+      setPagination
+    }}
+    sortingConfig={{
+      sorting,
+      setSorting
+    }}
     child={SubComponent}
-    sortable
-    paginateable
+    showPosition
   />
 };
 
