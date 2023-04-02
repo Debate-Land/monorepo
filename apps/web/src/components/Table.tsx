@@ -5,12 +5,13 @@ import { ColumnDef, createColumnHelper, ExpandedState, flexRender, getCoreRowMod
 import React, { Fragment, useMemo, useState, Dispatch, SetStateAction } from 'react'
 
 interface TableProps<T> {
-  table: Table<T>;
-  SubComponent?: (props: { row: T }) => JSX.Element;
+  definition: Table<T>;
+  child?: (props: { row: T }) => JSX.Element;
 }
 
+// FIXME: Row idx staying open after pagination...
 // Opt-in pagination, expandable if appropriate column is supplied.
-const Table = <T,>({ table, SubComponent }: TableProps<T>) => (
+const Table = <T,>({ definition: table, child: ExpandedRow }: TableProps<T>) => (
   <div>
     <table className="table-auto">
       <thead>
@@ -58,10 +59,10 @@ const Table = <T,>({ table, SubComponent }: TableProps<T>) => (
                 </tr>
                 {/* Expanded data housed in additional row, if available */}
                 {
-                  row.getIsExpanded() && SubComponent && (
+                  row.getIsExpanded() && ExpandedRow && (
                     <tr>
                       <td colSpan={row.getVisibleCells().length}>
-                        <SubComponent row={row.original} />
+                        <ExpandedRow row={row.original} />
                       </td>
                     </tr>
                   )
@@ -186,28 +187,29 @@ const LeaderboardTable = () => {
 
   const column = createColumnHelper<Data>();
 
-  const columns = [
-    getExpandingColumn<Data>(),
-    column.accessor("otr", {
-      header: "OTR",
-      cell: props => props.getValue().toFixed(3)
-    }),
-    column.accessor("team.aliases", {
-      header: "Team",
-      cell: props => props.getValue()[0].code
-    })
-  ] as ColumnDef<Data>[];
-
-  const table = useCustomTable({
-    data,
-    columns,
-    paginationConfig: {
-      paginationState: pagination,
-      setPaginationState: setPagination,
+  return <Table
+    definition={
+      useCustomTable({
+        data,
+        columns: [
+          getExpandingColumn<Data>(),
+          column.accessor("otr", {
+            header: "OTR",
+            cell: props => props.getValue().toFixed(3)
+          }),
+          column.accessor("team.aliases", {
+            header: "Team",
+            cell: props => props.getValue()[0].code
+          })
+        ] as ColumnDef<Data>[],
+        paginationConfig: {
+          paginationState: pagination,
+          setPaginationState: setPagination,
+        }
+      })
     }
-  })
-
-  return <Table table={table} SubComponent={SubComponent} />
+    child={SubComponent}
+  />
 };
 
 export default LeaderboardTable
