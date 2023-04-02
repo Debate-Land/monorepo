@@ -187,7 +187,7 @@ const LeaderboardTable = () => {
 
   const column = createColumnHelper<Data>();
 
-  return <Table
+  return <Table<Data>
     definition={
       useCustomTable({
         data,
