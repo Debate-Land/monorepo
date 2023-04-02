@@ -67,8 +67,8 @@ const Team = () => {
                   description: "OTR Score"
                 },
                 {
-                  value: "--",
-                  description: "Ntl. Rank"
+                  value: data.statistics.inTop20Pct,
+                  description: "Top 20% in Prelims"
                 },
                 {
                   value: data.statistics.bids,
@@ -76,7 +76,7 @@ const Team = () => {
                 },
                 {
                   value: Math.round(data.statistics.avgSpeaks * 10) / 10,
-                  description: "Avg Spks."
+                  description: "Avg Raw Spks."
                 }
               ]}
               advanced={[
@@ -93,7 +93,9 @@ const Team = () => {
                   description: "Last Active"
                 },
                 {
-                  value: Math.round(data.statistics.avgOpWpM * 1000) / 1000,
+                  value: data.statistics.avgOpWpM,
+                  isPercentage: true,
+                  round: 1,
                   description: "Avg. OpWpM"
                 },
                 {
@@ -122,8 +124,8 @@ const Team = () => {
             />
           }
         />
-        <CareerSummaryTable data={data.results} />
-        <TournamentListTable data={data.results} />
+        {/* <CareerSummaryTable data={data.results} />
+        <TournamentListTable data={data.results} /> */}
       </div>
     </>
   )

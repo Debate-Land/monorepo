@@ -74,6 +74,7 @@ const classNames = {
 
 // TODO: Add page limit selection (10, 20, 50) after seeing how performance is impacted
 // TODO: Add initial state to expand first row (only if pageIndex == 0 or undefined)
+// TODO: Add hide row
 const Table = <T,>({
   data,
   columns,
