@@ -1,57 +1,68 @@
-import React from 'react'
-import { Card, asTable } from '@shared/components'
+import React, { useState } from 'react'
+import { Card, Table } from '@shared/components'
 import { School, Tournament } from '@shared/database';
 import { TbListDetails } from 'react-icons/tb'
+import { useRouter } from 'next/router';
+import { trpc } from '@src/utils/trpc';
+import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 
 type TournamentTableRow = Tournament & {
   _count: {
       results: number;
   };
-  results: {
-      school: School;
-  }[];
 }
 
-export interface SchoolTableProps {
-  data: TournamentTableRow[]
+interface TournamentTableProps {
+  count: number
 }
 
-const TournamentTable = ({ data }: SchoolTableProps) => {
-  const { Table, Attribute } = asTable<TournamentTableRow>();
+const TournamentTable = ({count}: TournamentTableProps) => {
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  });
+  const {query, isReady, ...router} = useRouter();
+  const { data } = trpc.tournament.useQuery(
+    {
+      season: parseInt(query.season as unknown as string),
+      circuit: parseInt(query.circuit as unknown as string),
+      limit: pagination.pageSize,
+      page: pagination.pageIndex
+    },
+    {
+      keepPreviousData: true,
+      enabled: isReady
+    }
+  );
+  const column = createColumnHelper<TournamentTableRow>();
 
   return (
-    <Card icon={<TbListDetails />} title="Tournaments" className="max-w-[800px] mx-auto my-16">
-      <Table data={(data)}>
-        <Attribute
-          header="Name"
-          value={{
-            literal: (d) => d.name,
-          }}
-          description='Tournament Name'
-        />
-        <Attribute
-          header="Date"
-          value={{
-            literal: (d) => d.start,
-            display: (d) => <>{new Date(d.start * 1000).toLocaleDateString('en-us')}</>
-          }}
-          description='Tournament Start Date'
-          sortable
-        />
-        <Attribute
-          header="Entries"
-          value={{
-            literal: (d) => d._count.results,
-          }}
-          description='Tournament Entries'
-        />
-        <Attribute
-          header="Elims"
-          value={{
-            literal: (d) => d.hasElimRounds ? 'Yes' : 'No'
-          }}
-        />
-      </Table>
+    <Card icon={<TbListDetails />} title="Leaderboard" className="max-w-[800px] mx-auto my-16">
+      <Table
+        data={data}
+        columns={
+          [
+            column.accessor('name', {
+              header: "Name",
+              cell: props => props.getValue()
+            }),
+            column.accessor('start', {
+              header: "Start",
+              cell: props => new Date(props.cell.getValue() * 1000).toLocaleDateString("en-us")
+            }),
+            column.accessor('_count.results', {
+              header: "Entries",
+              cell: props => props.getValue()
+            })
+          ] as ColumnDef<TournamentTableRow>[]
+        }
+        paginationConfig={{
+          pagination,
+          setPagination,
+          totalPages: Math.ceil(count/pagination.pageSize)
+        }}
+        onRowClick={(row) => router.push(`/${query.event}/teams/${row.team.id}`)}
+      />
     </Card>
     )
 }

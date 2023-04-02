@@ -67,8 +67,8 @@ const Dataset = () => {
           }
         />
         <LeaderboardTable count={data.numTeams}  />
-        {/* <TournamentTable />
-        <SchoolTable /> */}
+        <TournamentTable count={data.numTournaments} />
+        {/* <SchoolTable /> */}
       </div>
     </>
   )
