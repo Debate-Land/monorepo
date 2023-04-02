@@ -170,6 +170,14 @@ const useCustomTable = <T,>({ data, columns, paginationConfig, sortingConfig }: 
   })
 );
 
+const getPositionColumn = <T,>(pagination: PaginationState) => (
+  {
+    id: "position",
+    header: "Pos.",
+    cell: ({ row }: { row: Row<T> }) => pagination.pageIndex * pagination.pageSize + row.index + 1
+  }
+);
+
 const getExpandingColumn = <T,>() => (
   {
     id: "expander",
@@ -230,6 +238,7 @@ const LeaderboardTable = () => {
         data,
         columns: [
           getExpandingColumn<Data>(),
+          getPositionColumn<Data>(pagination),
           column.accessor("otr", {
             header: "OTR",
             cell: props => props.getValue().toFixed(3),
@@ -254,4 +263,4 @@ const LeaderboardTable = () => {
   />
 };
 
-export default LeaderboardTable
+export default LeaderboardTable;
