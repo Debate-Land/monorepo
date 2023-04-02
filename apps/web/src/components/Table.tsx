@@ -8,13 +8,13 @@ import React, { Fragment, useState, Dispatch, SetStateAction, useEffect } from '
 interface TableProps<T> {
   definition: Table<T>;
   child?: (props: { row: T }) => JSX.Element;
+  sortable?: boolean
 }
 
 // FIXME: Row idx staying open after pagination...
 // Opt-in pagination, expandable if appropriate column is supplied.
-const Table = <T,>({ definition: table, child: ExpandedRow }: TableProps<T>) => {
+const Table = <T,>({ definition: table, child: ExpandedRow, sortable: tableIsSortable }: TableProps<T>) => {
   const currentPage = table.getState().pagination?.pageIndex;
-  const tableIsSortable = table.getState().sorting;
 
   // console.log(tableIsSortable)
 
