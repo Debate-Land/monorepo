@@ -12,10 +12,11 @@ interface TableProps<T> {
   sortable?: boolean
 }
 
+/* TODO: Move useCustomTable inside of here and have props be passed down to the table component directly?
+/* Then we can make expandable column as idx 0, position column as idx 1, etc... automagically.
+*/
 const Table = <T,>({ definition: table, child: ExpandedRow, sortable: tableIsSortable }: TableProps<T>) => {
   const currentPage = table.getState().pagination?.pageIndex;
-
-  // console.log(tableIsSortable)
 
   useEffect(() => {
     table.resetExpanded(false);
@@ -23,7 +24,7 @@ const Table = <T,>({ definition: table, child: ExpandedRow, sortable: tableIsSor
 
   return (
     <div>
-      <table className="table-auto">
+      <table className="table table-auto">
         <thead>
           {
             table.getHeaderGroups().map(
@@ -71,11 +72,11 @@ const Table = <T,>({ definition: table, child: ExpandedRow, sortable: tableIsSor
               row => (
                 <Fragment key={row.id}>
                   {/* Actual table row */}
-                  <tr>
+                  <tr className='bg-luka-200/20 dark:text-gray-300 text-gray-700 border-t border-gray-100 dark:border-gray-700'>
                     {
                       row.getVisibleCells().map(
                         cell => (
-                          <td key={cell.id}>
+                          <td key={cell.id} className="py-3">
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           </td>
                         )
@@ -265,6 +266,7 @@ const LeaderboardTable = () => {
       })
     }
     child={SubComponent}
+    sortable
   />
 };
 
