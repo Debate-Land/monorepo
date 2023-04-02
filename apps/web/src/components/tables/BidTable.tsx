@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
-import { Prisma } from '@shared/database';
-import { TbListDetails } from 'react-icons/tb'
+import { IoMedalOutline } from 'react-icons/io5'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
@@ -39,7 +38,7 @@ const BidTable = ({count}: BidTableProps) => {
   const column = createColumnHelper<BidTableRow>();
 
   return (
-    <Card icon={<TbListDetails />} title="Bids" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<IoMedalOutline />} title="Bids" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columns={

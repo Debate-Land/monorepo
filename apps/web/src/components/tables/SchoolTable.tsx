@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { School } from '@shared/database';
-import { TbListDetails } from 'react-icons/tb'
+import { MdOutlineSchool } from 'react-icons/md'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
@@ -37,7 +37,7 @@ const SchoolTable = ({count}: SchoolTableProps) => {
   const column = createColumnHelper<SchoolTableRow>();
 
   return (
-    <Card icon={<TbListDetails />} title="Schools" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<MdOutlineSchool />} title="Schools" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columns={

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { Competitor } from '@shared/database';
-import { TbListDetails } from 'react-icons/tb'
+import { BsPerson } from 'react-icons/bs'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
@@ -37,7 +37,7 @@ const CompetitorTable = ({count}: CompetitorTableProps) => {
   const column = createColumnHelper<CompetitorTableRow>();
 
   return (
-    <Card icon={<TbListDetails />} title="Competitors" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<BsPerson />} title="Competitors" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columns={

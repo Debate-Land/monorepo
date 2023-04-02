@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { Judge } from '@shared/database';
-import { TbListDetails } from 'react-icons/tb'
+import { TbGavel } from 'react-icons/tb'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
@@ -37,7 +37,7 @@ const JudgeTable = ({count}: JudgeTableProps) => {
   const column = createColumnHelper<JudgeTableRow>();
 
   return (
-    <Card icon={<TbListDetails />} title="Judges" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<TbGavel />} title="Judges" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columns={

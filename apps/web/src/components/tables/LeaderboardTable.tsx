@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { Alias } from '@shared/database';
-import { TbListDetails } from 'react-icons/tb'
+import { BsTrophy } from 'react-icons/bs'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
@@ -45,7 +45,7 @@ const LeaderboardTable = ({count}: LeaderboardTableProps) => {
   const column = createColumnHelper<LeaderboardRow>();
 
   return (
-    <Card icon={<TbListDetails />} title="Leaderboard" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<BsTrophy />} title="Leaderboard" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columns={

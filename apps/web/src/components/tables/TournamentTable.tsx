@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { Tournament } from '@shared/database';
-import { TbListDetails } from 'react-icons/tb'
 import { useRouter } from 'next/router';
+import { AiOutlineCalendar } from 'react-icons/ai';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 
@@ -37,7 +37,7 @@ const TournamentTable = ({count}: TournamentTableProps) => {
   const column = createColumnHelper<TournamentTableRow>();
 
   return (
-    <Card icon={<TbListDetails />} title="Tournaments" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<AiOutlineCalendar />} title="Tournaments" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columns={
