@@ -1,8 +1,9 @@
 import { Text } from '@shared/components';
 import { Alias } from '@shared/database';
-import { trpc } from '@src/utils/trpc'
-import { ColumnDef, createColumnHelper, ExpandedState, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, PaginationState, Row, Table, useReactTable } from '@tanstack/react-table';
-import React, { Fragment, useMemo, useState, Dispatch, SetStateAction, useEffect } from 'react'
+import { trpc } from '@src/utils/trpc';
+import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, Table, useReactTable } from '@tanstack/react-table';
+import React, { Fragment, useState, Dispatch, SetStateAction, useEffect } from 'react';
 
 interface TableProps<T> {
   definition: Table<T>;
@@ -13,6 +14,9 @@ interface TableProps<T> {
 // Opt-in pagination, expandable if appropriate column is supplied.
 const Table = <T,>({ definition: table, child: ExpandedRow }: TableProps<T>) => {
   const currentPage = table.getState().pagination?.pageIndex;
+  const tableIsSortable = table.getState().sorting;
+
+  // console.log(tableIsSortable)
 
   useEffect(() => {
     table.resetExpanded(false);
@@ -29,7 +33,14 @@ const Table = <T,>({ definition: table, child: ExpandedRow }: TableProps<T>) => 
                   {
                     headerGroup.headers.map(
                       header => (
-                        <th key={header.id}>
+                        <th
+                          key={header.id}
+                          onClick={
+                            tableIsSortable && header.column.getCanSort()
+                              ? header.column.getToggleSortingHandler()
+                              : undefined
+                          }
+                        >
                           {
                             header.isPlaceholder
                               ? null
@@ -37,6 +48,14 @@ const Table = <T,>({ definition: table, child: ExpandedRow }: TableProps<T>) => 
                                 header.column.columnDef.header,
                                 header.getContext()
                               )
+                          }
+                          {
+                            tableIsSortable && header.column.getCanSort()
+                            ? {
+                                asc: <FaSortUp className="ml-2"/>,
+                                desc: <FaSortDown className="ml-2" />
+                              }[header.column.getIsSorted() as string] ?? <FaSort className="ml-2" />
+                            : null
                           }
                         </th>
                       )
@@ -121,23 +140,32 @@ interface UseCustomTableOptions<T> {
     setPaginationState: Dispatch<SetStateAction<PaginationState>>;
     totalPages?: number;
   };
+  sortingConfig?: {
+    sortingState: SortingState;
+    setSortingState: Dispatch<SetStateAction<SortingState>>;
+  };
 }
 
-const useCustomTable = <T,>({ data, columns, paginationConfig: config }: UseCustomTableOptions<T>) => (
+const useCustomTable = <T,>({ data, columns, paginationConfig, sortingConfig }: UseCustomTableOptions<T>) => (
   useReactTable({
     data: data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getRowCanExpand: () => true,
-    ...(config && {
+    state: {
+      ...(paginationConfig && { pagination: paginationConfig.paginationState }),
+      ...(sortingConfig && { sorting: sortingConfig.sortingState})
+    },
+    ...(paginationConfig && {
       getPaginationRowModel: getPaginationRowModel(),
-      state: {
-        pagination: config.paginationState
-      },
-      onPaginationChange: config.setPaginationState,
+      onPaginationChange: paginationConfig.setPaginationState,
       manualPagination: true,
-      pageCount: config.totalPages || -1
+      pageCount: paginationConfig.totalPages || -1
+    }),
+    ...(sortingConfig && {
+      getSortedRowModel: getSortedRowModel(),
+      onSortingChange: sortingConfig.setSortingState,
     })
   })
 );
@@ -180,6 +208,7 @@ const LeaderboardTable = () => {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const { data } = trpc.leaderboard.useQuery(
     {
@@ -203,16 +232,21 @@ const LeaderboardTable = () => {
           getExpandingColumn<Data>(),
           column.accessor("otr", {
             header: "OTR",
-            cell: props => props.getValue().toFixed(3)
+            cell: props => props.getValue().toFixed(3),
           }),
           column.accessor("team.aliases", {
             header: "Team",
-            cell: props => props.getValue()[0].code
+            cell: props => props.getValue()[0].code,
+            enableSorting: false,
           })
         ] as ColumnDef<Data>[],
         paginationConfig: {
           paginationState: pagination,
           setPaginationState: setPagination,
+        },
+        sortingConfig: {
+          sortingState: sorting,
+          setSortingState: setSorting
         }
       })
     }
