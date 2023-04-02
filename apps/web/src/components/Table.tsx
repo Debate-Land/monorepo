@@ -71,7 +71,8 @@ const classNames = {
   }
 };
 
-// TODO: Add page limit selection (10, 20, 50) after seeing how performance is impacted
+// TODO: Add page limit selection (10, 20, 50) after seeing how performance is impacted\
+// TODO: Add initial state to expand first row (only if pageIndex == 0 or undefined)
 const Table = <T,>({
   data,
   columns,
@@ -338,4 +339,4 @@ const LeaderboardTable = () => {
   />
 };
 
-export default LeaderboardTable;
+export default Table;
