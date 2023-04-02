@@ -5,6 +5,7 @@ import { FaSort, FaSortUp, FaSortDown, FaChevronCircleDown, FaChevronCircleUp} f
 import { FiChevronRight, FiChevronsRight, FiChevronLeft, FiChevronsLeft } from 'react-icons/fi';
 import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, useReactTable } from '@tanstack/react-table';
 import React, { Fragment, useState, Dispatch, SetStateAction, useEffect } from 'react';
+import clsx from 'clsx';
 
 const getPositionColumn = <T,>(pagination: PaginationState = { pageIndex: 0, pageSize: 0 }) => (
   {
@@ -45,7 +46,8 @@ interface TableProps<T> {
     setSorting: Dispatch<SetStateAction<SortingState>>;
   };
   child?: (props: { row: T }) => JSX.Element;
-  showPosition?: boolean
+  showPosition?: boolean;
+  onRowClick?: (row: T) => void;
 }
 
 const classNames = {
@@ -61,7 +63,15 @@ const classNames = {
 };
 
 // TODO: Add page limit selection (10, 20, 50) after seeing how performance is impacted
-const Table = <T,>({ child: ExpandedRow, data, columns, paginationConfig, sortingConfig, showPosition }: TableProps<T>) => {
+const Table = <T,>({
+  data,
+  columns,
+  paginationConfig,
+  child: ExpandedRow,
+  sortingConfig,
+  onRowClick,
+  showPosition,
+}: TableProps<T>) => {
   if (showPosition) columns = [getPositionColumn(paginationConfig?.pagination), ...columns];
   if (ExpandedRow) columns = [getExpandingColumn(), ...columns];
 
@@ -84,7 +94,7 @@ const Table = <T,>({ child: ExpandedRow, data, columns, paginationConfig, sortin
     ...(sortingConfig && {
       getSortedRowModel: getSortedRowModel(),
       onSortingChange: sortingConfig.setSorting,
-    })
+    }),
   });
 
   const currentPage = table.getState().pagination.pageIndex;
@@ -148,7 +158,14 @@ const Table = <T,>({ child: ExpandedRow, data, columns, paginationConfig, sortin
               row => (
                 <Fragment key={row.id}>
                   {/* Actual table row */}
-                  <tr className={classNames.tr}>
+                  <tr
+                    className={clsx(classNames.tr, { "hover:bg-luka-200/10 dark:hover:bg-luka-200/50 cursor-pointer": onRowClick})}
+                    onClick={
+                      onRowClick
+                        ? () => onRowClick(row.original)
+                        : undefined
+                    }
+                  >
                     {
                       row.getVisibleCells().map(
                         cell => (
@@ -306,6 +323,7 @@ const LeaderboardTable = () => {
       setSorting
     }}
     child={SubComponent}
+    onRowClick={(r) => alert(r.team.aliases[0].code + ' was clicked!')}
     showPosition
   />
 };
