@@ -218,7 +218,7 @@ const getExpandingColumn = <T,>() => (
     header: "Details",
     cell: ({ row }: { row: Row<T> }) => (
       row.getCanExpand()
-        ? <button onClick={row.getToggleExpandedHandler()}>
+        ? <button onClick={row.getToggleExpandedHandler()} className="w-full flex flex-row items-center justify-center">
           {
             row.getIsExpanded()
               ? <FaChevronCircleUp/>
