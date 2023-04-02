@@ -1,7 +1,8 @@
 import { Text } from '@shared/components';
 import { Alias } from '@shared/database';
 import { trpc } from '@src/utils/trpc';
-import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { FaSort, FaSortUp, FaSortDown, FaChevronCircleDown, FaChevronCircleUp} from 'react-icons/fa';
+
 import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, Table, useReactTable } from '@tanstack/react-table';
 import React, { Fragment, useState, Dispatch, SetStateAction, useEffect } from 'react';
 
@@ -11,8 +12,6 @@ interface TableProps<T> {
   sortable?: boolean
 }
 
-// FIXME: Row idx staying open after pagination...
-// Opt-in pagination, expandable if appropriate column is supplied.
 const Table = <T,>({ definition: table, child: ExpandedRow, sortable: tableIsSortable }: TableProps<T>) => {
   const currentPage = table.getState().pagination?.pageIndex;
 
@@ -184,7 +183,13 @@ const getExpandingColumn = <T,>() => (
     header: "Details",
     cell: ({ row }: { row: Row<T> }) => (
       row.getCanExpand()
-        ? <button onClick={row.getToggleExpandedHandler()}>{row.getIsExpanded() ? '-' : '+'}</button>
+        ? <button onClick={row.getToggleExpandedHandler()}>
+          {
+            row.getIsExpanded()
+              ? <FaChevronCircleUp/>
+              : <FaChevronCircleDown/>
+          }
+        </button>
         : <>--</>
     )
   } as ColumnDef<T>
