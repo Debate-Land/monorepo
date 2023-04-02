@@ -579,6 +579,71 @@ export const appRouter = router({
       });
 
       return result;
+    }),
+  judges: procedure
+    .input(
+      z.object({
+        circuit: z.number(),
+        season: z.number(),
+        page: z.number(),
+        limit: z.number()
+      })
+    )
+    .query(async ({ input }) => {
+      const result = await prisma.judge.findMany({
+        where: {
+          records: {
+            some: {
+              tournament: {
+                circuits: {
+                  some: {
+                    id: {
+                      equals: input.circuit
+                    }
+                  }
+                },
+                season: {
+                  id: {
+                    equals: input.season
+                  }
+                }
+              }
+            }
+          }
+        },
+        orderBy: {
+          records: {
+            _count: "desc"
+          }
+        },
+        include: {
+          records: {
+            where: {
+              tournament: {
+                circuits: {
+                  some: {
+                    id: {
+                      equals: input.circuit
+                    }
+                  }
+                },
+                season: {
+                  id: {
+                    equals: input.season
+                  }
+                }
+              }
+            },
+            select: {
+              id: true,
+            }
+          }
+        },
+        skip: input.page * input.limit,
+        take: input.limit
+      });
+
+      return result;
     })
 });
 
