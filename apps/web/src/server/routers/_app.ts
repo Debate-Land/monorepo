@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import { Event, prisma } from '@shared/database';
 import sortRounds from '@src/utils/sort-rounds';
-import getStatistics from '@src/utils/get-statistics';
+import getStatistics, { getAvg } from '@src/utils/get-statistics';
 
 export const appRouter = router({
   team: procedure
@@ -449,7 +449,7 @@ export const appRouter = router({
       })
     )
     .query(async ({ input }) => {
-      const result = await prisma.circuitRanking.findMany({
+      const teams = await prisma.circuitRanking.findMany({
         where: {
           seasonId: input.season,
           circuitId: input.circuit,
@@ -464,6 +464,20 @@ export const appRouter = router({
                 take: 1
               },
               id: true,
+              results: {
+                select: {
+                  prelimBallotsWon: true,
+                  prelimBallotsLost: true,
+                  elimBallotsWon: true,
+                  elimBallotsLost: true,
+                  opWpm: true,
+                  speaking: {
+                    select: {
+                      rawAvgPoints: true
+                    }
+                  },
+                }
+              }
             },
           },
           otr: true,
@@ -472,7 +486,48 @@ export const appRouter = router({
         take: input.limit
       });
 
-      return result;
+      if (teams) {
+        let teamsWithStatistics: (typeof teams[0] & {
+          statistics: {
+            pWp: number;
+            tWp: number;
+            avgRawSpeaks: number;
+            avgOpWpM: number;
+          }
+        })[] = [];
+        teams.forEach(t => {
+          let pRecord = [0, 0];
+          let eRecord = [0, 0];
+          let opWpm: number[] = [];
+          let speaks: number[] = [];
+
+          t.team.results.forEach(r => {
+            pRecord[0] += r.prelimBallotsWon;
+            pRecord[1] += r.prelimBallotsLost;
+            eRecord[0] += r.elimBallotsWon || 0;
+            eRecord[1] += r.elimBallotsLost || 0;
+            opWpm.push(r.opWpm);
+            speaks.push(...r.speaking.map(d => d.rawAvgPoints));
+          });
+
+          let pWp = pRecord[0] / (pRecord[0] + pRecord[1]);
+          let tWp = (pRecord[0] + eRecord[0]) / (pRecord[0] + pRecord[1] + eRecord[0] + eRecord[1]) + eRecord[0] / (eRecord[0] + eRecord[1]) * 0.1;
+          if (tWp > 1) tWp = 1;
+
+          teamsWithStatistics.push({
+            statistics: {
+              pWp,
+              tWp,
+              avgRawSpeaks: getAvg(speaks),
+              avgOpWpM: getAvg(opWpm)
+            },
+            ...t
+          })
+        });
+        return teamsWithStatistics;
+      }
+
+      return teams;
     }),
   tournaments: procedure
     .input(

@@ -31,7 +31,8 @@ interface TeamStatistics {
   bids: number;
 }
 
-function getAvg(arr: number[]) {
+export function getAvg(arr: number[]) {
+  if (!arr.length) return 0;
   let sum = 0;
   arr.forEach(e => sum += e);
   return sum / arr.length;

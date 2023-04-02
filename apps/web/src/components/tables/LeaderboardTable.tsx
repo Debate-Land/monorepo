@@ -12,6 +12,12 @@ type LeaderboardRow = {
     aliases: Alias[];
   };
   otr: number;
+  statistics: {
+    pWp: number;
+    tWp: number;
+    avgRawSpeaks: number;
+    avgOpWpM: number;
+  };
 }
 
 interface LeaderboardTableProps {
@@ -51,7 +57,23 @@ const LeaderboardTable = ({count}: LeaderboardTableProps) => {
             column.accessor('team.aliases', {
               header: "Team",
               cell: props => props.getValue()[0].code
-            })
+            }),
+            column.accessor('statistics.pWp', {
+              header: "Prelim Win %",
+              cell: props => (props.cell.getValue() * 100).toFixed(1) + '%'
+            }),
+            column.accessor('statistics.tWp', {
+              header: "True Win %",
+              cell: props => (props.cell.getValue() * 100).toFixed(1) + '%'
+            }),
+            column.accessor('statistics.avgOpWpM', {
+              header: "Avg. OpWpM",
+              cell: props => (props.cell.getValue()*100).toFixed(1) + '%'
+            }),
+            column.accessor('statistics.avgRawSpeaks', {
+              header: "Avg. Spks.",
+              cell: props => props.cell.getValue().toFixed(1)
+            }),
           ] as ColumnDef<LeaderboardRow>[]
         }
         paginationConfig={{

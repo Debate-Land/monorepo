@@ -6,6 +6,8 @@ import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 
+// TODO: Top 5 finishes instead of Nt'l rank?
+
 const Team = () => {
   const { query, isReady } = useRouter();
   const { data } = trpc.team.useQuery(
