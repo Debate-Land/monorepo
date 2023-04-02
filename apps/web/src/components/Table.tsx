@@ -2,7 +2,7 @@ import { Text } from '@shared/components';
 import { Alias } from '@shared/database';
 import { trpc } from '@src/utils/trpc'
 import { ColumnDef, createColumnHelper, ExpandedState, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, PaginationState, Row, Table, useReactTable } from '@tanstack/react-table';
-import React, { Fragment, useMemo, useState, Dispatch, SetStateAction } from 'react'
+import React, { Fragment, useMemo, useState, Dispatch, SetStateAction, useEffect } from 'react'
 
 interface TableProps<T> {
   definition: Table<T>;
@@ -186,27 +186,32 @@ const LeaderboardTable = () => {
   );
 
   const column = createColumnHelper<Data>();
+  const table = useCustomTable({
+    data,
+    columns: [
+      getExpandingColumn<Data>(),
+      column.accessor("otr", {
+        header: "OTR",
+        cell: props => props.getValue().toFixed(3)
+      }),
+      column.accessor("team.aliases", {
+        header: "Team",
+        cell: props => props.getValue()[0].code
+      })
+    ] as ColumnDef<Data>[],
+    paginationConfig: {
+      paginationState: pagination,
+      setPaginationState: setPagination,
+    }
+  });
+
+  useEffect(() => {
+    table.resetExpanded(false)
+  }, [table, pagination.pageIndex]);
 
   return <Table<Data>
     definition={
-      useCustomTable({
-        data,
-        columns: [
-          getExpandingColumn<Data>(),
-          column.accessor("otr", {
-            header: "OTR",
-            cell: props => props.getValue().toFixed(3)
-          }),
-          column.accessor("team.aliases", {
-            header: "Team",
-            cell: props => props.getValue()[0].code
-          })
-        ] as ColumnDef<Data>[],
-        paginationConfig: {
-          paginationState: pagination,
-          setPaginationState: setPagination,
-        }
-      })
+      table
     }
     child={SubComponent}
   />
