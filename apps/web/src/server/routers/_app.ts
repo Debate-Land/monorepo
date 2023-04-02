@@ -153,27 +153,6 @@ export const appRouter = router({
             id: input.circuit
           }
         }),
-        // Leaderboard
-        prisma.circuitRanking.findMany({
-          where: {
-            seasonId: input.season,
-            circuitId: input.circuit,
-          },
-          orderBy: {
-            otr: "desc"
-          },
-          select: {
-            team: {
-              select: {
-                aliases: {
-                  take: 1
-                },
-                id: true,
-              },
-            },
-            otr: true,
-          }
-        }),
         // # Teams
         prisma.team.count({
           where: {
@@ -195,33 +174,6 @@ export const appRouter = router({
             }
           }
         }),
-        // Tournaments
-        prisma.tournament.findMany({
-          where: {
-            circuits: {
-              some: {
-                id: {
-                  equals: input.circuit
-                }
-              }
-            },
-            seasonId: {
-              equals: input.season
-            }
-          },
-          include: {
-            results: {
-              select: {
-                school: true
-              }
-            },
-            _count: {
-              select: {
-                results: true,
-              }
-            }
-          }
-        }),
         // # Tournaments
         prisma.tournament.count({
           where: {
@@ -238,31 +190,6 @@ export const appRouter = router({
           },
           orderBy: {
             start: "asc"
-          }
-        }),
-        // Competitors
-        prisma.competitor.findMany({
-          where: {
-            teams: {
-              some: {
-                results: {
-                  some: {
-                    tournament: {
-                      circuits: {
-                        some: {
-                          id: {
-                            equals: input.circuit
-                          }
-                        }
-                      },
-                      seasonId: {
-                        equals: input.season
-                      }
-                    }
-                  }
-                }
-              }
-            }
           }
         }),
         // # Competitors
@@ -290,27 +217,6 @@ export const appRouter = router({
             }
           }
         }),
-        // Schools
-        prisma.school.findMany({
-          where: {
-            tournamentResults: {
-              some: {
-                tournament: {
-                  circuits: {
-                    some: {
-                      id: {
-                        equals: input.circuit
-                      }
-                    }
-                  },
-                  seasonId: {
-                    equals: input.season
-                  }
-                }
-              }
-            }
-          }
-        }),
         // # Schools
         prisma.school.count({
           where: {
@@ -328,31 +234,6 @@ export const appRouter = router({
                     equals: input.season
                   }
                 }
-              }
-            }
-          }
-        }),
-        // Bids
-        prisma.tournamentResult.groupBy({
-          by: ['teamId'],
-          where: {
-            tournament: {
-              circuits: {
-                some: {
-                  id: {
-                    equals: input.circuit
-                  }
-                }
-              },
-              seasonId: {
-                equals: input.season
-              }
-            }
-          },
-          having: {
-            bid: {
-              _sum: {
-                gte: 1
               }
             }
           }
@@ -376,29 +257,6 @@ export const appRouter = router({
           _sum: {
             bid: true,
           }
-        }),
-        // Judges
-        prisma.judge.findMany({
-          where: {
-            records: {
-              some: {
-                tournament: {
-                  circuits: {
-                    some: {
-                      id: {
-                        equals: input.circuit
-                      }
-                    }
-                  },
-                  season: {
-                    id: {
-                      equals: input.season
-                    }
-                  }
-                }
-              }
-            }
-          },
         }),
         // # Judges
         prisma.judge.count({
@@ -425,18 +283,12 @@ export const appRouter = router({
 
       return {
         circuit: data[0],
-        leaderboard: data[1],
-        numTeams: data[2],
-        tournaments: data[3],
-        numTournaments: data[4],
-        competitors: data[5],
-        numCompetitors: data[6],
-        schools: data[7],
-        numSchools: data[8],
-        bids: data[9],
-        numBids: data[10]?._sum.bid,
-        judges: data[11],
-        numJudges: data[12],
+        numTeams: data[1],
+        numTournaments: data[2],
+        numCompetitors: data[3],
+        numSchools: data[4],
+        numBids: data[5]?._sum.bid,
+        numJudges: data[6],
       };
     }),
   leaderboard: procedure
