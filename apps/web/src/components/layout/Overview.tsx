@@ -21,14 +21,14 @@ const Overview = (props: OverviewProps) => {
             <div id="blob1" className='absolute hidden lg:block -top-50 right-0 w-72 h-72 bg-yellow-600 rounded-full mix-blend-lighten filter blur-xl' />
             <div id="blob2" className='absolute hidden lg:block top-50 right-100 w-72 h-72 bg-sky-500 rounded-full mix-blend-lighten filter blur-xl' />
             <div id="blob2" className='absolute hidden lg:block -top-8 right-28 w-72 h-72 bg-purple-500 rounded-full mix-blend-lighten filter blur-xl' />
-            <Text size="sm" className="mb-1 bg-violet-300/70 px-2 !text-white rounded-xl">
+            <Text size="sm" className="mb-1 bg-violet-300/70 px-2 !text-white rounded-xl z-20">
               {props.label}
             </Text>
-            <Text className="text-xl sm:text-3xl lg:text-4xl min-w-[500px] mx-auto text-center md:text-left flex flex-col md:flex-0">
+            <Text className="text-xl !text-white sm:text-3xl lg:text-4xl min-w-[500px] mx-auto text-center md:text-left flex flex-col md:flex-0 z-20">
                 {props.heading}
             </Text>
           </span>
-          <Text className="!text-indigo-300 md:mt-4 text-xs md:text-md lg:text-lg">
+          <Text className="!text-indigo-300 md:mt-4 text-xs md:text-md lg:text-lg z-20">
               {props.subtitle}
           </Text>
         </div>
