@@ -88,8 +88,8 @@ const Table = <T,>({ child: ExpandedRow, data, columns, paginationConfig, sortin
   });
 
   const currentPage = table.getState().pagination.pageIndex;
-  const tableIsSortable = sortingConfig === undefined;
-  const tableIsPaginateable = paginationConfig === undefined;
+  const tableIsSortable = sortingConfig !== undefined;
+  const tableIsPaginateable = paginationConfig !== undefined;
 
   useEffect(() => {
     table.resetExpanded(false);
