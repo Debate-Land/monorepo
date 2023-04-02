@@ -20,7 +20,7 @@ const Card = ({ title, icon, children, className, ...props }: CardProps) => {
           {icon && <span className="mx-1" />}
           {title}
         </Text>
-        <div className="flex flex-col justify-between space-y-3">{children}</div>
+        <div className="flex flex-col justify-between space-y-3 mt-4">{children}</div>
       </div>
     </div>
   )
