@@ -2,6 +2,7 @@ import { Text } from '@shared/components';
 import { Alias } from '@shared/database';
 import { trpc } from '@src/utils/trpc';
 import { FaSort, FaSortUp, FaSortDown, FaChevronCircleDown, FaChevronCircleUp} from 'react-icons/fa';
+import { FiChevronRight, FiChevronsRight, FiChevronLeft, FiChevronsLeft } from 'react-icons/fi';
 
 import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, Table, useReactTable } from '@tanstack/react-table';
 import React, { Fragment, useState, Dispatch, SetStateAction, useEffect } from 'react';
@@ -14,20 +15,21 @@ interface TableProps<T> {
 }
 
 const classNames = {
-  table: "table-fixed md:table-auto bg-luka-200/20 rounded-lg mx-auto w-full",
+  table: "table-fixed bg-luka-200/20 rounded-lg mx-auto w-full",
   td: "py-3 px-2",
   th: "py-3 px-2 text-left",
   tr: "dark:text-gray-300 text-gray-700 border-t border-gray-100 dark:border-gray-700",
   pagination: {
-    wrapper: "bg-luka-200/20 flex flex-row justify-between mx-auto mt-4 w-[200px] rounded-lg overflow-hidden",
-    button: "hover:bg-luka-200/50 text-center w-[50px] text-xl py-3",
-    textWrapper: "flex items-center",
+    wrapper: "bg-luka-200/20 flex flex-row justify-between mx-auto mt-4 w-[300px] rounded-lg overflow-hidden",
+    button: "hover:bg-luka-200/50 text-center w-[50px] text-xl py-3 flex items-center justify-center",
+    textWrapper: "flex flex-row justify-center items-center w-[100px]",
   }
 }
 
 /* TODO: Move useCustomTable inside of here and have props be passed down to the table component directly?
 /* Then we can make expandable column as idx 0, position column as idx 1, etc... automagically.
 */
+// TODO: Add page limit selection (10, 20, 50) after seeing how performance is impacted
 const Table = <T,>({ definition: table, child: ExpandedRow, sortable: tableIsSortable, paginateable: tableIsPaginateable }: TableProps<T>) => {
   const currentPage = table.getState().pagination.pageIndex;
 
@@ -145,19 +147,33 @@ const Table = <T,>({ definition: table, child: ExpandedRow, sortable: tableIsSor
         tableIsPaginateable && (
           <div className={classNames.pagination.wrapper}>
             <button
-              onClick={table.previousPage}
+              onClick={() => {table.setPageIndex(0)}}
               className={classNames.pagination.button}
             >
-              {'<'}
+              <FiChevronsLeft/>
+            </button>
+            <button
+              onClick={table.previousPage}
+              disabled={currentPage == 1}
+              className={classNames.pagination.button}
+            >
+              <FiChevronLeft/>
             </button>
             <div className={classNames.pagination.textWrapper}>
-              <Text>{table.getState().pagination.pageIndex + 1} of --</Text>
+              <Text>{table.getState().pagination.pageIndex + 1} of {table.getPageCount()}</Text>
             </div>
             <button
               onClick={table.nextPage}
+              disabled={currentPage == table.getPageCount()}
               className={classNames.pagination.button}
             >
-              {'>'}
+              <FiChevronRight/>
+            </button>
+            <button
+              onClick={() => {table.setPageIndex(table.getPageCount())}}
+              className={classNames.pagination.button}
+            >
+              <FiChevronsRight/>
             </button>
           </div>
         )
@@ -218,7 +234,7 @@ const getExpandingColumn = <T,>() => (
     header: "Details",
     cell: ({ row }: { row: Row<T> }) => (
       row.getCanExpand()
-        ? <button onClick={row.getToggleExpandedHandler()} className="w-full flex flex-row items-center justify-center">
+        ? <button onClick={row.getToggleExpandedHandler()} className="w-full flex flex-row items-center justify-start px-4">
           {
             row.getIsExpanded()
               ? <FaChevronCircleUp/>
