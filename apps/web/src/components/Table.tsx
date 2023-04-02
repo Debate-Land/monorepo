@@ -14,7 +14,7 @@ interface TableProps<T> {
 }
 
 const classNames = {
-  table: "table-auto bg-luka-200/20 rounded-lg mx-auto",
+  table: "table-fixed md:table-auto bg-luka-200/20 rounded-lg mx-auto w-full",
   td: "py-3 px-2",
   th: "py-3 px-2 text-left",
   tr: "dark:text-gray-300 text-gray-700 border-t border-gray-100 dark:border-gray-700",
