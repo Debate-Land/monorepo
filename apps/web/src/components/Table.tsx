@@ -105,7 +105,7 @@ const Table = <T,>({ table, SubComponent }: TableProps<T>) => (
 );
 
 interface UseCustomTableOptions<T> {
-  data: T[];
+  data: T[] | undefined;
   columns: ColumnDef<T>[];
   paginationConfig?: {
     paginationState: PaginationState;
@@ -172,11 +172,6 @@ const LeaderboardTable = () => {
     pageSize: 10,
   });
 
-  // const pagination = useMemo(() => ({
-  //   pageIndex,
-  //   pageSize
-  // }), [pageIndex, pageSize]);
-
   const { data } = trpc.leaderboard.useQuery(
     {
       season: 2023,
@@ -201,119 +196,18 @@ const LeaderboardTable = () => {
       header: "Team",
       cell: props => props.getValue()[0].code
     })
-  ];
+  ] as ColumnDef<Data>[];
 
-  const table = useReactTable({
-    data: data || [],
+  const table = useCustomTable({
+    data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getRowCanExpand: () => true,
-    pageCount: -1,
-    state: {
-      pagination,
-    },
-    onPaginationChange: setPagination,
-    manualPagination: true,
-  });
+    paginationConfig: {
+      paginationState: pagination,
+      setPaginationState: setPagination,
+    }
+  })
 
   return <Table table={table} SubComponent={SubComponent} />
-
-  // return (
-  //   <>
-  //     <table className="table-auto">
-  //       <thead>
-  //         {
-  //           table.getHeaderGroups().map(
-  //             headerGroup => (
-  //               <tr key={headerGroup.id}>
-  //                 {
-  //                   headerGroup.headers.map(
-  //                     header => (
-  //                       <th key={header.id}>
-  //                         {
-  //                           header.isPlaceholder
-  //                             ? null
-  //                             : flexRender(
-  //                               header.column.columnDef.header,
-  //                               header.getContext()
-  //                             )
-  //                         }
-  //                       </th>
-  //                     )
-  //                   )
-  //                 }
-  //               </tr>
-  //             )
-  //           )
-  //         }
-  //       </thead>
-  //       <tbody>
-  //         {
-  //           table.getRowModel().rows.map(
-  //             row => (
-  //               <Fragment key={row.id}>
-  //                 {/* Actual table row */}
-  //                 <tr>
-  //                   {
-  //                     row.getVisibleCells().map(
-  //                       cell => (
-  //                         <td key={cell.id}>
-  //                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
-  //                         </td>
-  //                       )
-  //                     )
-  //                   }
-  //                 </tr>
-  //                 {/* Expanded data housed in additional row, if available */}
-  //                 {
-  //                   row.getIsExpanded() && (
-  //                     <tr>
-  //                       <td colSpan={row.getVisibleCells().length}>
-  //                         <SubComponent row={row.original} />
-  //                       </td>
-  //                     </tr>
-  //                   )
-  //                 }
-  //               </Fragment>
-  //             )
-  //           )
-  //         }
-  //       </tbody>
-  //       <tfoot>
-  //         {
-  //           table.getFooterGroups().map(
-  //             footerGroup => (
-  //               <tr key={footerGroup.id}>
-  //                 {
-  //                   footerGroup.headers.map(
-  //                     header => (
-  //                       <th key={header.id}>
-  //                         {
-  //                           header.isPlaceholder
-  //                             ? null
-  //                             : flexRender(
-  //                               header.column.columnDef.footer,
-  //                               header.getContext()
-  //                             )
-  //                         }
-  //                       </th>
-  //                     )
-  //                   )
-  //                 }
-  //               </tr>
-  //             )
-  //           )
-  //         }
-  //       </tfoot>
-  //     </table>
-  //     <button onClick={table.previousPage}>{'<'}</button>
-  //     <button onClick={table.nextPage}>{'>'}</button>
-  //     <Text>Page {table.getState().pagination.pageIndex + 1} of --</Text>
-
-  //   </>
-  // )
 };
 
 export default LeaderboardTable
