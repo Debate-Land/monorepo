@@ -39,7 +39,7 @@ const LeaderboardTable = ({count}: LeaderboardTableProps) => {
   const column = createColumnHelper<LeaderboardRow>();
 
   return (
-    <Card icon={<TbListDetails />} title="Leaderboard" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<TbListDetails />} title="Tournaments" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columns={

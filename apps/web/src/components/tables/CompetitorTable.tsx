@@ -1,28 +1,28 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
-import { Tournament } from '@shared/database';
+import { Competitor } from '@shared/database';
 import { TbListDetails } from 'react-icons/tb'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 
-type TournamentTableRow = Tournament & {
-  _count: {
-      results: number;
-  };
-}
+type CompetitorTableRow = Competitor & {
+  teams: {
+      id: string;
+  }[];
+};
 
-interface TournamentTableProps {
+interface CompetitorTableProps {
   count: number
 }
 
-const TournamentTable = ({count}: TournamentTableProps) => {
+const CompetitorTable = ({count}: CompetitorTableProps) => {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
   const {query, isReady, ...router} = useRouter();
-  const { data } = trpc.tournaments.useQuery(
+  const { data } = trpc.competitors.useQuery(
     {
       season: parseInt(query.season as unknown as string),
       circuit: parseInt(query.circuit as unknown as string),
@@ -34,27 +34,23 @@ const TournamentTable = ({count}: TournamentTableProps) => {
       enabled: isReady
     }
   );
-  const column = createColumnHelper<TournamentTableRow>();
+  const column = createColumnHelper<CompetitorTableRow>();
 
   return (
-    <Card icon={<TbListDetails />} title="Leaderboard" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<TbListDetails />} title="Competitors" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columns={
           [
             column.accessor('name', {
               header: "Name",
-              cell: props => props.getValue()
+              cell: props => props.cell.getValue(),
             }),
-            column.accessor('start', {
-              header: "Start",
-              cell: props => new Date(props.cell.getValue() * 1000).toLocaleDateString("en-us")
+            column.accessor('teams', {
+              header: "Teams",
+              cell: props => props.cell.getValue().length
             }),
-            column.accessor('_count.results', {
-              header: "Entries",
-              cell: props => props.getValue()
-            })
-          ] as ColumnDef<TournamentTableRow>[]
+          ] as ColumnDef<CompetitorTableRow>[]
         }
         paginationConfig={{
           pagination,
@@ -67,4 +63,4 @@ const TournamentTable = ({count}: TournamentTableProps) => {
     )
 }
 
-export default TournamentTable
+export default CompetitorTable

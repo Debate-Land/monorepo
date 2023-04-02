@@ -474,7 +474,7 @@ export const appRouter = router({
 
       return result;
     }),
-  tournament: procedure
+  tournaments: procedure
     .input(
       z.object({
         circuit: z.number(),
@@ -507,6 +507,75 @@ export const appRouter = router({
         orderBy: {
           start: "asc"
         }
+      });
+
+      return result;
+    }),
+  competitors: procedure
+    .input(
+      z.object({
+        circuit: z.number(),
+        season: z.number(),
+        page: z.number(),
+        limit: z.number()
+      })
+    )
+    .query(async ({ input }) => {
+      const result = await prisma.competitor.findMany({
+        where: {
+          teams: {
+            some: {
+              results: {
+                some: {
+                  tournament: {
+                    circuits: {
+                      some: {
+                        id: {
+                          equals: input.circuit
+                        }
+                      }
+                    },
+                    seasonId: {
+                      equals: input.season
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        include: {
+          teams: {
+            where: {
+              results: {
+                some: {
+                  tournament: {
+                    circuits: {
+                      some: {
+                        id: {
+                          equals: input.circuit
+                        }
+                      }
+                    },
+                    seasonId: {
+                      equals: input.season
+                    }
+                  }
+                }
+              }
+            },
+            select: {
+              id: true
+            },
+          }
+        },
+        orderBy: {
+          teams: {
+            _count: "desc"
+          }
+        },
+        skip: input.page * input.limit,
+        take: input.limit
       });
 
       return result;
