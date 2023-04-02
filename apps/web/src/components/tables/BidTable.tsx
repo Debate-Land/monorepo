@@ -1,30 +1,30 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
-import { Alias } from '@shared/database';
+import { Prisma } from '@shared/database';
 import { TbListDetails } from 'react-icons/tb'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 
-type LeaderboardRow = {
-  team: {
-    id: string;
-    aliases: Alias[];
+type BidTableRow = {
+  _sum: {
+    bid: number
   };
-  otr: number;
-}
+  teamId: string;
+  code: string;
+};
 
-interface LeaderboardTableProps {
+interface BidTableProps {
   count: number
 }
 
-const LeaderboardTable = ({count}: LeaderboardTableProps) => {
+const BidTable = ({count}: BidTableProps) => {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
   const {query, isReady, ...router} = useRouter();
-  const { data } = trpc.leaderboard.useQuery(
+  const { data } = trpc.bids.useQuery(
     {
       season: parseInt(query.season as unknown as string),
       circuit: parseInt(query.circuit as unknown as string),
@@ -36,23 +36,23 @@ const LeaderboardTable = ({count}: LeaderboardTableProps) => {
       enabled: isReady
     }
   );
-  const column = createColumnHelper<LeaderboardRow>();
+  const column = createColumnHelper<BidTableRow>();
 
   return (
-    <Card icon={<TbListDetails />} title="Leaderboard" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<TbListDetails />} title="Bids" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columns={
           [
-            column.accessor('otr', {
-              header: "OTR",
-              cell: props => props.getValue().toFixed(3)
-            }),
-            column.accessor('team.aliases', {
+            column.accessor('code', {
               header: "Team",
-              cell: props => props.getValue()[0].code
+              cell: props => props.cell.getValue()
+            }),
+            column.accessor('_sum.bid', {
+              header: "Bids",
+              cell: props => props.cell.getValue()
             })
-          ] as ColumnDef<LeaderboardRow>[]
+          ] as ColumnDef<BidTableRow>[]
         }
         paginationConfig={{
           pagination,
@@ -66,4 +66,4 @@ const LeaderboardTable = ({count}: LeaderboardTableProps) => {
     )
 }
 
-export default LeaderboardTable
+export default BidTable

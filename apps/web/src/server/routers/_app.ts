@@ -644,6 +644,143 @@ export const appRouter = router({
       });
 
       return result;
+    }),
+  schools: procedure
+    .input(
+      z.object({
+        circuit: z.number(),
+        season: z.number(),
+        page: z.number(),
+        limit: z.number()
+      })
+    )
+    .query(async ({ input }) => {
+      const result = await prisma.school.findMany({
+        where: {
+          tournamentResults: {
+            some: {
+              tournament: {
+                circuits: {
+                  some: {
+                    id: {
+                      equals: input.circuit
+                    }
+                  }
+                },
+                seasonId: {
+                  equals: input.season
+                }
+              }
+            }
+          }
+        },
+        include: {
+          tournamentResults: {
+            where: {
+              tournament: {
+                circuits: {
+                  some: {
+                    id: {
+                      equals: input.circuit
+                    }
+                  }
+                },
+                seasonId: {
+                  equals: input.season
+                }
+              }
+            },
+            select: {
+              id: true,
+            }
+          }
+        },
+        orderBy: {
+          tournamentResults: {
+            _count: "desc"
+          }
+        },
+        skip: input.page * input.limit,
+        take: input.limit,
+      });
+
+      return result;
+    }),
+  bids: procedure
+    .input(
+      z.object({
+        circuit: z.number(),
+        season: z.number(),
+        page: z.number(),
+        limit: z.number()
+      })
+    )
+    .query(async ({ input }) => {
+      const result = await prisma.tournamentResult.groupBy({
+        by: ['teamId'],
+        where: {
+          tournament: {
+            circuits: {
+              some: {
+                id: {
+                  equals: input.circuit
+                }
+              }
+            },
+            seasonId: {
+              equals: input.season
+            }
+          },
+          bid: {
+            not: 0,
+          }
+        },
+        having: {
+          bid: {
+            _min: {
+              equals: 1
+            },
+            _sum: {
+              gte: 1
+            }
+          }
+        },
+        _sum: {
+          bid: true
+        }
+      });
+
+      // @ts-ignore
+      let hydratedResults: {
+        code: string
+      } & typeof result = [];
+
+      if (result) {
+        result.forEach(async (r) => {
+          const lookup = await prisma.team.findUnique({
+            where: {
+              id: r.teamId
+            },
+            select: {
+              aliases: {
+                select: {
+                  code: true
+                },
+                take: 1
+              }
+            }
+          });
+          if (lookup && lookup.aliases[0]?.code) {
+            hydratedResults.push({
+              // @ts-ignore
+              code: lookup.aliases[0].code as string,
+              ...r
+            });
+          }
+        })
+      }
+
+      return hydratedResults;
     })
 });
 
