@@ -6,6 +6,7 @@ import { FiChevronRight, FiChevronsRight, FiChevronLeft, FiChevronsLeft } from '
 import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, useReactTable } from '@tanstack/react-table';
 import React, { Fragment, useState, Dispatch, SetStateAction, useEffect } from 'react';
 import clsx from 'clsx';
+import { BiLinkExternal } from 'react-icons/bi';
 
 const getPositionColumn = <T,>(pagination: PaginationState = { pageIndex: 0, pageSize: 0 }) => (
   {
@@ -33,6 +34,14 @@ const getExpandingColumn = <T,>() => (
   } as ColumnDef<T>
 );
 
+const getOnClickColumn = <T,>() => (
+  {
+    id: "onClick",
+    header: "Details",
+    cell: () => <BiLinkExternal className="ml-4"/>
+  } as ColumnDef<T>
+);
+
 interface TableProps<T> {
   data: T[] | undefined;
   columns: ColumnDef<T>[];
@@ -51,10 +60,10 @@ interface TableProps<T> {
 }
 
 const classNames = {
-  table: "table-fixed bg-luka-200/20 rounded-lg mx-auto w-full",
+  table: "table-fixed bg-luka-200/20 rounded-lg mx-auto w-full text-sm",
   td: "py-3 px-2",
   th: "py-3 px-2 text-left",
-  tr: "dark:text-gray-300 text-gray-700 border-t border-gray-100 dark:border-gray-700",
+  tr: "dark:text-gray-300 text-gray-700 border-t border-gray-100/80 dark:border-gray-700",
   pagination: {
     wrapper: "bg-luka-200/20 flex flex-row justify-between mx-auto mt-4 w-[300px] rounded-lg overflow-hidden",
     button: "hover:bg-luka-200/50 text-center w-[50px] text-xl py-3 flex items-center justify-center",
@@ -74,6 +83,7 @@ const Table = <T,>({
 }: TableProps<T>) => {
   if (showPosition) columns = [getPositionColumn(paginationConfig?.pagination), ...columns];
   if (ExpandedRow) columns = [getExpandingColumn(), ...columns];
+  if (onRowClick) columns = [getOnClickColumn(), ...columns];
 
   const table = useReactTable({
     data: data || [],

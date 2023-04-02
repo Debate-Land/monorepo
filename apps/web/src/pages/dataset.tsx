@@ -67,7 +67,7 @@ const Dataset = () => {
             />
           }
         />
-        <Table/>
+        {/* <Table/> */}
         <LeaderboardTable data={data.leaderboard} />
         <TournamentTable data={data.tournaments} />
         <SchoolTable data={data.schools} />
