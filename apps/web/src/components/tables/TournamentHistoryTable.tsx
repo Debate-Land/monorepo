@@ -22,7 +22,7 @@ export type ExpandedTournamentResult = TournamentResult & {
 };
 
 export interface TournamentHistoryTableProps {
-  data: ExpandedTournamentResult[]
+  data?: ExpandedTournamentResult[]
 }
 
 const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
@@ -32,6 +32,7 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
     <Card icon={<BsJournalBookmark />} title="Tournament History" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
+        numLoadingRows={5}
         columnConfig={{
           core: [
             column.accessor('tournament.name', {

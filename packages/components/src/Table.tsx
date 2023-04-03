@@ -49,26 +49,6 @@ const sizes = {
   max: Infinity
 };
 
-interface TableProps<T> {
-  data: T[] | undefined;
-  columnConfig: {
-    core: ColumnDef<T>[];
-    sm?: ColumnDef<T>[];
-    md?: ColumnDef<T>[];
-    lg?: ColumnDef<T>[];
-    xl?: ColumnDef<T>[];
-  };
-  paginationConfig?: {
-    pagination: PaginationState;
-    setPagination: Dispatch<SetStateAction<PaginationState>>;
-    totalPages?: number;
-  };
-  sortable: boolean
-  child?: (props: { row: T }) => JSX.Element;
-  showPosition?: boolean;
-  onRowClick?: (row: T) => void;
-}
-
 const classNames = {
   table: "table-auto sm:table-fixed md:table-auto bg-luka-200/20 rounded-lg mx-auto w-full text-sm",
   td: "py-3 px-2",
@@ -84,6 +64,27 @@ const classNames = {
   }
 };
 
+interface TableProps<T> {
+  data: T[] | undefined;
+  columnConfig: {
+    core: ColumnDef<T>[];
+    sm?: ColumnDef<T>[];
+    md?: ColumnDef<T>[];
+    lg?: ColumnDef<T>[];
+    xl?: ColumnDef<T>[];
+  };
+  paginationConfig?: {
+    pagination: PaginationState;
+    setPagination: Dispatch<SetStateAction<PaginationState>>;
+    totalPages?: number;
+  };
+  numLoadingRows?: number;
+  sortable?: boolean;
+  child?: (props: { row: T }) => JSX.Element;
+  showPosition?: boolean;
+  onRowClick?: (row: T) => void;
+}
+
 // TODO: Add page limit selection (10, 20, 50) after seeing how performance is impacted
 // TODO: Add initial state to expand first row (only if pageIndex == 0 or undefined)
 // TODO: Add footer aggregations?
@@ -93,6 +94,7 @@ const Table = <T,>({
   paginationConfig,
   child: ExpandedRow,
   sortable,
+  numLoadingRows,
   onRowClick,
   showPosition,
 }: TableProps<T>) => {
@@ -206,41 +208,47 @@ const Table = <T,>({
         </thead>
         <tbody>
           {
-            table.getRowModel().rows.map(
-              row => (
-                <Fragment key={row.id}>
-                  {/* Actual table row */}
-                  <tr
-                    className={clsx(classNames.tr, { "hover:bg-luka-200/10 dark:hover:bg-luka-200/50 cursor-pointer": onRowClick})}
-                    onClick={
-                      onRowClick
-                        ? () => onRowClick(row.original)
-                        : undefined
-                    }
-                  >
-                    {
-                      row.getVisibleCells().map(
-                        cell => (
-                          <td key={cell.id} className={classNames.td}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </td>
+            data
+              ? table.getRowModel().rows.map(
+                row => (
+                  <Fragment key={row.id}>
+                    {/* Actual table row */}
+                    <tr
+                      className={clsx(classNames.tr, { "hover:bg-luka-200/10 dark:hover:bg-luka-200/50 cursor-pointer": onRowClick})}
+                      onClick={
+                        onRowClick
+                          ? () => onRowClick(row.original)
+                          : undefined
+                      }
+                    >
+                      {
+                        row.getVisibleCells().map(
+                          cell => (
+                            <td key={cell.id} className={classNames.td}>
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </td>
+                          )
                         )
+                      }
+                    </tr>
+                    {/* Expanded data housed in additional row, if available */}
+                    {
+                      row.getIsExpanded() && ExpandedRow && (
+                        <tr>
+                          <td colSpan={row.getVisibleCells().length} className="px-2 md:px-4 py-2 border-t border-gray-100/80 dark:border-gray-700 border-dashed">
+                            <ExpandedRow row={row.original} />
+                          </td>
+                        </tr>
                       )
                     }
-                  </tr>
-                  {/* Expanded data housed in additional row, if available */}
-                  {
-                    row.getIsExpanded() && ExpandedRow && (
-                      <tr>
-                        <td colSpan={row.getVisibleCells().length} className="px-2 md:px-4 py-2 border-t border-gray-100/80 dark:border-gray-700 border-dashed">
-                          <ExpandedRow row={row.original} />
-                        </td>
-                      </tr>
-                    )
-                  }
-                </Fragment>
+                  </Fragment>
+                )
               )
-            )
+              : Array.apply(null, Array(numLoadingRows || 0)).map((_, idx) => (
+                <tr key={idx} className={clsx(classNames.tr, "h-[2rem]")}>
+                  <td colSpan={table.getHeaderGroups()[0].headers.length} className="bg-gray-300/40 dark:bg-gray-700/40 animate-pulse" />
+                </tr>
+              ))
           }
         </tbody>
         <tfoot>

@@ -19,7 +19,8 @@ const RoundTable = ({ row: { judgeRecords, speaking, ...round } }: RoundTablePro
           core: [
             column.accessor('judge', {
               header: "Judge",
-              cell: props => props.cell.getValue().name
+              cell: props => props.cell.getValue().name,
+              enableSorting: false
             }),
             column.accessor('decision', {
               header: "Dec.",
@@ -41,6 +42,7 @@ const RoundTable = ({ row: { judgeRecords, speaking, ...round } }: RoundTablePro
           ] as ColumnDef<ExpandedRoundJudgeRecord>[],
         }}
         onRowClick={(row) => alert(row.tabJudgeId)}
+        sortable
       />
     )
     : (

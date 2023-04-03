@@ -42,13 +42,12 @@ const TournamentRoundsTable = ({ id }: TournamentRoundsTableProps) => {
   );
   const column = createColumnHelper<ExpandedRound>();
 
-  if (!data) return <></>;
-
   return (
     <div>
       <Text className="text-xl font-bold dark:text-gray-300 text-gray-700 mb-1">Rounds</Text>
       <Table
         data={data}
+        numLoadingRows={5}
         columnConfig={{
           core: [
             column.accessor('nameStd', {
