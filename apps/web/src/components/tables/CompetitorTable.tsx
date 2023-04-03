@@ -22,7 +22,7 @@ const CompetitorTable = ({count}: CompetitorTableProps) => {
     pageSize: 10
   });
   const {query, isReady, ...router} = useRouter();
-  const { data } = trpc.competitors.useQuery(
+  const { data } = trpc.dataset.competitors.useQuery(
     {
       season: parseInt(query.season as unknown as string),
       circuit: parseInt(query.circuit as unknown as string),

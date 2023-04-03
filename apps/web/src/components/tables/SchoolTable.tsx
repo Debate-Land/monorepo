@@ -22,7 +22,7 @@ const SchoolTable = ({count}: SchoolTableProps) => {
     pageSize: 10
   });
   const {query, isReady, ...router} = useRouter();
-  const { data } = trpc.schools.useQuery(
+  const { data } = trpc.dataset.schools.useQuery(
     {
       season: parseInt(query.season as unknown as string),
       circuit: parseInt(query.circuit as unknown as string),

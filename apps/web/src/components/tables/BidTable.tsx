@@ -23,7 +23,7 @@ const BidTable = ({count}: BidTableProps) => {
     pageSize: 10
   });
   const {query, isReady, ...router} = useRouter();
-  const { data } = trpc.bids.useQuery(
+  const { data } = trpc.dataset.bids.useQuery(
     {
       season: parseInt(query.season as unknown as string),
       circuit: parseInt(query.circuit as unknown as string),

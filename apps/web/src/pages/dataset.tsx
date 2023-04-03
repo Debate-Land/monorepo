@@ -14,7 +14,7 @@ import BidTable from '@src/components/tables/BidTable';
 
 const Dataset = () => {
   const { query, isReady } = useRouter();
-  const { data } = trpc.dataset.useQuery(
+  const { data } = trpc.dataset.summary.useQuery(
     {
       circuit: parseInt(query.circuit as string),
       season: parseInt(query.season as string)
