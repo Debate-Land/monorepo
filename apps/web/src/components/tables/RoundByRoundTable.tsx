@@ -1,9 +1,10 @@
 import React from 'react'
 import { Alias, Competitor, Judge, Round, RoundSpeakerResult, Side } from '@shared/database'
-import { asTable } from '@shared/components'
-import SpeakingResultTable from './SpeakingResultTable'
+import { Table } from '@shared/components'
 import { trpc } from '@src/utils/trpc'
 import RoundTable from './RoundTable'
+import { ExpandedTournamentResult } from './TournamentListTable'
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 
 export type ExpandedRoundJudgeRecord = {
   judge: Judge;
@@ -25,13 +26,15 @@ export type ExpandedRound = Round & {
 }
 
 export interface RoundByRoundTableProps {
-  tournamentResultId: number //| ((page: number, limit: number) => TournamentResult)
+  row: ExpandedTournamentResult
 }
 
-const RoundByRoundTable = ({ tournamentResultId: id }: RoundByRoundTableProps) => {
-  const { Table, Attribute } = asTable<ExpandedRound>();
-  const { data: rounds } = trpc.rounds.useQuery(
-    { id },
+// TODO: Sorting
+const RoundByRoundTable = ({ row: parent }: RoundByRoundTableProps) => {
+  const { data } = trpc.rounds.useQuery(
+    {
+      id: parent.id
+    },
     {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
@@ -39,62 +42,41 @@ const RoundByRoundTable = ({ tournamentResultId: id }: RoundByRoundTableProps) =
       staleTime: 1000 * 60 * 60 * 24,
     }
   );
+  const column = createColumnHelper<ExpandedRound>();
 
-  if (!rounds) return <></>;
+  if (!data) return <></>;
 
   return (
     <Table
-      data={(rounds)}
-      expand={(d) => <RoundTable data={d} />}
-    >
-      <Attribute
-        header="Rnd"
-        value={{ literal: (d) => d.nameStd }}
-        description='Standardized round name'
-      />
-      <Attribute
-        header="Opp"
-        value={{ literal: (d) => d.opponent?.aliases[0].code as string }}
-        description='Opponent'
-      />
-      <Attribute
-        header="Res"
-        value={{ literal: (d) => d.result }}
-        description='Round result'
-      />
-      {/* <Attribute
-        header="Dec"
-        value={{
-          literal: (d) => d.decision[0],
-          display: (d) => <Text size="sm">{d.decision[0]}-{d.decision[1]}</Text>
-        }}
-        description='Decision'
-        priority='sm'
-      /> */}
-      <Attribute
-        header="Side"
-        value={{ literal: (d) => d.side }}
-        description='Side in round'
-      />
-      {/* <Attribute
-        header="OpWP"
-        value={{ literal: (d) => d.opWpm, percentage: true }}
-        description='Opponent win percentage'
-      /> */}
-      <Attribute
-        header="Jud"
-        value={{ literal: (d) => d.judgeRecords[0]?.decision || '--' }}
-      />
-      <Attribute
-        header="Spks"
-        value={{
-          literal: (d) => 1,
-          display: (d) => <SpeakingResultTable data={d.speaking} />
-        }}
-        description='Speaker point results'
-        priority="md"
-      />
-    </Table>
+      data={data}
+      columnConfig={{
+        core: [
+          column.accessor('nameStd', {
+            header: "Round",
+            cell: props => props.cell.getValue()
+          }),
+          column.accessor('opponent', {
+            header: "Opponent",
+            cell: props => props.row.original.opponent?.aliases[0].code || '--'
+          }),
+          column.accessor('result', {
+            header: "Res.",
+            cell: props => props.cell.getValue()
+          }),
+        ] as ColumnDef<ExpandedRound>[],
+        sm: [
+          column.accessor('ballotsWon', {
+            header: "Dec.",
+            cell: props => `${props.row.original.ballotsWon}-${props.row.original.ballotsLost}`
+          }),
+          column.accessor('side', {
+            header: "Side",
+            cell: props => props.cell.getValue()
+          }),
+        ] as ColumnDef<ExpandedRound>[],
+      }}
+      child={RoundTable}
+    />
   )
 }
 

@@ -3,10 +3,10 @@ import React from 'react'
 import { BsJournalBookmark } from 'react-icons/bs'
 import { Tournament, TournamentResult, Round, Circuit, Alias, School, TournamentSpeakerResult } from '@shared/database'
 import { Table, Card } from '@shared/components'
-// import RoundByRoundTable from './RoundByRoundTable'
+import RoundByRoundTable from './RoundByRoundTable'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 
-type ExpandedTournamentResult = TournamentResult & {
+export type ExpandedTournamentResult = TournamentResult & {
   tournament: Tournament & {
       circuits: Circuit[];
   };
@@ -38,13 +38,13 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
               cell: props => new Date(props.cell.getValue() * 1000).toLocaleDateString("en-us")
             }),
             column.display({
-              header: "P. Rk.",
+              header: "P.RK",
               cell: props => `${props.row.original.prelimPos}/${props.row.original.prelimPoolSize}`
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
           sm: [
             column.display({
-              header: "P. Rc.",
+              header: "P.RC",
               cell: props => {
                 const won = props.row.original.prelimBallotsWon;
                 const lost = props.row.original.prelimBallotsLost;
@@ -52,7 +52,7 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
               }
             }),
             column.display({
-              header: "E. Rc.",
+              header: "E.RC",
               cell: props => {
                 const won = props.row.original.elimWins || 0;
                 const lost = props.row.original.elimLosses || 0;
@@ -70,7 +70,14 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
               }
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
+          lg: [
+            column.accessor('opWpm', {
+              header: "OpWpM",
+              cell: props => props.cell.getValue(),
+            }),
+          ] as ColumnDef<ExpandedTournamentResult>[],
         }}
+        child={RoundByRoundTable}
       />
     </Card>
   )

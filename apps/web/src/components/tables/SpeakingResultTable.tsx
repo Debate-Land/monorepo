@@ -1,31 +1,31 @@
 import React from 'react'
-import { Round, RoundSpeakerResult } from '@shared/database'
-import { Text, asTable } from '@shared/components'
+import { Table, Text } from '@shared/components'
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
+import { ExpandedRoundSpeakerResult } from './RoundByRoundTable'
 
 export interface SpeakingResultProps {
-    data: RoundSpeakerResult[] //| ((page: number, limit: number) => TournamentResult)
+    data: ExpandedRoundSpeakerResult[] //| ((page: number, limit: number) => TournamentResult)
 }
 
-const SpeakingResultTable = ({ data: speakingResults }: SpeakingResultProps) => {
-    const { Table, Attribute } = asTable<RoundSpeakerResult>()
+const SpeakingResultTable = ({ data }: SpeakingResultProps) => {
+    const column = createColumnHelper<ExpandedRoundSpeakerResult>()
 
     return (
-        <Table data={speakingResults}>
-            <Attribute
-                header="Comp"
-                value={{
-                    literal: (d) => d.competitorId,
-                    display: (dChild) => <Text size="sm">{dChild.competitorId}</Text>
-                }}
-            />
-            <Attribute
-                header="Pts"
-                value={{
-                    literal: (dChild) => dChild.points,
-                    display: (dChild) => <Text size="sm">{dChild.points}</Text>
-                }}
-            />
-        </Table>
+        <Table
+            data={data}
+            columnConfig={{
+                core: [
+                    column.accessor('competitor.name', {
+                        header: "Comp.",
+                        cell: props => props.cell.getValue()
+                    }),
+                    column.accessor('points', {
+                        header: "Points",
+                        cell: props => props.cell.getValue()
+                    })
+                ] as ColumnDef<ExpandedRoundSpeakerResult>[]
+            }}
+        />
     )
 }
 
