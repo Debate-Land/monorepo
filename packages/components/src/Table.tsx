@@ -233,7 +233,7 @@ const Table = <T,>({
                   {
                     row.getIsExpanded() && ExpandedRow && (
                       <tr>
-                        <td colSpan={row.getVisibleCells().length}>
+                        <td colSpan={row.getVisibleCells().length} className="px-2 md:px-4 py-2 border-t border-gray-100/80 dark:border-gray-700 border-dashed">
                           <ExpandedRow row={row.original} />
                         </td>
                       </tr>
