@@ -10,7 +10,7 @@ import { Loader } from '@shared/components';
 // TODO: National Rank at some point...
 const Team = () => {
   const { query, isReady } = useRouter();
-  const { data } = trpc.team.useQuery(
+  const { data } = trpc.team.summary.useQuery(
     {
       id: query.id as string,
       event: query.event as string,

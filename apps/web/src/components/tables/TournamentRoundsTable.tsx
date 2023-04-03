@@ -29,7 +29,7 @@ export interface TournamentRoundsTableProps {
 };
 
 const TournamentRoundsTable = ({ id }: TournamentRoundsTableProps) => {
-  const { data } = trpc.rounds.useQuery(
+  const { data } = trpc.team.rounds.useQuery(
     {
       id
     },
