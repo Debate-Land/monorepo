@@ -1,11 +1,12 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc';
-import { CareerSummaryTable, TournamentListTable } from '@src/components/tables'
+import { TournamentListTable } from '@src/components/tables'
 import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 
+// TODO: National Rank at some point...
 const Team = () => {
   const { query, isReady } = useRouter();
   const { data } = trpc.team.useQuery(
@@ -38,7 +39,7 @@ const Team = () => {
       />
       <div className="min-h-screen">
         <Overview
-          label={data.results[0].school.name}
+          label="Team"
           heading={
             <>
               <a href={`/competitors/${data.competitors[0].id}`}>
@@ -65,8 +66,8 @@ const Team = () => {
                   description: "OTR Score"
                 },
                 {
-                  value: "--",
-                  description: "Ntl. Rank"
+                  value: data.statistics.inTop20Pct + 'x',
+                  description: "Top 20% Prelim Seed"
                 },
                 {
                   value: data.statistics.bids,
@@ -74,7 +75,7 @@ const Team = () => {
                 },
                 {
                   value: Math.round(data.statistics.avgSpeaks * 10) / 10,
-                  description: "Avg Spks."
+                  description: "Avg Raw Spks."
                 }
               ]}
               advanced={[
@@ -91,7 +92,9 @@ const Team = () => {
                   description: "Last Active"
                 },
                 {
-                  value: Math.round(data.statistics.avgOpWpM * 1000) / 1000,
+                  value: data.statistics.avgOpWpM,
+                  isPercentage: true,
+                  round: 1,
                   description: "Avg. OpWpM"
                 },
                 {
@@ -120,8 +123,8 @@ const Team = () => {
             />
           }
         />
-        <CareerSummaryTable data={data.results} />
         <TournamentListTable data={data.results} />
+        {/* TODO: Alias/School Tables & Charts */}
       </div>
     </>
   )

@@ -9,7 +9,7 @@ import Label from './Label'
 import Link from './Link'
 import Select from './Select'
 import Statistic from './Statistic'
-import { asTable } from './Table'
+import Table from './Table'
 import Text from './Text'
 
 export {
@@ -23,6 +23,6 @@ export {
     Link,
     Select,
     Statistic,
-    asTable,
+    Table,
     Text
 }

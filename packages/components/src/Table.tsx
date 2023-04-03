@@ -1,371 +1,313 @@
-/* eslint-disable */
-import clsx from 'clsx'
-import React from 'react'
-import Button from './Button'
-import Text from './Text'
-import omit from 'lodash/omit'
-import { AiOutlineArrowDown, AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineArrowUp, AiOutlineBackward, AiOutlineForward } from 'react-icons/ai'
+import Text from './Text';
+import { FaSort, FaSortUp, FaSortDown, FaChevronCircleDown, FaChevronCircleUp } from 'react-icons/fa';
+import { FiChevronRight, FiChevronsRight, FiChevronLeft, FiChevronsLeft } from 'react-icons/fi';
+import { ColumnDef, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, useReactTable } from '@tanstack/react-table';
+import React, { Fragment, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import clsx from 'clsx';
+import { BiLinkExternal } from 'react-icons/bi';
+import { useWindowSize } from './hooks';
 
-/**
- * TODO: Fix sorting by attr
- * TODO: Fix hover effects
- * TODO: Add position attribute with idx + 1 and custom attribute name
- * TODO: Pagination
- * TODO: Only 1 attr is OK
- * TODO: Make literal not required
- * TODO: Initial sort with function, then just .reverse() it
- */
+const getPositionColumn = <T,>(pagination: PaginationState = { pageIndex: 0, pageSize: 0 }) => (
+  {
+    id: "position",
+    header: "Pos.",
+    cell: ({ row }: { row: Row<T> }) => pagination.pageIndex * pagination.pageSize + row.index + 1
+  }
+);
 
-type Priority = 'sm' | 'md' | 'lg' | 'xl'
+const getExpandingColumn = <T,>() => (
+  {
+    id: "expander",
+    header: "Details",
+    cell: ({ row }: { row: Row<T> }) => (
+      row.getCanExpand()
+        ? <button onClick={row.getToggleExpandedHandler()} className="w-full flex flex-row items-center justify-start px-4">
+          {
+            row.getIsExpanded()
+              ? <FaChevronCircleUp/>
+              : <FaChevronCircleDown/>
+          }
+        </button>
+        : <>--</>
+    )
+  } as ColumnDef<T>
+);
 
-const collapseConfig = (priority: Priority | undefined) => {
-  if (!priority) return ''
-  return `hidden ${priority}:inline-block`
+const getOnClickColumn = <T,>() => (
+  {
+    id: "onClick",
+    header: "Details",
+    cell: () => <BiLinkExternal className="ml-4"/>
+  } as ColumnDef<T>
+);
+
+const sizes = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  max: Infinity
+};
+
+interface TableProps<T> {
+  data: T[] | undefined;
+  columnConfig: {
+    core: ColumnDef<T>[];
+    sm?: ColumnDef<T>[];
+    md?: ColumnDef<T>[];
+    lg?: ColumnDef<T>[];
+    xl?: ColumnDef<T>[];
+  };
+  paginationConfig?: {
+    pagination: PaginationState;
+    setPagination: Dispatch<SetStateAction<PaginationState>>;
+    totalPages?: number;
+  };
+  sortingConfig?: {
+    sorting: SortingState;
+    setSorting: Dispatch<SetStateAction<SortingState>>;
+  };
+  child?: (props: { row: T }) => JSX.Element;
+  showPosition?: boolean;
+  onRowClick?: (row: T) => void;
 }
 
-export interface TableAttributeProps<T> {
-  header: string
-  description?: string // Mouseover description of the attribute
-  priority?: Priority // Used for collapsing columns at different widths
-  value: {
-    literal: number | string | ((data: T) => number | string) // Used for sorting, and display (if value.display is not supplied)
-    display?: (data: T) => JSX.Element // Preferred over value.literal if supplied
-    percentage?: boolean // If true, value.literal is shown as a percentage
+const classNames = {
+  table: "table-auto sm:table-fixed md:table-auto bg-luka-200/20 rounded-lg mx-auto w-full text-sm",
+  td: "py-3 px-2",
+  header: {
+    th: "py-3 px-2 text-left",
+    tr: "dark:text-gray-300 text-gray-700",
+  },
+  tr: "dark:text-gray-300 text-gray-700 border-t border-gray-100/80 dark:border-gray-700",
+  pagination: {
+    wrapper: "bg-luka-200/20 flex flex-row justify-between mx-auto mt-4 w-[300px] rounded-lg overflow-hidden",
+    button: "hover:bg-luka-200/50 text-center w-[50px] text-xl py-3 flex items-center justify-center",
+    textWrapper: "flex flex-row justify-center items-center w-[100px]",
   }
-  sortable?: boolean // Default false, reccomended for numeric values
-  summarizable?: boolean // Default false, reccomended for numeric values
-}
+};
 
-export const TableAttribute = <T,>(props: TableAttributeProps<T>) => <></>
+// TODO: Add page limit selection (10, 20, 50) after seeing how performance is impacted
+// TODO: Add initial state to expand first row (only if pageIndex == 0 or undefined)
+// TODO: Add footer aggregations?
+const Table = <T,>({
+  data,
+  columnConfig,
+  paginationConfig,
+  child: ExpandedRow,
+  sortingConfig,
+  onRowClick,
+  showPosition,
+}: TableProps<T>) => {
+  const { width } = useWindowSize();
+  const [columns, setColumns] = useState<ColumnDef<T>[]>([]);
 
-export interface TableBodyProps<T> {
-  // Array IFF not paginated, Function IFF paginated
-  data: T[] | ((page: number, limit: number) => T[])
-  children: React.ReactElement<TableAttributeProps<T>>[]
-  expand?: (data: T) => JSX.Element // Expandable row, toggles on click
-  onClick?: (data: T) => void // Handle row click
-  pagination?: {
-    limit: number // Number of rows per page
-    getTotalPages: (limit: number, page: number) => number // Function to get total number of pages
-    page?: number // Customize starting page
-  }
-  initialOpen?: number // Row index to open by default
-  summary?: boolean // Show summary row at bottom of table, defaults to false.
-  className?: {
-    wrapper?: string
-    table?: string
-    thead?: string
-    trHeader?: string
-    tbody?: string
-    tr?: string
-    th?: string
-    td?: string
-    thSummary?: string
-    tdSummary?: string
-    tfoot?: string
-  }
-}
+  useEffect(() => {
+    let size = null;
+    for (const [breakpoint, cutoff] of Object.entries(sizes)) {
+      if (width as number <= cutoff) {
+        size = breakpoint;
+        break;
+      }
+    };
+    let newColumns: ColumnDef<T>[] = [...columnConfig?.core];
 
-export const TableBody = <T,>({
-  data: resolveable,
-  children: attributes,
-  expand,
-  onClick,
-  pagination: initialPagination,
-  initialOpen,
-  summary: showSummary,
-  className
-}: TableBodyProps<T>) => {
-  let getTotalPages: any;
-  initialPagination
-    ? (getTotalPages = initialPagination.getTotalPages)
-    : (getTotalPages = (limit: number, page: number) => -1)
+    if (size && Object.keys(sizes).indexOf(size) > 0) {
+      for (const [breakpoint, columns] of Object.entries(columnConfig)) {
+        if (breakpoint === "core") continue;
+        if (Object.keys(sizes).indexOf(breakpoint) <= Object.keys(sizes).indexOf(size)) {
+          newColumns = [...newColumns, ...columns];
+        }
+      }
+    };
 
-  const [data, setData] = React.useState<T[]>([])
-  const [sorted, setSorted] = React.useState<{ index: number; ascending: boolean }>({ index: 0, ascending: true })
-  const [pagination, setPagination] = React.useState<{ page: number, limit: number, totalPages: number }>({
-    page: 0,
-    totalPages: -1,
-    ...omit(initialPagination, 'getTotalPages')
-  })
-  const [lastClicked, setLastClicked] = React.useState<number | null>(initialOpen !== undefined ? initialOpen : null)
+    if (showPosition) newColumns = [getPositionColumn(paginationConfig?.pagination), ...newColumns];
+    if (ExpandedRow) newColumns = [getExpandingColumn(), ...newColumns];
+    if (onRowClick) newColumns = [getOnClickColumn(), ...newColumns];
 
-  const updateSorted = (index: number) => {
-    if (sorted.index === index) {
-      setSorted({ index, ascending: !sorted.ascending })
-    } else {
-      setSorted({ index, ascending: true })
-    }
-  }
+    setColumns(newColumns);
+  }, [width, columnConfig, showPosition, paginationConfig?.pagination, ExpandedRow, onRowClick])
 
-  React.useEffect(() => {
-    data.sort((a, b) => {
-      const attribute = attributes[sorted.index]
-      const valueA = attribute.props.value.literal
-      const valueB = attribute.props.value.literal
-      const aVal = typeof valueA === 'function' ? valueA(a) : valueA
-      const bVal = typeof valueB === 'function' ? valueB(b) : valueB
-      if (aVal > bVal) return sorted.ascending ? 1 : -1
-      if (aVal < bVal) return sorted.ascending ? -1 : 1
-      return 0
-    })
-  }, [sorted])
+  const table = useReactTable({
+    data: data || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getRowCanExpand: () => true,
+    state: {
+      ...(paginationConfig && { pagination: paginationConfig.pagination }),
+      ...(sortingConfig && { sorting: sortingConfig.sorting })
+    },
+    ...(paginationConfig && {
+      getPaginationRowModel: getPaginationRowModel(),
+      onPaginationChange: paginationConfig.setPagination,
+      manualPagination: true,
+      pageCount: paginationConfig.totalPages || -1
+    }),
+    ...(sortingConfig && {
+      getSortedRowModel: getSortedRowModel(),
+      onSortingChange: sortingConfig.setSorting,
+    }),
+  });
 
-  React.useEffect(() => {
-    typeof resolveable === 'function'
-      ? setData(resolveable(pagination.page, pagination.limit))
-      : setData(resolveable)
+  const currentPage = table.getState().pagination.pageIndex;
+  const tableIsSortable = sortingConfig !== undefined;
+  const tableIsPaginateable = paginationConfig !== undefined;
 
-    initialPagination && setPagination({
-      ...pagination,
-      totalPages: getTotalPages(pagination.limit, pagination.page)
-    })
-  }, [resolveable, pagination.limit, pagination.page])
-
-  let summary: { [key: string]: number[] | null } = {}
+  useEffect(() => {
+    table.resetExpanded(false);
+  }, [table, currentPage]);
 
   return (
-    <div className="flex flex-col items-center">
-      <div className={clsx(
-        'inline-block rounded-sm border border-gray-300/40 mx-auto my-4 w-full',
-        className?.wrapper
-      )}>
-        <table className={clsx(
-          'table-auto border-collapse w-full',
-          className?.table
-        )}>
-          <thead className={clsx(
-            className?.thead,
-          )}>
-            <tr className={clsx(
-              'bg-stone-300/50 rounded-xl',
-              className?.trHeader
-            )}>
-              {
-                attributes.map(({ props: attribute }, idx) => {
-                  return (
-                    <Text
-                      key={attribute.header}
-                      as="th"
-                      size="sm"
-                      onClick={() => attribute.sortable && updateSorted(idx)}
-                      className={clsx(
-                        'text-left uppercase font-extrabold p-1',
-                        collapseConfig(attribute.priority)
-                      )}
-                      {
-                      ...attribute.description && {
-                        tooltip: attribute.description,
-                      }
-                      }
-                    >
-                      <span className={clsx(
-                        "flex space-x-2 items-center",
-                        { 'dark:hover:text-sky-200 hover:text-sky-400': attribute.sortable }
-                      )} >
-                        {attribute.header}
-                        {
-                          attribute.sortable && sorted.index === idx ?
-                            sorted.ascending
-                              ? <AiOutlineArrowDown />
-                              : <AiOutlineArrowUp />
-                            : null
-                        }
-                      </span>
-                    </Text>
-                  )
-                })
-              }
-            </tr>
-          </thead>
-          <tbody className={clsx()}>
-            {
-              data.map((rowData, idx) => {
-                // Rendering <tr>
-                return (
-                  <>
-                    <tr
-                      onClick={() => {
-                        expand && lastClicked === idx
-                          ? setLastClicked(null)
-                          : setLastClicked(idx)
-                        onClick?.(rowData)
-                      }}
-                      className={clsx(
-                        'hover:bg-luka-100/20 border-gray-300/40',
-                        {
-                          'border-b': idx !== data.length - 1,
-                          'border-b border-dashed': expand && idx === lastClicked,
-                          'bg-stone-300/40': idx % 2 !== 0,
-                          'bg-white dark:bg-stone-900': !expand && !onClick && idx % 2 === 0,
-                        },
-                        className?.tr
-                      )}
-                    >
-                      {
-                        attributes.map(({ props: attribute }) => {
-                          const value = typeof attribute.value.literal === 'function'
-                            ? attribute.value.literal(rowData)
-                            : attribute.value.literal
-
-                          if (typeof value === 'number') {
-                            if (
-                              Object.keys(summary).includes(attribute.header)
-                              && attribute.summarizable
-                              && Array.isArray(summary[attribute.header])
-                            ) {
-                              // @ts-ignore
-                              summary[attribute.header][0] += value
-                              // @ts-ignore
-                              summary[attribute.header][1] += 1
-                            }
-                            else if (attribute.summarizable) {
-                              summary[attribute.header] = [value, 1]
-                            }
-                            if (!Object.keys(summary).includes(attribute.header) && !attribute.summarizable) {
-                              summary[attribute.header] = null
-                            }
-                          }
-
-                          // Rendering <td>
-                          return <td className={clsx(
-                            'p-1 text-sm md:text-md',
-                            collapseConfig(attribute.priority),
-                            className?.td
-                          )}>
-                            {
-                              attribute.value.display
-                                ? attribute.value.display(rowData)
-                                : attribute.value.percentage
-                                  ? (value as unknown as number * 100).toFixed(1) + '%'
-                                  : value
-                            }
-                          </td>
-                        })
-                      }
-                    </tr>
-                    {
-                      expand &&
-                      (
-                        <tr className={clsx(
-                          'w-full',
-                          {
-                            'hidden': idx !== lastClicked,
-                            'border-b border-gray-300/40': idx !== data.length - 1 && idx === lastClicked,
-                          }
-                        )}>
-                          <td colSpan={attributes.length} className="p-1">
-                            {expand(rowData)}
-                          </td>
-                        </tr>
-                      )
-                    }
-                  </>
-                )
-              })
-            }
-          </tbody>
-          <tfoot className={clsx(className?.tfoot)}>
-            {
-              showSummary && (
-                <tr className={clsx(
-                  'bg-stone-300/50 rounded-xl',
-                  className?.thSummary
-                )}>
-                  <td className={clsx(
-                    'text-left uppercase font-extrabold',
-                    className?.th
-                  )}>
-                    <Text size="sm" className="p-1">TOTALS</Text>
-                  </td>
+    <div>
+      <table className={classNames.table}>
+        <thead>
+          {
+            table.getHeaderGroups().map(
+              headerGroup => (
+                <tr key={headerGroup.id} className={classNames.header.tr}>
                   {
-                    Object.keys(summary).map((key, idx) => {
-                      return idx == 0
-                        ? null
-                        : (
-                          <td className={clsx(
-                            collapseConfig(
-                              attributes.map(({ props: attribute }) => {
-                                if (attribute.header === key) return attribute.priority
-                              })[0],
-                            ),
-                            className?.tdSummary
-                          )}>
+                    headerGroup.headers.map(
+                      header => (
+                        <th
+                          key={header.id}
+                          onClick={
+                            tableIsSortable && header.column.getCanSort()
+                              ? header.column.getToggleSortingHandler()
+                              : undefined
+                          }
+                          className={classNames.header.th}
+                        >
+                          <span className="flex items-center mr-2">
                             {
-                              Array.isArray(summary[key])
-                                // @ts-ignore
-                                ? (summary[key][0] / summary[key][1]).toFixed(2)
-                                : '-'
+                              header.isPlaceholder
+                                ? null
+                                : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )
                             }
-                          </td>
-                        )
-                    })
+                            {
+                              tableIsSortable && header.column.getCanSort()
+                              ? {
+                                  asc: <FaSortUp className="ml-1"/>,
+                                  desc: <FaSortDown className="ml-1" />
+                                }[header.column.getIsSorted() as string] ?? <FaSort className="ml-1" />
+                              : null
+                            }
+                          </span>
+                        </th>
+                      )
+                    )
                   }
                 </tr>
               )
-            }
-          </tfoot>
-        </table>
-      </div>
-      {initialPagination &&
-        (
-          <div className={clsx(
-            'flex space-x-2 justify-center items-center',
-          )}>
-            <Button
-              icon={<AiOutlineBackward size={12} color="white" />}
-              onClick={() => setPagination({ ...pagination, page: 0 })}
-              className={clsx(
-                'rounded-2xl !bg-luka-200 !m-0',
-              )}
-            />
-            <Button
-              disabled={pagination.page === 0}
-              icon={<AiOutlineArrowLeft size={12} color="white" />}
-              onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
-              className={clsx(
-                'rounded-2xl',
-                {
-                  '!bg-gray-500': pagination.page === 0,
-                  '!bg-luka-200': pagination.page !== 0,
-                }
-              )}
-            />
-            <Text size="sm">
-              {pagination.page + 1} of {pagination.totalPages}
-            </Text>
-            <Button
-              disabled={pagination.page === pagination.totalPages - 1}
-              icon={<AiOutlineArrowRight size={12} color="white" />}
-              onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
-              className={clsx(
-                'rounded-2xl',
-                {
-                  '!bg-gray-500': pagination.page === pagination.totalPages - 1,
-                  '!bg-luka-200': pagination.page !== pagination.totalPages - 1,
-                }
-              )}
-            />
-            <Button
-              icon={<AiOutlineForward size={12} color="white" />}
-              onClick={() => setPagination({ ...pagination, page: pagination.totalPages - 1 })}
-              className={clsx(
-                'rounded-2xl !bg-luka-200',
-              )}
-            />
+            )
+          }
+        </thead>
+        <tbody>
+          {
+            table.getRowModel().rows.map(
+              row => (
+                <Fragment key={row.id}>
+                  {/* Actual table row */}
+                  <tr
+                    className={clsx(classNames.tr, { "hover:bg-luka-200/10 dark:hover:bg-luka-200/50 cursor-pointer": onRowClick})}
+                    onClick={
+                      onRowClick
+                        ? () => onRowClick(row.original)
+                        : undefined
+                    }
+                  >
+                    {
+                      row.getVisibleCells().map(
+                        cell => (
+                          <td key={cell.id} className={classNames.td}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </td>
+                        )
+                      )
+                    }
+                  </tr>
+                  {/* Expanded data housed in additional row, if available */}
+                  {
+                    row.getIsExpanded() && ExpandedRow && (
+                      <tr>
+                        <td colSpan={row.getVisibleCells().length} className="px-2 md:px-4 py-2 border-t border-gray-100/80 dark:border-gray-700 border-dashed">
+                          <ExpandedRow row={row.original} />
+                        </td>
+                      </tr>
+                    )
+                  }
+                </Fragment>
+              )
+            )
+          }
+        </tbody>
+        <tfoot>
+          {
+            table.getFooterGroups().map(
+              footerGroup => (
+                <tr key={footerGroup.id}>
+                  {
+                    footerGroup.headers.map(
+                      header => (
+                        <th key={header.id}>
+                          {
+                            header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                header.column.columnDef.footer,
+                                header.getContext()
+                              )
+                          }
+                        </th>
+                      )
+                    )
+                  }
+                </tr>
+              )
+            )
+          }
+        </tfoot>
+      </table>
+      {
+        tableIsPaginateable && (
+          <div className={classNames.pagination.wrapper}>
+            <button
+              onClick={() => {table.setPageIndex(0)}}
+              className={classNames.pagination.button}
+            >
+              <FiChevronsLeft/>
+            </button>
+            <button
+              onClick={table.previousPage}
+              disabled={currentPage == 0}
+              className={classNames.pagination.button}
+            >
+              <FiChevronLeft/>
+            </button>
+            <div className={classNames.pagination.textWrapper}>
+              <Text>{table.getState().pagination.pageIndex + 1} of {table.getPageCount()}</Text>
+            </div>
+            <button
+              onClick={table.nextPage}
+              disabled={currentPage == table.getPageCount()}
+              className={classNames.pagination.button}
+            >
+              <FiChevronRight/>
+            </button>
+            <button
+              onClick={() => {table.setPageIndex(table.getPageCount())}}
+              className={classNames.pagination.button}
+            >
+              <FiChevronsRight/>
+            </button>
           </div>
         )
       }
     </div>
-  )
-}
+  );
+};
 
-export const asTable = <T,>(): {
-  Table: React.FC<TableBodyProps<T>>,
-  Attribute: React.FC<TableAttributeProps<T>>,
-} => {
-  return {
-    Table: (props: TableBodyProps<T>) => <TableBody<T> {...props} />,
-    Attribute: (props: TableAttributeProps<T>) => <TableAttribute<T> {...props} />,
-  }
-}
+export default Table;

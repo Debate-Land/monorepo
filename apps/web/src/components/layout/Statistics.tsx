@@ -28,7 +28,7 @@ const Statistics = ({primary, advanced}: StatisticsProps) => {
         )
       }
     >
-      <div id="stats-main" className="grid grid-cols-4 !w-full max-w-[400px] mx-auto">
+      <div id="stats-main" className="grid grid-cols-4 !w-full max-w-[400px] mx-auto mb-2 md:mb-0">
         <Statistic
           {...primary[0]}
           primary
@@ -44,7 +44,8 @@ const Statistics = ({primary, advanced}: StatisticsProps) => {
         <Statistic
           {...primary[3]}
           className={{
-            wrapper: clsx({'!border-r-0': !advanced})
+            wrapper: clsx({ '!border-r-0': !advanced }),
+            inner: '!border-r-0'
           }}
           primary
         />
@@ -65,12 +66,12 @@ const Statistics = ({primary, advanced}: StatisticsProps) => {
             <Statistic
               {...advanced[2]}
               className={{ wrapper: 'border-gray-300/40 border-b border-r' }}
-    
+
             />
             <Statistic
               {...advanced[3]}
               className={{ wrapper: 'border-gray-300/40 border-b' }}
-    
+
             />
             <Statistic
               {...advanced[4]}

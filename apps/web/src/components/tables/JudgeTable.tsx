@@ -1,28 +1,28 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
-import { School } from '@shared/database';
-import { MdOutlineSchool } from 'react-icons/md'
+import { Judge } from '@shared/database';
+import { TbGavel } from 'react-icons/tb'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 
-type SchoolTableRow = School & {
-  tournamentResults: {
+type JudgeTableRow = Judge & {
+  records: {
       id: number;
   }[];
 }
 
-interface SchoolTableProps {
+interface JudgeTableProps {
   count: number
 }
 
-const SchoolTable = ({count}: SchoolTableProps) => {
+const JudgeTable = ({count}: JudgeTableProps) => {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
   const {query, isReady, ...router} = useRouter();
-  const { data } = trpc.schools.useQuery(
+  const { data } = trpc.judges.useQuery(
     {
       season: parseInt(query.season as unknown as string),
       circuit: parseInt(query.circuit as unknown as string),
@@ -34,10 +34,10 @@ const SchoolTable = ({count}: SchoolTableProps) => {
       enabled: isReady
     }
   );
-  const column = createColumnHelper<SchoolTableRow>();
+  const column = createColumnHelper<JudgeTableRow>();
 
   return (
-    <Card icon={<MdOutlineSchool />} title="Schools" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<TbGavel />} title="Judges" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columnConfig={{
@@ -46,11 +46,11 @@ const SchoolTable = ({count}: SchoolTableProps) => {
               header: "Name",
               cell: props => props.cell.getValue(),
             }),
-            column.accessor('tournamentResults', {
-              header: "Results",
+            column.accessor('records', {
+              header: "Rounds",
               cell: props => props.cell.getValue().length
             }),
-          ] as ColumnDef<SchoolTableRow>[]
+          ] as ColumnDef<JudgeTableRow>[]
         }}
         paginationConfig={{
           pagination,
@@ -63,4 +63,4 @@ const SchoolTable = ({count}: SchoolTableProps) => {
     )
 }
 
-export default SchoolTable
+export default JudgeTable

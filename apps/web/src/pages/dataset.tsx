@@ -7,6 +7,9 @@ import Statistics from '@src/components/layout/Statistics';
 import LeaderboardTable from '@src/components/tables/LeaderboardTable';
 import SchoolTable from '@src/components/tables/SchoolTable';
 import TournamentTable from '@src/components/tables/TournamentTable';
+import CompetitorTable from '@src/components/tables/CompetitorTable';
+import JudgeTable from '@src/components/tables/JudgeTable';
+import BidTable from '@src/components/tables/BidTable';
 
 const Dataset = () => {
   const { query, isReady } = useRouter();
@@ -66,9 +69,12 @@ const Dataset = () => {
             />
           }
         />
-        <LeaderboardTable data={data.leaderboard} />
-        <TournamentTable data={data.tournaments} />
-        <SchoolTable data={data.schools} />
+        <LeaderboardTable count={data.numTeams}  />
+        <TournamentTable count={data.numTournaments} />
+        <CompetitorTable count={data.numCompetitors} />
+        <JudgeTable count={data.numJudges} />
+        <SchoolTable count={data.numSchools} />
+        <BidTable count={data.numBids!} />
       </div>
     </>
   )

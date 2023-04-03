@@ -1,6 +1,5 @@
-import CareerSummaryTable from "./CareerSummaryTable";
-import RoundByRoundTable from "./RoundByRoundTable";
-import SpeakingResultTable from "./SpeakingResultTable";
-import TournamentListTable from "./TournamentListTable";
+import RoundByRoundTable from "./TournamentSummaryTable";
+import SpeakingResultTable from "./RoundSpeakingResultTable";
+import TournamentListTable from "./TournamentHistoryTable";
 
-export { CareerSummaryTable, RoundByRoundTable, SpeakingResultTable, TournamentListTable }
+export { RoundByRoundTable, SpeakingResultTable, TournamentListTable }

@@ -1,28 +1,28 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
-import { School } from '@shared/database';
-import { MdOutlineSchool } from 'react-icons/md'
+import { Competitor } from '@shared/database';
+import { BsPerson } from 'react-icons/bs'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 
-type SchoolTableRow = School & {
-  tournamentResults: {
-      id: number;
+type CompetitorTableRow = Competitor & {
+  teams: {
+      id: string;
   }[];
-}
+};
 
-interface SchoolTableProps {
+interface CompetitorTableProps {
   count: number
 }
 
-const SchoolTable = ({count}: SchoolTableProps) => {
+const CompetitorTable = ({count}: CompetitorTableProps) => {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
   const {query, isReady, ...router} = useRouter();
-  const { data } = trpc.schools.useQuery(
+  const { data } = trpc.competitors.useQuery(
     {
       season: parseInt(query.season as unknown as string),
       circuit: parseInt(query.circuit as unknown as string),
@@ -34,10 +34,10 @@ const SchoolTable = ({count}: SchoolTableProps) => {
       enabled: isReady
     }
   );
-  const column = createColumnHelper<SchoolTableRow>();
+  const column = createColumnHelper<CompetitorTableRow>();
 
   return (
-    <Card icon={<MdOutlineSchool />} title="Schools" className="max-w-[800px] mx-auto my-16">
+    <Card icon={<BsPerson />} title="Competitors" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
         columnConfig={{
@@ -46,11 +46,11 @@ const SchoolTable = ({count}: SchoolTableProps) => {
               header: "Name",
               cell: props => props.cell.getValue(),
             }),
-            column.accessor('tournamentResults', {
-              header: "Results",
+            column.accessor('teams', {
+              header: "Teams",
               cell: props => props.cell.getValue().length
             }),
-          ] as ColumnDef<SchoolTableRow>[]
+          ] as ColumnDef<CompetitorTableRow>[]
         }}
         paginationConfig={{
           pagination,
@@ -63,4 +63,4 @@ const SchoolTable = ({count}: SchoolTableProps) => {
     )
 }
 
-export default SchoolTable
+export default CompetitorTable

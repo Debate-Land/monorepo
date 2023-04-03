@@ -29,9 +29,11 @@ interface TeamStatistics {
   avgSpeaks: number;
   rankings: any;
   bids: number;
+  inTop20Pct: number;
 }
 
-function getAvg(arr: number[]) {
+export function getAvg(arr: number[]) {
+  if (!arr.length) return 0;
   let sum = 0;
   arr.forEach(e => sum += e);
   return sum / arr.length;
@@ -61,7 +63,8 @@ export default function getStatistics(data: ExpandedTeam) {
     otr: [], //
     avgSpeaks: [], //
     rankings: [],
-    bids: 0
+    bids: 0,
+    inTop20Pct: 0,
   };
 
   data.results.forEach(result => {
@@ -69,6 +72,8 @@ export default function getStatistics(data: ExpandedTeam) {
     statistics.pRecord[1] += result.prelimBallotsLost;
     statistics.eRecord[0] += result.elimBallotsWon || 0;
     statistics.eRecord[1] += result.elimBallotsLost || 0;
+
+    if (result.prelimPos / result.prelimPoolSize <= .2) statistics.inTop20Pct += 1;
 
     if (result.tournament.hasElimRounds) {
       // If they made elims one of these has to be truthy
