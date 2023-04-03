@@ -46,7 +46,7 @@ const Dataset = () => {
           heading={
             data
               ? `${query.season as string} ${data.circuit?.name} ${data.circuit?.event}`
-              : <Loader width={"full"} height={8} />
+              : undefined
           }
           subtitle="exclusively on Debate Land"
           underview={

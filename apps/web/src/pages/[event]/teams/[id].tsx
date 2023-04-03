@@ -58,12 +58,12 @@ const Team = () => {
                   }
                 </>
               )
-              : <Loader height={8} width="full"/>
+              : undefined
           }
           subtitle={
             data
               ? `${query.event} | ${data.circuits[0].name} | ${data.seasons[0].id}-${data.seasons[data.seasons.length - 1].id}`
-              : <Loader height={4} width={64} />
+              : undefined
             }
           underview={
             <Statistics
