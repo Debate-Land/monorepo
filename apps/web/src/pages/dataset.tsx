@@ -2,6 +2,7 @@ import { NextSeo } from 'next-seo'
 import React from 'react'
 import { trpc } from '@src/utils/trpc'
 import { useRouter } from 'next/router';
+import { Loader } from '@shared/components';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import LeaderboardTable from '@src/components/tables/LeaderboardTable';
@@ -45,7 +46,7 @@ const Dataset = () => {
           heading={
             data
               ? `${query.season as string} ${data.circuit?.name} ${data.circuit?.event}`
-              : 'LOADER'
+              : <Loader width={"full"} height={8} />
           }
           subtitle="exclusively on Debate Land"
           underview={

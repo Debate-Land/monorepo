@@ -5,6 +5,7 @@ import { TournamentListTable } from '@src/components/tables'
 import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
+import { Loader } from '@shared/components';
 
 // TODO: National Rank at some point...
 const Team = () => {
@@ -57,12 +58,12 @@ const Team = () => {
                   }
                 </>
               )
-              : 'LOADER'
+              : <Loader height={8} width="full"/>
           }
           subtitle={
             data
               ? `${query.event} | ${data.circuits[0].name} | ${data.seasons[0].id}-${data.seasons[data.seasons.length - 1].id}`
-              : 'LOADER'
+              : <Loader height={4} width={64} />
             }
           underview={
             <Statistics
