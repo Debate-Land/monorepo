@@ -2,8 +2,9 @@
 import React from 'react'
 import { BsJournalBookmark } from 'react-icons/bs'
 import { Tournament, TournamentResult, Round, Circuit, Alias, School, TournamentSpeakerResult } from '@shared/database'
-import { Text, asTable, Card } from '@shared/components'
-import RoundByRoundTable from './RoundByRoundTable'
+import { Table, Card } from '@shared/components'
+// import RoundByRoundTable from './RoundByRoundTable'
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 
 type ExpandedTournamentResult = TournamentResult & {
   tournament: Tournament & {
@@ -19,91 +20,56 @@ export interface TournamentListTableProps {
 }
 
 const TournamentListTable = ({ data }: TournamentListTableProps) => {
-  const { Table, Attribute } = asTable<ExpandedTournamentResult>()
+  const column = createColumnHelper<ExpandedTournamentResult>();
+  console.log(data)
 
   return (
     <Card icon={<BsJournalBookmark />} title="Tournament History" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
-        expand={(d) => <RoundByRoundTable tournamentResultId={d.id} />}
-        className={{ wrapper: 'max-w-[800px]' }}
-      >
-        <Attribute
-          header="Tourn"
-          value={{
-            literal: (d) => d.tournament.name,
-          }}
-          description="Tournament name"
-        />
-        <Attribute
-          header="Date"
-          sortable
-          value={{
-            literal: (d) => d.tournament.start,
-            display: (d) => {
-              return (
-                <Text size="sm">
-                  {new Date(d.tournament.start * 1000).toLocaleDateString('en-us')}
-                </Text>
-              )
-            },
-          }}
-        />
-        <Attribute
-          header="P.Rk"
-          value={{
-            literal: (d) => d.prelimPos,
-            display: (d) => (
-              <Text size="sm">
-                {d.prelimPos}/{d.prelimPoolSize}
-              </Text>
-            ),
-          }}
-          description="Prelim. Rank"
-          priority="sm"
-        />
-        <Attribute
-          header="P.Rc"
-          value={{
-            literal: (d) => d.prelimBallotsWon,
-            display: (d) => (
-              <Text size="sm">
-                {d.prelimBallotsWon}-{d.prelimBallotsLost}
-              </Text>
-            ),
-          }}
-          description="Prelim. Win-Loss Record"
-        />
-        <Attribute
-          header="P.Wp"
-          value={{
-            literal: (d) => d.prelimBallotsWon / (d.prelimBallotsWon + d.prelimBallotsLost),
-            percentage: true,
-          }}
-          description="Prelim. Win Percentage"
-          priority="md"
-        />
-        <Attribute
-          header="E.Rc"
-          value={{
-            literal: (d) => d.elimWins || 0,
-            display: (d) => (
-              <Text size="sm">
-                {d.tournament.hasElimRounds ? `${d.elimWins}-${d.elimLosses}` : '--'}
-              </Text>
-            ),
-          }}
-          description="Elim. Win-Loss Record"
-          priority="md"
-        />
-        <Attribute
-          header="Bid"
-          value={{
-            literal: (d) => d.bid ? (d.bid == 1 ? 'Full' : 'Partial') : 'None',
-          }}
-          description="Bid"
-        />
-      </Table>
+        columns={
+          [
+            column.accessor('tournament.name', {
+              header: "Name",
+              cell: props => props.cell.getValue(),
+            }),
+            column.accessor('tournament.start', {
+              header: "Date",
+              cell: props => new Date(props.cell.getValue() * 1000).toLocaleDateString("en-us")
+            }),
+            column.display({
+              header: "P. Rk.",
+              cell: props => `${props.row.original.prelimPos}/${props.row.original.prelimPoolSize}`
+            }),
+            column.display({
+              header: "P. Rc.",
+              cell: props => {
+                const won = props.row.original.prelimBallotsWon;
+                const lost = props.row.original.prelimBallotsLost;
+                return `${won}-${lost} (${Math.trunc(won/(won+lost))}%)`
+              }
+            }),
+            column.display({
+              header: "E. Rc.",
+              cell: props => {
+                const won = props.row.original.elimWins || 0;
+                const lost = props.row.original.elimLosses || 0;
+                if (won + lost == 0) return '--';
+                return `${won}-${lost} (${Math.trunc(won / (won + lost))}%)`;
+              }
+            }),
+            column.display({
+              header: "Bid",
+              cell: props => {
+                let bid = props.row.original.bid;
+                let isGhostBid = props.row.original.isGhostBid;
+                if (!bid) return '--';
+                return `${bid == 1 ? 'Full' : 'Partial'} ${isGhostBid ? '(ghost)' : ''}`;
+              }
+            }),
+          ] as ColumnDef<ExpandedTournamentResult>[]
+        }
+      />
     </Card>
   )
 }

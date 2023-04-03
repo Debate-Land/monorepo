@@ -24,7 +24,7 @@ const Overview = (props: OverviewProps) => {
             <Text size="sm" className="mb-1 bg-violet-300/70 px-2 !text-white rounded-xl z-20">
               {props.label}
             </Text>
-            <Text className="text-xl !text-white sm:text-3xl lg:text-4xl min-w-[500px] mx-auto text-center md:text-left flex flex-col md:flex-0 z-20">
+            <Text className="text-xl !text-white sm:text-3xl lg:text-4xl min-w-[500px] mx-auto text-center md:text-left z-20">
                 {props.heading}
             </Text>
           </span>

@@ -47,7 +47,7 @@ const TournamentTable = ({count}: TournamentTableProps) => {
               cell: props => props.getValue()
             }),
             column.accessor('start', {
-              header: "Start",
+              header: "Date",
               cell: props => new Date(props.cell.getValue() * 1000).toLocaleDateString("en-us")
             }),
             column.accessor('_count.results', {

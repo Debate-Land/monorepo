@@ -1,13 +1,12 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc';
-import { CareerSummaryTable, TournamentListTable } from '@src/components/tables'
+import { TournamentListTable } from '@src/components/tables'
 import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 
-// TODO: Top 5 finishes instead of Nt'l rank?
-
+// TODO: National Rank at some point...
 const Team = () => {
   const { query, isReady } = useRouter();
   const { data } = trpc.team.useQuery(
@@ -40,7 +39,7 @@ const Team = () => {
       />
       <div className="min-h-screen">
         <Overview
-          label={data.results[0].school.name}
+          label="Team"
           heading={
             <>
               <a href={`/competitors/${data.competitors[0].id}`}>
@@ -124,8 +123,8 @@ const Team = () => {
             />
           }
         />
-        {/* <CareerSummaryTable data={data.results} />
-        <TournamentListTable data={data.results} /> */}
+        <TournamentListTable data={data.results} />
+        {/* TODO: Alias/School Tables & Charts */}
       </div>
     </>
   )
