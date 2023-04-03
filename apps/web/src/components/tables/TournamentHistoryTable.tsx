@@ -21,11 +21,11 @@ export type ExpandedTournamentResult = TournamentResult & {
   speaking: ExpandedTournamentSpeakerResult[];
 };
 
-export interface TournamentListTableProps {
+export interface TournamentHistoryTableProps {
   data: ExpandedTournamentResult[]
 }
 
-const TournamentListTable = ({ data }: TournamentListTableProps) => {
+const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
   const column = createColumnHelper<ExpandedTournamentResult>();
 
   return (
@@ -88,4 +88,4 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
   )
 }
 
-export default TournamentListTable
+export default TournamentHistoryTable

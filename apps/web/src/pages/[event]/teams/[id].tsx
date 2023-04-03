@@ -66,8 +66,8 @@ const Team = () => {
                   description: "OTR Score"
                 },
                 {
-                  value: data.statistics.inTop20Pct,
-                  description: "Top 20% in Prelims"
+                  value: data.statistics.inTop20Pct + 'x',
+                  description: "Top 20% Prelim Seed"
                 },
                 {
                   value: data.statistics.bids,

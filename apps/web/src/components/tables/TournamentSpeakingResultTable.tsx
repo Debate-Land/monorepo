@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table, Text } from '@shared/components'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
-import { ExpandedTournamentSpeakerResult } from './TournamentListTable'
+import { ExpandedTournamentSpeakerResult } from './TournamentHistoryTable'
 
 export interface TournamentSpeakingResultProps {
     data: ExpandedTournamentSpeakerResult[]

@@ -1,5 +1,5 @@
 import RoundByRoundTable from "./TournamentSummaryTable";
 import SpeakingResultTable from "./RoundSpeakingResultTable";
-import TournamentListTable from "./TournamentListTable";
+import TournamentListTable from "./TournamentHistoryTable";
 
 export { RoundByRoundTable, SpeakingResultTable, TournamentListTable }

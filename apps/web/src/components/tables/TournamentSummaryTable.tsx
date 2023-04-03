@@ -3,7 +3,7 @@ import { Alias, Competitor, Judge, Round, RoundSpeakerResult, Side } from '@shar
 import { Table } from '@shared/components'
 import { trpc } from '@src/utils/trpc'
 import RoundTable from './RoundTable'
-import { ExpandedTournamentResult } from './TournamentListTable'
+import { ExpandedTournamentResult } from './TournamentHistoryTable'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import TournamentSpeakingResultTable from './TournamentSpeakingResultTable'
 
