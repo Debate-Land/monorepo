@@ -15,7 +15,7 @@ const Radar = () => {
     <Card
       icon={<BiRadar />}
       title="Radar"
-      className="min-w-full md:min-w-0 md:max-w-[600px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-purple-400/50"
+      className="min-w-full md:min-w-0 md:max-w-[600px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-purple-500/50 p-2"
     >
       <div className="flex justify-start w-full space-x-4 md:py-3">
         <Select

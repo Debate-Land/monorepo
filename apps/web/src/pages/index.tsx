@@ -37,7 +37,7 @@ const Home: NextPage = () => {
       <GridLine position={50} />
       <GridLine position={65} />
       <GridLine position={80} outer />
-      <div id="dark-background" className="fixed top-0 left-0 h-screen w-full dark:bg-stone-900 -z-40" />
+      <div id="dark-background" className="fixed top-0 left-0 h-screen w-full dark:bg-coal -z-40" />
       <div
         id="slanted-hero-top"
         className="absolute -z-10 -top-[30%] w-full h-[60%] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 -skew-y-12 2xl:-skew-y-6"

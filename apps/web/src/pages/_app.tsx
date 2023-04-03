@@ -29,7 +29,7 @@ const App = ({ Component, router, pageProps }: AppProps) => {
     <ThemeProvider attribute='class'>
       <div
         className={clsx('flex flex-col w-full min-h-screen scroll-smooth', {
-          'dark:bg-stone-900': router.pathname !== '/',
+          'dark:bg-coal': router.pathname !== '/',
         })}
       >
         <Header />
