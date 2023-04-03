@@ -30,7 +30,15 @@ export const appRouter = router({
               },
               alias: true,
               school: true,
-              speaking: true,
+              speaking: {
+                include: {
+                  competitor: {
+                    select: {
+                      name: true
+                    }
+                  }
+                }
+              },
             },
             where: {
               tournament: {

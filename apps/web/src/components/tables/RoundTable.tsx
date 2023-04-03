@@ -1,8 +1,8 @@
 import React from 'react'
 import { Table, Text } from '@shared/components'
-import { ExpandedRound, ExpandedRoundJudgeRecord, ExpandedRoundSpeakerResult } from './RoundByRoundTable'
+import { ExpandedRound, ExpandedRoundJudgeRecord } from './TournamentSummaryTable'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
-import SpeakingResultTable from './SpeakingResultTable'
+import RoundSpeakingResultTable from './RoundSpeakingResultTable'
 
 export interface RoundTableProps {
   row: ExpandedRound
@@ -34,7 +34,7 @@ const RoundTable = ({ row: { judgeRecords, speaking, ...round } }: RoundTablePro
                   result => result.judgeId === props.row.original.judge.id
                 );
                 return speakingResults.length
-                  ? <SpeakingResultTable data={speakingResults} />
+                  ? <RoundSpeakingResultTable data={speakingResults} />
                   : <>--</>
               }
             }),
@@ -42,39 +42,9 @@ const RoundTable = ({ row: { judgeRecords, speaking, ...round } }: RoundTablePro
         }}
         onRowClick={(row) => alert(row.tabJudgeId)}
       />
-      // <JudgeRecordTable data={(judgeRecords)}>
-      //   <JudgeRecordAttribute
-      //     header="Spk."
-      //     value={{
-      //       literal: () => 0,
-      //       display: (d) => {
-      //         let speakingResults: ExpandedRoundSpeakerResult[] = speaking
-      //           .filter((result) => result.judgeId == d.judge.id);
-
-      //         return speakingResults.length
-      //           ? (
-      //             <SpeakingResultTable data={speakingResults}>
-      //               <SpeakingResultAttribute
-      //                 header="Comp."
-      //                 value={{ literal: (d) => d.competitor.name }}
-      //                 description="Competitor Name"
-      //               />
-      //               <SpeakingResultAttribute
-      //                 header="Pts."
-      //                 value={{ literal: (d) => d.points }}
-      //                 description="Speaker Points"
-      //               />
-      //             </SpeakingResultTable>
-      //             )
-      //           : <Text>--</Text>
-      //       }
-      //     }}
-      //     description='Round Speaking Data'
-      //   />
-      // </JudgeRecordTable>
     )
     : (
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center p-3">
         <Text>
           No judging details for {round.nameStd}!
         </Text>

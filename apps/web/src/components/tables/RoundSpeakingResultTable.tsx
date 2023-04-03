@@ -1,13 +1,13 @@
 import React from 'react'
 import { Table, Text } from '@shared/components'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
-import { ExpandedRoundSpeakerResult } from './RoundByRoundTable'
+import { ExpandedRoundSpeakerResult } from './TournamentSummaryTable'
 
-export interface SpeakingResultProps {
-    data: ExpandedRoundSpeakerResult[] //| ((page: number, limit: number) => TournamentResult)
+export interface RoundSpeakingResultProps {
+    data: ExpandedRoundSpeakerResult[]
 }
 
-const SpeakingResultTable = ({ data }: SpeakingResultProps) => {
+const RoundSpeakingResultTable = ({ data }: RoundSpeakingResultProps) => {
     const column = createColumnHelper<ExpandedRoundSpeakerResult>()
 
     return (
@@ -29,4 +29,4 @@ const SpeakingResultTable = ({ data }: SpeakingResultProps) => {
     )
 }
 
-export default SpeakingResultTable
+export default RoundSpeakingResultTable

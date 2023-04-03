@@ -1,27 +1,32 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react'
 import { BsJournalBookmark } from 'react-icons/bs'
-import { Tournament, TournamentResult, Round, Circuit, Alias, School, TournamentSpeakerResult } from '@shared/database'
+import { Tournament, TournamentResult, Circuit, Alias, School, TournamentSpeakerResult } from '@shared/database'
 import { Table, Card } from '@shared/components'
-import RoundByRoundTable from './RoundByRoundTable'
+import TournamentSummaryTable from './TournamentSummaryTable'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
+
+export type ExpandedTournamentSpeakerResult = TournamentSpeakerResult & {
+  competitor: {
+    name: string
+  }
+};
 
 export type ExpandedTournamentResult = TournamentResult & {
   tournament: Tournament & {
-      circuits: Circuit[];
+    circuits: Circuit[];
   };
   alias: Alias;
   school: School;
-  speaking: TournamentSpeakerResult[];
-}
+  speaking: ExpandedTournamentSpeakerResult[];
+};
 
 export interface TournamentListTableProps {
-  data: ExpandedTournamentResult[] // | ((page: number, limit: number) => TournamentResult)
+  data: ExpandedTournamentResult[]
 }
 
 const TournamentListTable = ({ data }: TournamentListTableProps) => {
   const column = createColumnHelper<ExpandedTournamentResult>();
-  console.log(data)
 
   return (
     <Card icon={<BsJournalBookmark />} title="Tournament History" className="max-w-[800px] mx-auto my-16">
@@ -77,7 +82,7 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
         }}
-        child={RoundByRoundTable}
+        child={TournamentSummaryTable}
       />
     </Card>
   )
