@@ -53,7 +53,7 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
               cell: props => {
                 const won = props.row.original.prelimBallotsWon;
                 const lost = props.row.original.prelimBallotsLost;
-                return `${won}-${lost} (${Math.trunc(won/(won+lost))}%)`
+                return `${won}-${lost}`
               }
             }),
             column.display({
@@ -62,7 +62,7 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
                 const won = props.row.original.elimWins || 0;
                 const lost = props.row.original.elimLosses || 0;
                 if (won + lost == 0) return '--';
-                return `${won}-${lost} (${Math.trunc(won / (won + lost))}%)`;
+                return `${won}-${lost}`;
               }
             }),
             column.display({
