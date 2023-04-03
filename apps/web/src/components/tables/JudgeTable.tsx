@@ -40,6 +40,7 @@ const JudgeTable = ({count}: JudgeTableProps) => {
     <Card icon={<TbGavel />} title="Judges" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
+        numLoadingRows={10}
         columnConfig={{
           core: [
             column.accessor('name', {

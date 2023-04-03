@@ -40,6 +40,7 @@ const CompetitorTable = ({count}: CompetitorTableProps) => {
     <Card icon={<BsPerson />} title="Competitors" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
+        numLoadingRows={10}
         columnConfig={{
           core: [
             column.accessor('name', {

@@ -11,7 +11,7 @@ interface OverviewProps {
 const Overview = (props: OverviewProps) => {
   return (
     <div className="w-full flex flex-col bg-luka-100 overflow-hidden">
-      <span className="h-[4rem]" />
+      <span className="md:h-[4rem]" />
       <div className="flex justify-center items-center w-full bg-luka-100 py-6">
         <div
           id="overview"

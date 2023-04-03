@@ -23,13 +23,11 @@ const Team = () => {
     }
   );
 
-  if (!data) return;
-
   return (
     <>
       <NextSeo
-        title={`Debate Land: ${data.aliases[0]?.code}'s Profile`}
-        description={`${data.aliases[0].code}'s competitive statistics in ${query.event}, exclusively on Debate Land.`}
+        title={`Debate Land: ${data?.aliases[0]?.code || '--'}'s Profile`}
+        description={`${data?.aliases[0].code || '--'}'s competitive statistics in ${query.event}, exclusively on Debate Land.`}
         additionalLinkTags={[
           {
             rel: 'icon',
@@ -41,80 +39,88 @@ const Team = () => {
         <Overview
           label="Team"
           heading={
-            <>
-              <a href={`/competitors/${data.competitors[0].id}`}>
-                {data.competitors[0].name}
-              </a>
-              {
-                data.competitors.length > 1 && (
-                  <span>
-                    {' & '}
-                    <a href={`/competitors/${data.competitors[1].id}`}>
-                      {data.competitors[1].name}
-                    </a>
-                  </span>
-                )
-              }
-            </>
+            data
+              ? (
+                <>
+                  <a href={`/competitors/${data.competitors[0].id}`}>
+                    {data.competitors[0].name}
+                  </a>
+                  {
+                    data.competitors.length > 1 && (
+                      <span>
+                        {' & '}
+                        <a href={`/competitors/${data.competitors[1].id}`}>
+                          {data.competitors[1].name}
+                        </a>
+                      </span>
+                    )
+                  }
+                </>
+              )
+              : 'LOADER'
           }
-          subtitle={`${query.event} | ${data.circuits[0].name} | ${data.seasons[0].id}-${data.seasons[data.seasons.length - 1].id}`}
+          subtitle={
+            data
+              ? `${query.event} | ${data.circuits[0].name} | ${data.seasons[0].id}-${data.seasons[data.seasons.length - 1].id}`
+              : 'LOADER'
+            }
           underview={
             <Statistics
               primary={[
                 {
-                  value: Math.round(data.statistics.otr * 100) / 100,
+                  value: data ? Math.round(data.statistics.otr * 100) / 100 : undefined,
                   description: "OTR Score"
                 },
                 {
-                  value: data.statistics.inTop20Pct + 'x',
-                  description: "Top 20% Prelim Seed"
+                  value: data ? data.statistics.inTop20Pct + 'x' : undefined,
+                  description: "Top 20% Seed"
                 },
                 {
-                  value: data.statistics.bids,
-                  description: `TOC Bid${data.statistics.bids > 1 ? 's' : ''}`
+                  value: data ? data.statistics.bids : undefined,
+                  description: `TOC Bid${(data?.statistics.bids || 2) > 1 ? 's' : ''}`
                 },
                 {
-                  value: Math.round(data.statistics.avgSpeaks * 10) / 10,
+                  value: data ? Math.round(data.statistics.avgSpeaks * 10) / 10 : undefined,
                   description: "Avg Raw Spks."
                 }
               ]}
               advanced={[
                 {
-                  value: data.results.length,
+                  value: data?.results.length,
                   description: "Tournaments"
                 },
                 {
-                  value: data._count.rounds,
+                  value: data?._count.rounds,
                   description: "Rounds"
                 },
                 {
-                  value: data.statistics.lastActive,
+                  value: data?.statistics.lastActive,
                   description: "Last Active"
                 },
                 {
-                  value: data.statistics.avgOpWpM,
+                  value: data?.statistics.avgOpWpM,
                   isPercentage: true,
                   round: 1,
                   description: "Avg. OpWpM"
                 },
                 {
-                  value: `${data.statistics.pRecord[0]}-${data.statistics.pRecord[1]}`,
+                  value: data ? `${data.statistics.pRecord[0]}-${data.statistics.pRecord[1]}` : undefined,
                   description: "Prelim Rcd."
                 },
                 {
-                  value: data.statistics.pWp,
+                  value: data?.statistics.pWp,
                   isPercentage: true,
                   round: 1,
                   description: "Prelim Win Pct."
                 },
                 {
-                  value: data.statistics.breakPct,
+                  value: data?.statistics.breakPct,
                   isPercentage: true,
                   round: 1,
                   description: "Break Pct."
                 },
                 {
-                  value: data.statistics.tWp,
+                  value: data?.statistics.tWp,
                   isPercentage: true,
                   round: 1,
                   description: "True Win Pct."
@@ -123,7 +129,7 @@ const Team = () => {
             />
           }
         />
-        <TournamentListTable data={data.results} />
+        <TournamentListTable data={data?.results} />
         {/* TODO: Alias/School Tables & Charts */}
       </div>
     </>

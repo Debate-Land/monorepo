@@ -20,15 +20,13 @@ const Dataset = () => {
     },
     {
       enabled: isReady,
-      // refetchOnWindowFocus: true,
-      // refetchOnMount: false,
-      // refetchOnReconnect: false,
-      // staleTime: 1000 * 60 * 60 * 24,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 60 * 24,
     }
   );
 
-  if (!data) return;
-  console.log(data)
   return (
     <>
       <NextSeo
@@ -44,37 +42,41 @@ const Dataset = () => {
       <div className="min-h-screen">
         <Overview
           label="Dataset"
-          heading={`${query.season as string} ${data.circuit?.name} ${data.circuit?.event}`}
+          heading={
+            data
+              ? `${query.season as string} ${data.circuit?.name} ${data.circuit?.event}`
+              : 'LOADER'
+          }
           subtitle="exclusively on Debate Land"
           underview={
             <Statistics
               primary={[
                 {
-                  value: data.numTournaments as number,
+                  value: data?.numTournaments,
                   description: "Tournaments"
                 },
                 {
-                  value: data.numTeams as number,
+                  value: data?.numTeams,
                   description: "Teams"
                 },
                 {
-                  value: data.numSchools as number,
+                  value: data?.numSchools,
                   description: "Schools"
                 },
                 {
-                  value: data.numBids as number,
+                  value: data?.numBids || undefined,
                   description: "Bids"
                 }
               ]}
             />
           }
         />
-        <LeaderboardTable count={data.numTeams}  />
-        <TournamentTable count={data.numTournaments} />
-        <CompetitorTable count={data.numCompetitors} />
-        <JudgeTable count={data.numJudges} />
-        <SchoolTable count={data.numSchools} />
-        <BidTable count={data.numBids!} />
+        <LeaderboardTable count={data?.numTeams || 50}  />
+        <TournamentTable count={data?.numTournaments || 50} />
+        <CompetitorTable count={data?.numCompetitors || 50} />
+        <JudgeTable count={data?.numJudges || 50} />
+        <SchoolTable count={data?.numSchools || 50} />
+        <BidTable count={data?.numBids! || 50} />
       </div>
     </>
   )
