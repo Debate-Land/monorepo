@@ -33,7 +33,7 @@ const Statistic = ({ value, description, primary, className, round, isPercentage
           className?.inner,
         )}
       >
-        <Text bold className={clsx('foo', { 'text-xl sm:text-2xl md:text-3xl': primary }, className?.value)}>
+        <Text bold className={clsx('foo', { 'text-xl sm:text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-sky-400': primary }, className?.value)}>
           {value}{isPercentage ? '%' : ''}
         </Text>
         <Text size="xs" className={clsx('text-center px-2', className?.description)}>

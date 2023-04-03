@@ -1,5 +1,4 @@
-/* eslint-disable react/no-unescapedd-entities */
-
+/* eslint-disable react/no-unescaped-entities */
 import React from 'react'
 import { NextPage } from 'next'
 import CountUp from 'react-countup'
