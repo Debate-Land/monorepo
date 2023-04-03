@@ -40,8 +40,8 @@ const TournamentTable = ({count}: TournamentTableProps) => {
     <Card icon={<AiOutlineCalendar />} title="Tournaments" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
-        columns={
-          [
+        columnConfig={{
+          core: [
             column.accessor('name', {
               header: "Name",
               cell: props => props.getValue()
@@ -50,12 +50,14 @@ const TournamentTable = ({count}: TournamentTableProps) => {
               header: "Date",
               cell: props => new Date(props.cell.getValue() * 1000).toLocaleDateString("en-us")
             }),
+          ] as ColumnDef<TournamentTableRow>[],
+          sm: [
             column.accessor('_count.results', {
               header: "Entries",
               cell: props => props.getValue()
             })
           ] as ColumnDef<TournamentTableRow>[]
-        }
+        }}
         paginationConfig={{
           pagination,
           setPagination,

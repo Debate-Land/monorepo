@@ -40,8 +40,8 @@ const JudgeTable = ({count}: JudgeTableProps) => {
     <Card icon={<TbGavel />} title="Judges" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
-        columns={
-          [
+        columnConfig={{
+          core: [
             column.accessor('name', {
               header: "Name",
               cell: props => props.cell.getValue(),
@@ -51,7 +51,7 @@ const JudgeTable = ({count}: JudgeTableProps) => {
               cell: props => props.cell.getValue().length
             }),
           ] as ColumnDef<JudgeTableRow>[]
-        }
+        }}
         paginationConfig={{
           pagination,
           setPagination,

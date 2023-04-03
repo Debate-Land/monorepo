@@ -40,8 +40,8 @@ const CompetitorTable = ({count}: CompetitorTableProps) => {
     <Card icon={<BsPerson />} title="Competitors" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
-        columns={
-          [
+        columnConfig={{
+          core: [
             column.accessor('name', {
               header: "Name",
               cell: props => props.cell.getValue(),
@@ -51,7 +51,7 @@ const CompetitorTable = ({count}: CompetitorTableProps) => {
               cell: props => props.cell.getValue().length
             }),
           ] as ColumnDef<CompetitorTableRow>[]
-        }
+        }}
         paginationConfig={{
           pagination,
           setPagination,

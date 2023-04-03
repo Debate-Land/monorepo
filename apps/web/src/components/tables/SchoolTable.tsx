@@ -40,8 +40,8 @@ const SchoolTable = ({count}: SchoolTableProps) => {
     <Card icon={<MdOutlineSchool />} title="Schools" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
-        columns={
-          [
+        columnConfig={{
+          core: [
             column.accessor('name', {
               header: "Name",
               cell: props => props.cell.getValue(),
@@ -51,7 +51,7 @@ const SchoolTable = ({count}: SchoolTableProps) => {
               cell: props => props.cell.getValue().length
             }),
           ] as ColumnDef<SchoolTableRow>[]
-        }
+        }}
         paginationConfig={{
           pagination,
           setPagination,

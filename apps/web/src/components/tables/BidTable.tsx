@@ -41,8 +41,8 @@ const BidTable = ({count}: BidTableProps) => {
     <Card icon={<IoMedalOutline />} title="Bids" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
-        columns={
-          [
+        columnConfig={{
+          core: [
             column.accessor('code', {
               header: "Team",
               cell: props => props.cell.getValue()
@@ -52,7 +52,7 @@ const BidTable = ({count}: BidTableProps) => {
               cell: props => props.cell.getValue()
             })
           ] as ColumnDef<BidTableRow>[]
-        }
+        }}
         paginationConfig={{
           pagination,
           setPagination,

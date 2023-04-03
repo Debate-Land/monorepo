@@ -27,8 +27,8 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
     <Card icon={<BsJournalBookmark />} title="Tournament History" className="max-w-[800px] mx-auto my-16">
       <Table
         data={data}
-        columns={
-          [
+        columnConfig={{
+          core: [
             column.accessor('tournament.name', {
               header: "Name",
               cell: props => props.cell.getValue(),
@@ -41,6 +41,8 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
               header: "P. Rk.",
               cell: props => `${props.row.original.prelimPos}/${props.row.original.prelimPoolSize}`
             }),
+          ] as ColumnDef<ExpandedTournamentResult>[],
+          sm: [
             column.display({
               header: "P. Rc.",
               cell: props => {
@@ -67,8 +69,8 @@ const TournamentListTable = ({ data }: TournamentListTableProps) => {
                 return `${bid == 1 ? 'Full' : 'Partial'} ${isGhostBid ? '(ghost)' : ''}`;
               }
             }),
-          ] as ColumnDef<ExpandedTournamentResult>[]
-        }
+          ] as ColumnDef<ExpandedTournamentResult>[],
+        }}
       />
     </Card>
   )

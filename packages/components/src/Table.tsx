@@ -2,9 +2,10 @@ import Text from './Text';
 import { FaSort, FaSortUp, FaSortDown, FaChevronCircleDown, FaChevronCircleUp } from 'react-icons/fa';
 import { FiChevronRight, FiChevronsRight, FiChevronLeft, FiChevronsLeft } from 'react-icons/fi';
 import { ColumnDef, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, useReactTable } from '@tanstack/react-table';
-import React, { Fragment, Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Fragment, Dispatch, SetStateAction, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { BiLinkExternal } from 'react-icons/bi';
+import { useWindowSize } from './hooks';
 
 const getPositionColumn = <T,>(pagination: PaginationState = { pageIndex: 0, pageSize: 0 }) => (
   {
@@ -40,9 +41,23 @@ const getOnClickColumn = <T,>() => (
   } as ColumnDef<T>
 );
 
+const sizes = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  max: Infinity
+};
+
 interface TableProps<T> {
   data: T[] | undefined;
-  columns: ColumnDef<T>[];
+  columnConfig: {
+    core: ColumnDef<T>[];
+    sm?: ColumnDef<T>[];
+    md?: ColumnDef<T>[];
+    lg?: ColumnDef<T>[];
+    xl?: ColumnDef<T>[];
+  };
   paginationConfig?: {
     pagination: PaginationState;
     setPagination: Dispatch<SetStateAction<PaginationState>>;
@@ -58,7 +73,7 @@ interface TableProps<T> {
 }
 
 const classNames = {
-  table: "table-fixed md:table-auto bg-luka-200/20 rounded-lg mx-auto w-full text-sm",
+  table: "table-auto sm:table-fixed md:table-auto bg-luka-200/20 rounded-lg mx-auto w-full text-sm",
   td: "py-3 px-2",
   header: {
     th: "py-3 px-2 text-left",
@@ -74,19 +89,44 @@ const classNames = {
 
 // TODO: Add page limit selection (10, 20, 50) after seeing how performance is impacted
 // TODO: Add initial state to expand first row (only if pageIndex == 0 or undefined)
-// TODO: Add hide row
+// TODO: Add footer aggregations?
 const Table = <T,>({
   data,
-  columns,
+  columnConfig,
   paginationConfig,
   child: ExpandedRow,
   sortingConfig,
   onRowClick,
   showPosition,
 }: TableProps<T>) => {
-  if (showPosition) columns = [getPositionColumn(paginationConfig?.pagination), ...columns];
-  if (ExpandedRow) columns = [getExpandingColumn(), ...columns];
-  if (onRowClick) columns = [getOnClickColumn(), ...columns];
+  const { width } = useWindowSize();
+  const [columns, setColumns] = useState<ColumnDef<T>[]>([]);
+
+  useEffect(() => {
+    let size = null;
+    for (const [breakpoint, cutoff] of Object.entries(sizes)) {
+      if (width as number <= cutoff) {
+        size = breakpoint;
+        break;
+      }
+    };
+    let newColumns: ColumnDef<T>[] = [...columnConfig?.core];
+
+    if (size && Object.keys(sizes).indexOf(size) > 0) {
+      for (const [breakpoint, columns] of Object.entries(columnConfig)) {
+        if (breakpoint === "core") continue;
+        if (Object.keys(sizes).indexOf(breakpoint) <= Object.keys(sizes).indexOf(size)) {
+          newColumns = [...newColumns, ...columns];
+        }
+      }
+    };
+
+    if (showPosition) newColumns = [getPositionColumn(paginationConfig?.pagination), ...newColumns];
+    if (ExpandedRow) newColumns = [getExpandingColumn(), ...newColumns];
+    if (onRowClick) newColumns = [getOnClickColumn(), ...newColumns];
+
+    setColumns(newColumns);
+  }, [width, columnConfig, showPosition, paginationConfig?.pagination, ExpandedRow, onRowClick])
 
   const table = useReactTable({
     data: data || [],
