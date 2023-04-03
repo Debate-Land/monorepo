@@ -40,7 +40,7 @@ const Home: NextPage = () => {
       <div id="dark-background" className="fixed top-0 left-0 h-screen w-full dark:bg-stone-900 -z-40" />
       <div
         id="slanted-hero-top"
-        className="absolute -z-10 -top-[30%] w-full h-[60%] bg-gradient-to-r from-sky-400 via-purple-500 to-violet-900 -skew-y-12 2xl:-skew-y-6"
+        className="absolute -z-10 -top-[30%] w-full h-[60%] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 -skew-y-12 2xl:-skew-y-6"
       />
       <section id="hero" className="w-full min-h-screen flex flex-col justify-start md:justify-around">
         <div className="flex flex-col md:flex-row justify-center items-center z-30 mt-20 md:mt-10">

@@ -23,11 +23,11 @@ const Header = ({ router }: any) => {
 		>
 			{/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
 			<a
-				className="flex items-center space-x-2 min-w-[170px] bg-gradient-to-r from-sky-500 via-purple-600 to-violet-500 px-2 py-1 rounded-lg"
+				className="flex items-center space-x-2 min-w-[170px] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 px-2 py-1 rounded-lg"
 				href="/"
 			>
 				<Image src={Logo32} draggable={false} alt="Debate Land" />
-				<Text className="mt-[1px] !text-white text-lg font-semibold">
+				<Text className="mt-[1px] !text-white md:text-xl font-extrabold">
 					Debate Land
 				</Text>
 			</a>
