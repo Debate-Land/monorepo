@@ -63,10 +63,7 @@ interface TableProps<T> {
     setPagination: Dispatch<SetStateAction<PaginationState>>;
     totalPages?: number;
   };
-  sortingConfig?: {
-    sorting: SortingState;
-    setSorting: Dispatch<SetStateAction<SortingState>>;
-  };
+  sortable: boolean
   child?: (props: { row: T }) => JSX.Element;
   showPosition?: boolean;
   onRowClick?: (row: T) => void;
@@ -95,12 +92,14 @@ const Table = <T,>({
   columnConfig,
   paginationConfig,
   child: ExpandedRow,
-  sortingConfig,
+  sortable,
   onRowClick,
   showPosition,
 }: TableProps<T>) => {
   const { width } = useWindowSize();
   const [columns, setColumns] = useState<ColumnDef<T>[]>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const sortingConfig = sortable ? { sorting, setSorting } : undefined;
 
   useEffect(() => {
     let size = null;

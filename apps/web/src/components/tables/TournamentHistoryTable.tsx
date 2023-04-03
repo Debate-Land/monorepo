@@ -1,10 +1,10 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React from 'react'
+import React, { useState } from 'react'
 import { BsJournalBookmark } from 'react-icons/bs'
 import { Tournament, TournamentResult, Circuit, Alias, School, TournamentSpeakerResult } from '@shared/database'
 import { Table, Card } from '@shared/components'
 import TournamentSummaryTable from './TournamentSummaryTable'
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
+import { ColumnDef, createColumnHelper, SortingState } from '@tanstack/react-table'
 
 export type ExpandedTournamentSpeakerResult = TournamentSpeakerResult & {
   competitor: {
@@ -37,18 +37,19 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
             column.accessor('tournament.name', {
               header: "Name",
               cell: props => props.cell.getValue(),
+              enableSorting: false,
             }),
             column.accessor('tournament.start', {
               header: "Date",
               cell: props => new Date(props.cell.getValue() * 1000).toLocaleDateString("en-us")
             }),
-            column.display({
+            column.accessor('prelimPos', {
               header: "P.RK",
               cell: props => `${props.row.original.prelimPos}/${props.row.original.prelimPoolSize}`
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
           sm: [
-            column.display({
+            column.accessor('prelimBallotsWon',{
               header: "P.RC",
               cell: props => {
                 const won = props.row.original.prelimBallotsWon;
@@ -56,7 +57,7 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
                 return `${won}-${lost}`
               }
             }),
-            column.display({
+            column.accessor('elimWins', {
               header: "E.RC",
               cell: props => {
                 const won = props.row.original.elimWins || 0;
@@ -65,7 +66,7 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
                 return `${won}-${lost}`;
               }
             }),
-            column.display({
+            column.accessor('bid', {
               header: "Bid",
               cell: props => {
                 let bid = props.row.original.bid;
@@ -83,6 +84,7 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
           ] as ColumnDef<ExpandedTournamentResult>[],
         }}
         child={TournamentSummaryTable}
+        sortable
       />
     </Card>
   )

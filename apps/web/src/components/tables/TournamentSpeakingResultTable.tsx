@@ -10,34 +10,41 @@ export interface TournamentSpeakingResultProps {
 const TournamentSpeakingResultTable = ({ data }: TournamentSpeakingResultProps) => {
   const column = createColumnHelper<ExpandedTournamentSpeakerResult>()
 
-  return data.length
-    ? (
-        <Table
-            data={data}
-            columnConfig={{
-                core: [
-                    column.accessor('competitor.name', {
-                        header: "Comp.",
-                        cell: props => props.cell.getValue()
-                    }),
-                    column.accessor('rawAvgPoints', {
-                        header: "Raw Avg.",
+  return (
+    <div>
+      <Text className="text-xl font-bold dark:text-gray-300 text-gray-700 mb-1">Speaking</Text>
+      {
+        data.length
+          ? (
+            <Table
+                data={data}
+                columnConfig={{
+                    core: [
+                        column.accessor('competitor.name', {
+                            header: "Comp.",
+                            cell: props => props.cell.getValue()
+                        }),
+                        column.accessor('rawAvgPoints', {
+                            header: "Raw Avg.",
+                            cell: props => props.cell.getValue().toFixed(1)
+                        }),
+                        column.accessor('adjAvgPoints', {
+                        header: "Adj. Avg.",
                         cell: props => props.cell.getValue().toFixed(1)
                     }),
-                    column.accessor('adjAvgPoints', {
-                      header: "Adj. Avg.",
-                      cell: props => props.cell.getValue().toFixed(1)
-                  }),
-                ] as ColumnDef<ExpandedTournamentSpeakerResult>[]
-            }}
-        />
-    )
-  : (
-      <div className="w-full flex justify-center p-3">
-        <Text>
-            No speaking result details!
-        </Text>
-      </div>
+                    ] as ColumnDef<ExpandedTournamentSpeakerResult>[]
+                }}
+              />
+            )
+          : (
+              <div className="w-full flex justify-center dark:text-gray-300 text-gray-700">
+                <Text>
+                    No speaking result details!
+                </Text>
+              </div>
+          )
+      }
+    </div>
   )
 }
 

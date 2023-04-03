@@ -6,6 +6,7 @@ import RoundTable from './RoundTable'
 import { ExpandedTournamentResult } from './TournamentHistoryTable'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import TournamentSpeakingResultTable from './TournamentSpeakingResultTable'
+import TournamentRoundsTable from './TournamentRoundsTable'
 
 export type ExpandedRoundJudgeRecord = {
   judge: Judge;
@@ -30,56 +31,12 @@ export interface TournamentSummaryTableProps {
   row: ExpandedTournamentResult;
 };
 
-// TODO: Sorting
+// TODO: Move this to its own thing... not really a table
 const TournamentSummaryTable = ({ row: parent }: TournamentSummaryTableProps) => {
-  const { data } = trpc.rounds.useQuery(
-    {
-      id: parent.id
-    },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      staleTime: 1000 * 60 * 60 * 24,
-    }
-  );
-  const column = createColumnHelper<ExpandedRound>();
-
-  if (!data) return <></>;
-
   return (
     <div className="space-y-2">
+      <TournamentRoundsTable id={parent.id} />
       <TournamentSpeakingResultTable data={parent.speaking} />
-      <Table
-        data={data}
-        columnConfig={{
-          core: [
-            column.accessor('nameStd', {
-              header: "Round",
-              cell: props => props.cell.getValue()
-            }),
-            column.accessor('opponent', {
-              header: "Opponent",
-              cell: props => props.row.original.opponent?.aliases[0].code || '--'
-            }),
-            column.accessor('result', {
-              header: "Res.",
-              cell: props => props.cell.getValue()
-            }),
-          ] as ColumnDef<ExpandedRound>[],
-          sm: [
-            column.accessor('ballotsWon', {
-              header: "Dec.",
-              cell: props => `${props.row.original.ballotsWon}-${props.row.original.ballotsLost}`
-            }),
-            column.accessor('side', {
-              header: "Side",
-              cell: props => props.cell.getValue()
-            }),
-          ] as ColumnDef<ExpandedRound>[],
-        }}
-        child={RoundTable}
-      />
     </div>
   )
 }
