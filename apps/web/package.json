@@ -28,6 +28,7 @@
     "next-seo": "^5.15.0",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
+    "react-code-ui": "^0.0.4-beta-0",
     "react-countup": "^6.4.2",
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",

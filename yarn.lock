@@ -2625,6 +2625,13 @@ quick-lru@^5.1.1:
   resolved "https://registry.npmjs.org/quick-lru/-/quick-lru-5.1.1.tgz"
   integrity sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
 
+react-code-ui@^0.0.4-beta-0:
+  version "0.0.4-beta-0"
+  resolved "https://registry.yarnpkg.com/react-code-ui/-/react-code-ui-0.0.4-beta-0.tgz#0512cfbe86a04ad079056d46c8d3c59a5dae6289"
+  integrity sha512-UJvU1EDACMsFjhwkjY9dorsrbUQJiCkW0r3R7cAJctJTIeM6U2h13wV/eodaxZFoJLU4Ke8S/+0jY1qdfgBxEg==
+  dependencies:
+    react "^17.0.2"
+
 react-countup@^6.4.2:
   version "6.4.2"
   resolved "https://registry.npmjs.org/react-countup/-/react-countup-6.4.2.tgz"
@@ -2686,6 +2693,14 @@ react@18.2.0:
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
   dependencies:
     loose-envify "^1.1.0"
+
+react@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
+  integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
 
 read-cache@^1.0.0:
   version "1.0.0"

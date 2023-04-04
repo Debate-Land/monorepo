@@ -1,5 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import React from 'react'
+import Code from "react-code-ui";
+import "react-code-ui/dist/index.css";
 import { NextPage } from 'next'
 import CountUp from 'react-countup'
 import { Text, GridLine } from '@shared/components'
@@ -7,18 +9,16 @@ import Image from 'next/image'
 import { useMediaQuery } from 'react-responsive'
 import { Compass, Telescope, Radar } from '@src/components/features'
 import { NextSeo } from 'next-seo'
-import { useTheme } from 'next-themes'
 import MobileGraphic from '../../public/assets/img/mobile_graphic.png'
 import WebGraphic from '../../public/assets/img/web_graphic.png'
 import AppStoreGraphic from '../../public/assets/img/app_store.svg'
 import GooglePlayGraphic from '../../public/assets/img/google_play.svg'
+import code from '@src/const/api-demo-code';
 
 const Home: NextPage = () => {
   const isLarge = useMediaQuery({
     query: '(min-width: 768px)',
-  })
-
-  const { theme } = useTheme()
+  });
 
   return (
     <>
@@ -64,19 +64,19 @@ const Home: NextPage = () => {
           id="stats"
           className="w-full flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-0"
         >
-          <div className="flex flex-col items-center xl:items-start xl:ml-[20%] xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-indigo-400 z-10 my-2 md:my-0">
+          <div className="flex flex-col items-center xl:items-start xl:ml-[20%] xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
             <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={950} end={1000} separator="," />
             <Text className="!text-gray-400">Tournaments</Text>
           </div>
-          <div className="flex flex-col items-center xl:items-start xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-indigo-400 z-10 my-2 md:my-0">
+          <div className="flex flex-col items-center xl:items-start xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
             <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={9500} end={10000} separator="," />
             <Text className="!text-gray-400 pb-4 sm:pb-0">Competitors</Text>
           </div>
-          <div className="flex flex-col items-center xl:items-start xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-indigo-400 z-10 my-2 md:my-0">
+          <div className="flex flex-col items-center xl:items-start xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
             <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={95000} end={100000} separator="," />
             <Text className="!text-gray-400 pb-4 sm:pb-0">Rounds</Text>
           </div>
-          <div className="flex flex-col items-center xl:items-start xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-indigo-400 z-10 my-2 md:my-0">
+          <div className="flex flex-col items-center xl:items-start xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
             <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={950000} end={1000000} separator="," />
             <Text className="!text-gray-400 pb-4 sm:pb-0">Queries</Text>
           </div>
@@ -167,7 +167,7 @@ const Home: NextPage = () => {
           <div className="flex flex-col 2xl:flex-row 2xl:items-start items-center justify-center xl:justify-start 2xl:flex-none w-full mt-5 md:space-y-6 2xl:space-y-0 px-8 xl:px-0">
             <div className="flex flex-col md:flex-row justify-center xl:justify-start w-full">
               <div className="h-full rounded-xl p-3 xl:p-0 bg-transparent xl:rounded-none min-w-[200px] md:w-[300px] xl:min-w-[30%] xl:items-start xl:ml-[20%] 2xl:ml-[40%]">
-                <h3 className="mr-2 text-indigo-400 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-indigo-400 z-10">
+                <h3 className="mr-2 text-indigo-400 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   For debaters, by debaters.
                 </h3>
                 <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
@@ -177,7 +177,7 @@ const Home: NextPage = () => {
               </div>
 
               <div className="h-full rounded-xl p-3 xl:p-0 bg-transparent xl:rounded-none min-w-[200px] md:w-[300px] xl:min-w-[30%] xl:items-start 2xl:ml-0">
-                <h3 className="mr-2 text-sky-600 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-indigo-400 z-10">
+                <h3 className="mr-2 text-sky-600 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   Intuitive, as it should be.
                 </h3>
                 <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
@@ -188,7 +188,7 @@ const Home: NextPage = () => {
             </div>
             <div className="flex flex-col-reverse md:flex-row justify-center xl:justify-start w-full">
               <div className="h-full rounded-xl p-3 xl:p-0 bg-transparent xl:rounded-none min-w-[200px] md:w-[300px] xl:min-w-[30%] xl:items-start xl:ml-[20%] 2xl:ml-0 2xl:max-w-[15%]">
-                <h3 className="mr-2 text-sky-600 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-indigo-400 z-10">
+                <h3 className="mr-2 text-sky-600 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   A history of success.
                 </h3>
                 <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
@@ -196,7 +196,7 @@ const Home: NextPage = () => {
                 </p>
               </div>
               <div className="h-full rounded-xl p-3 xl:p-0 bg-transparent xl:rounded-none min-w-[200px] md:w-[300px] xl:min-w-[30%] xl:items-start 2xl:max-w-[15%]">
-                <h3 className="mr-2 text-indigo-400 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-indigo-400 z-10">
+                <h3 className="mr-2 text-indigo-400 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   Transparent, always.
                 </h3>
                 <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
@@ -212,7 +212,7 @@ const Home: NextPage = () => {
         <div className="flex flex-col mx-auto xl:flex-row md:w-2/3 xl:w-full xl:space-x-[20px] 2xl:space-x-[10%] px-5 items-center justify-around xl:justify-start">
           <div className="flex flex-col md:max-w-[600px] 2xl:max-w-[35%] xl:ml-[20%] 2xl:mr-[3%]">
             <h2
-              className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-indigo-400 z-10"
+              className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-red-400 z-10"
               id="mobile"
             >
               Debate{' '}
@@ -242,10 +242,10 @@ const Home: NextPage = () => {
             <Image src={MobileGraphic} layout="responsive" draggable={false} placeholder="blur" alt="Mobile Graphic" />
           </div>
         </div>
-        <div className="flex flex-col mx-auto xl:flex-row md:w-2/3 xl:w-full xl:space-x-[20px] 2xl:space-x-[10%] px-5 items-center justify-around xl:justify-start">
+        <div className="flex flex-col mx-auto xl:flex-row md:w-2/3 xl:w-full xl:space-x-[20px] 2xl:space-x-[10%] px-5 items-center justify-around xl:justify-start ">
           <div className="flex flex-col md:max-w-[600px] 2xl:max-w-[35%] xl:ml-[20%]">
             <h2
-              className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-indigo-400 z-10"
+              className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-red-400 z-10"
               id="api"
             >
               API?{' '}
@@ -269,7 +269,9 @@ const Home: NextPage = () => {
             </div>
           </div>
           <div className="w-full max-w-[600px] mt-10 xl:mt-0 h-auto md:hover:scale-[105%] transition-all overflow-hidden text-xs">
-            {/* <Terminal lines={terminalLines} white={theme === 'light'} /> */}
+            <Code
+              code={code}
+            />
           </div>
         </div>
       </section>

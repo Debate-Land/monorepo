@@ -39,7 +39,7 @@ const TournamentSpeakingResultTable = ({ data }: TournamentSpeakingResultProps) 
           : (
               <div className="w-full flex justify-center dark:text-gray-300 text-gray-700">
                 <Text>
-                    No speaking result details!
+                    No speaking results!
                 </Text>
               </div>
           )
