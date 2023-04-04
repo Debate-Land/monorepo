@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table, Text } from '@shared/components'
-import { ExpandedRound, ExpandedRoundJudgeRecord } from './TournamentSummaryTable'
+import { ExpandedRound, ExpandedRoundJudgeRecord } from './TournamentHistoryTable'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import RoundSpeakingResultTable from './RoundSpeakingResultTable'
 

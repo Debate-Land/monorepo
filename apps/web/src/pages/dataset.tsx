@@ -2,15 +2,9 @@ import { NextSeo } from 'next-seo'
 import React from 'react'
 import { trpc } from '@src/utils/trpc'
 import { useRouter } from 'next/router';
-import { Loader } from '@shared/components';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
-import LeaderboardTable from '@src/components/tables/LeaderboardTable';
-import SchoolTable from '@src/components/tables/SchoolTable';
-import TournamentTable from '@src/components/tables/TournamentTable';
-import CompetitorTable from '@src/components/tables/CompetitorTable';
-import JudgeTable from '@src/components/tables/JudgeTable';
-import BidTable from '@src/components/tables/BidTable';
+import {CompetitorTable, TournamentTable, SchoolTable, LeaderboardTable, JudgeTable, BidTable} from '@src/components/tables/dataset';
 
 const Dataset = () => {
   const { query, isReady } = useRouter();

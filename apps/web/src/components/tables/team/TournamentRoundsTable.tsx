@@ -19,8 +19,8 @@ export type ExpandedRound = Round & {
   judgeRecords: ExpandedRoundJudgeRecord[];
   speaking: ExpandedRoundSpeakerResult[];
   opponent: {
-      id: string;
-      aliases: Alias[];
+    id: string;
+    aliases: Alias[];
   } | null;
 }
 

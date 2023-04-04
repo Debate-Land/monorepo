@@ -1,10 +1,11 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, { useState } from 'react'
 import { BsJournalBookmark } from 'react-icons/bs'
-import { Tournament, TournamentResult, Circuit, Alias, School, TournamentSpeakerResult } from '@shared/database'
+import { Tournament, TournamentResult, Circuit, Alias, School, TournamentSpeakerResult, Competitor, Judge, Round, RoundSpeakerResult, Side } from '@shared/database'
 import { Table, Card } from '@shared/components'
-import TournamentSummaryTable from './TournamentSummaryTable'
 import { ColumnDef, createColumnHelper, SortingState } from '@tanstack/react-table'
+import TournamentRoundsTable from './TournamentRoundsTable'
+import TournamentSpeakingResultTable from './TournamentSpeakingResultTable'
 
 export type ExpandedTournamentSpeakerResult = TournamentSpeakerResult & {
   competitor: {
@@ -20,6 +21,25 @@ export type ExpandedTournamentResult = TournamentResult & {
   school: School;
   speaking: ExpandedTournamentSpeakerResult[];
 };
+
+export type ExpandedRoundJudgeRecord = {
+  judge: Judge;
+  decision: Side;
+  tabJudgeId: number;
+};
+
+export type ExpandedRoundSpeakerResult = RoundSpeakerResult & {
+  competitor: Competitor;
+}
+
+export type ExpandedRound = Round & {
+  judgeRecords: ExpandedRoundJudgeRecord[];
+  speaking: ExpandedRoundSpeakerResult[];
+  opponent: {
+    id: string;
+    aliases: Alias[];
+  } | null;
+}
 
 export interface TournamentHistoryTableProps {
   data?: ExpandedTournamentResult[]
@@ -50,7 +70,7 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
           sm: [
-            column.accessor('prelimBallotsWon',{
+            column.accessor('prelimBallotsWon', {
               header: "P.RC",
               cell: props => {
                 const won = props.row.original.prelimBallotsWon;
@@ -84,7 +104,12 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
         }}
-        child={TournamentSummaryTable}
+        child={({ row: parent }) => (
+          <div className="space-y-2">
+            <TournamentRoundsTable id={parent.id} />
+            <TournamentSpeakingResultTable data={parent.speaking} />
+          </div>
+        )}
         sortable
       />
     </Card>

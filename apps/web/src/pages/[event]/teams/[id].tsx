@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc';
-import { TournamentListTable } from '@src/components/tables'
+import { TournamentHistoryTable } from '@src/components/tables/team'
 import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
@@ -130,7 +130,7 @@ const Team = () => {
             />
           }
         />
-        <TournamentListTable data={data?.results} />
+        <TournamentHistoryTable data={data?.results} />
         {/* TODO: Alias/School Tables & Charts */}
       </div>
     </>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table, Text } from '@shared/components'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
-import { ExpandedRoundSpeakerResult } from './TournamentSummaryTable'
+import { ExpandedRoundSpeakerResult } from './TournamentHistoryTable'
 
 export interface RoundSpeakingResultProps {
     data: ExpandedRoundSpeakerResult[]
