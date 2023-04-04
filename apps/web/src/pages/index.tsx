@@ -10,15 +10,19 @@ import { useMediaQuery } from 'react-responsive'
 import { Compass, Telescope, Radar } from '@src/components/features'
 import { NextSeo } from 'next-seo'
 import MobileGraphic from '../../public/assets/img/mobile_graphic.png'
-import WebGraphic from '../../public/assets/img/web_graphic.png'
+import WebGraphicDark from '../../public/assets/img/web_graphic_dark.png'
+import WebGraphicLight from '../../public/assets/img/web_graphic_light.png';
 import AppStoreGraphic from '../../public/assets/img/app_store.svg'
 import GooglePlayGraphic from '../../public/assets/img/google_play.svg'
 import code from '@src/const/api-demo-code';
+import { useTheme } from 'next-themes';
 
 const Home: NextPage = () => {
   const isLarge = useMediaQuery({
     query: '(min-width: 768px)',
   });
+
+  const { theme } = useTheme();
 
   return (
     <>
@@ -54,8 +58,19 @@ const Home: NextPage = () => {
           </div>
           <div id="hero-right" className="overflow-hidden">
             {isLarge && (
-              <div className="w-[750px] h-auto">
-                <Image src={WebGraphic} layout="responsive" draggable={false} placeholder="blur" priority alt="Leaderboard Graphic" />
+              <div className="w-[750px] h-auto flex flex-col overflow-hidden border border-gray-400 rounded-lg">
+                <Image
+                  src={
+                    theme == 'dark'
+                      ? WebGraphicDark
+                      : WebGraphicLight
+
+                  }
+                  layout="responsive"
+                  draggable={false}
+                  placeholder="blur"
+                  alt="Team Sample Graphic"
+                />
               </div>
             )}
           </div>
