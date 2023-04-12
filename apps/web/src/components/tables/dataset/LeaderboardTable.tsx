@@ -24,12 +24,12 @@ interface LeaderboardTableProps {
   count: number
 }
 
-const LeaderboardTable = ({count}: LeaderboardTableProps) => {
+const LeaderboardTable = ({ count }: LeaderboardTableProps) => {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
-  const {query, isReady, ...router} = useRouter();
+  const { query, isReady, ...router } = useRouter();
   const { data } = trpc.dataset.leaderboard.useQuery(
     {
       season: parseInt(query.season as unknown as string),
@@ -73,7 +73,7 @@ const LeaderboardTable = ({count}: LeaderboardTableProps) => {
           lg: [
             column.accessor('statistics.avgOpWpM', {
               header: "Avg. OpWpM",
-              cell: props => (props.cell.getValue()*100).toFixed(1) + '%'
+              cell: props => (props.cell.getValue() * 100).toFixed(1) + '%'
             }),
             column.accessor('statistics.avgRawSpeaks', {
               header: "Avg. Spks.",
@@ -84,13 +84,18 @@ const LeaderboardTable = ({count}: LeaderboardTableProps) => {
         paginationConfig={{
           pagination,
           setPagination,
-          totalPages: Math.ceil(count/pagination.pageSize)
+          totalPages: Math.ceil(count / pagination.pageSize)
         }}
-        onRowClick={(row) => router.push(`/${query.event}/teams/${row.team.id}`)}
+        onRowClick={
+          (row) => router.push({
+            pathname: `/teams/${row.team.id}`,
+            query
+          })
+        }
         showPosition
       />
     </Card>
-    )
+  )
 }
 
 export default LeaderboardTable

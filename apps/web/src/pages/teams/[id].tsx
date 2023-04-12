@@ -5,7 +5,6 @@ import { TournamentHistoryTable } from '@src/components/tables/team'
 import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
-import { Loader } from '@shared/components';
 
 // TODO: National Rank at some point...
 const Team = () => {
@@ -14,6 +13,12 @@ const Team = () => {
     {
       id: query.id as string,
       event: query.event as string,
+      ...(query.circuit && {
+        circuit: parseInt(query.circuit as unknown as string)
+      }),
+      ...(query.season && {
+        season: parseInt(query.season as unknown as string)
+      })
     },
     {
       enabled: isReady,
@@ -62,9 +67,9 @@ const Team = () => {
           }
           subtitle={
             data
-              ?  'Public Forum | IL Varsity | 2023' //`${query.event} | ${data.circuits[0].name} | ${data.seasons[0].id}-${data.seasons[data.seasons.length - 1].id}`
+              ? `${query.event} | ${data.circuits[0].name} | ${data.seasons[0].id}-${data.seasons[data.seasons.length - 1].id}`
               : undefined
-            }
+          }
           underview={
             <Statistics
               primary={[

@@ -86,7 +86,7 @@ const datasetRouter = router({
         // # Schools
         prisma.school.count({
           where: {
-            tournamentResults: {
+            results: {
               some: {
                 tournament: {
                   circuits: {
@@ -105,23 +105,24 @@ const datasetRouter = router({
           }
         }),
         // # Bids
-        prisma.tournamentResult.aggregate({
+        prisma.bid.count({
           where: {
-            tournament: {
-              circuits: {
-                some: {
+            result: {
+              tournament: {
+                circuits: {
+                  some: {
+                    id: {
+                      equals: input.circuit
+                    }
+                  }
+                },
+                season: {
                   id: {
-                    equals: input.circuit
+                    equals: input.season
                   }
                 }
-              },
-              seasonId: {
-                equals: input.season
               }
             }
-          },
-          _sum: {
-            bid: true,
           }
         }),
         // # Judges
@@ -153,7 +154,7 @@ const datasetRouter = router({
         numTournaments: data[2],
         numCompetitors: data[3],
         numSchools: data[4],
-        numBids: data[5]?._sum.bid,
+        numBids: data[5],
         numJudges: data[6],
       };
     }),
@@ -188,7 +189,7 @@ const datasetRouter = router({
                   prelimBallotsLost: true,
                   elimBallotsWon: true,
                   elimBallotsLost: true,
-                  opWpm: true,
+                  opWpM: true,
                   speaking: {
                     select: {
                       rawAvgPoints: true
@@ -224,7 +225,7 @@ const datasetRouter = router({
             pRecord[1] += r.prelimBallotsLost;
             eRecord[0] += r.elimBallotsWon || 0;
             eRecord[1] += r.elimBallotsLost || 0;
-            opWpm.push(r.opWpm);
+            opWpm.push(r.opWpM);
             speaks.push(...r.speaking.map(d => d.rawAvgPoints));
           });
 
@@ -273,7 +274,7 @@ const datasetRouter = router({
         include: {
           _count: {
             select: {
-              results: true,
+              teamResults: true,
             }
           }
         },
@@ -430,7 +431,7 @@ const datasetRouter = router({
     .query(async ({ input }) => {
       const result = await prisma.school.findMany({
         where: {
-          tournamentResults: {
+          results: {
             some: {
               tournament: {
                 circuits: {
@@ -448,7 +449,7 @@ const datasetRouter = router({
           }
         },
         include: {
-          tournamentResults: {
+          results: {
             where: {
               tournament: {
                 circuits: {
@@ -469,7 +470,7 @@ const datasetRouter = router({
           }
         },
         orderBy: {
-          tournamentResults: {
+          results: {
             _count: "desc"
           }
         },
@@ -489,7 +490,7 @@ const datasetRouter = router({
       })
     )
     .query(async ({ input }) => {
-      const result = await prisma.tournamentResult.groupBy({
+      const result = await prisma.teamTournamentResult.groupBy({
         by: ['teamId'],
         where: {
           tournament: {
@@ -505,7 +506,7 @@ const datasetRouter = router({
             }
           },
           bid: {
-            not: 0,
+          
           }
         },
         having: {

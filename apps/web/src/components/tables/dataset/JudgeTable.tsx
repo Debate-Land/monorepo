@@ -8,7 +8,7 @@ import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-
 
 type JudgeTableRow = Judge & {
   records: {
-      id: number;
+    id: number;
   }[];
 }
 
@@ -16,12 +16,12 @@ interface JudgeTableProps {
   count: number
 }
 
-const JudgeTable = ({count}: JudgeTableProps) => {
+const JudgeTable = ({ count }: JudgeTableProps) => {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
-  const {query, isReady, ...router} = useRouter();
+  const { query, isReady, ...router } = useRouter();
   const { data } = trpc.dataset.judges.useQuery(
     {
       season: parseInt(query.season as unknown as string),
@@ -56,12 +56,15 @@ const JudgeTable = ({count}: JudgeTableProps) => {
         paginationConfig={{
           pagination,
           setPagination,
-          totalPages: Math.ceil(count/pagination.pageSize)
+          totalPages: Math.ceil(count / pagination.pageSize)
         }}
-        onRowClick={(row) => router.push(`/${query.event}/teams/${row.id}`)}
+        onRowClick={(row) => router.push({
+          pathname: `/judges/${row.id}`,
+          query
+        })}
       />
     </Card>
-    )
+  )
 }
 
 export default JudgeTable

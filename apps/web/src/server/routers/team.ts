@@ -9,8 +9,8 @@ const teamRouter = router({
     .input(
       z.object({
         id: z.string(),
-        seasons: z.array(z.number()).optional(),
-        circuits: z.array(z.number()).optional(),
+        season: z.number().optional(),
+        circuit: z.number().optional(),
         event: z.string().refine((data) => Object.values(Event).includes(data as Event)),
       })
     )
@@ -45,18 +45,18 @@ const teamRouter = router({
                 event: {
                   equals: input.event as Event
                 },
-                ...(input.circuits && {
+                ...(input.circuit && {
                   circuits: {
                     some: {
                       id: {
-                        in: input.circuits
+                        equals: input.circuit
                       }
                     }
                   }
                 }),
-                ...(input.seasons && {
+                ...(input.season && {
                   seasonId: {
-                    in: input.seasons
+                    equals: input.season
                   }
                 }),
               },
@@ -74,19 +74,19 @@ const teamRouter = router({
               circuit: true,
             },
             where: {
-              ...(input.circuits && {
+              ...(input.circuit && {
                 circuit: {
                   id: {
-                    in: input.circuits
+                    equals: input.circuit
                   },
                   event: {
-                    in: input.event as Event
+                    equals: input.event as Event
                   }
                 }
               }),
-              ...(input.seasons && {
+              ...(input.season && {
                 seasonId: {
-                  in: input.seasons
+                  in: input.season
                 }
               }),
             }
@@ -114,7 +114,7 @@ const teamRouter = router({
     .query(async ({ input }) => {
       const rounds = await prisma.round.findMany({
         where: {
-          tournamentResultId: input.id
+          resultId: input.id
         },
         include: {
           opponent: {
@@ -125,7 +125,7 @@ const teamRouter = router({
               id: true,
             }
           },
-          judgeRecords: {
+          records: {
             select: {
               decision: true,
               tabJudgeId: true,
