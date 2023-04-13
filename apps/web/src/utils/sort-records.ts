@@ -6,7 +6,7 @@ type RecordLike<T> = T & {
   }[];
 }
 
-export default function sortRounds<T>(records: RecordLike<T>[]) {
+export default function sortRecords<T>(records: RecordLike<T>[]) {
   let prelims: RecordLike<T>[] = [];
   let elims: RecordLike<T>[] = [];
 
