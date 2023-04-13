@@ -1,17 +1,17 @@
 import React from 'react'
-import { Text } from '@shared/components'
+import { Loader, Text } from '@shared/components'
 
 interface OverviewProps {
   label: string | JSX.Element;
-  heading: string | JSX.Element;
-  subtitle: string | JSX.Element;
+  heading?: string | JSX.Element;
+  subtitle?: string | JSX.Element;
   underview: JSX.Element;
 }
 
 const Overview = (props: OverviewProps) => {
   return (
     <div className="w-full flex flex-col bg-luka-100 overflow-hidden">
-      <span className="h-[4rem]" />
+      <span className="md:h-[4rem]" />
       <div className="flex justify-center items-center w-full bg-luka-100 py-6">
         <div
           id="overview"
@@ -25,11 +25,11 @@ const Overview = (props: OverviewProps) => {
               {props.label}
             </Text>
             <Text className="text-xl !text-white sm:text-3xl lg:text-4xl min-w-[500px] mx-auto text-center md:text-left z-20">
-                {props.heading}
+                {props.heading || <Loader height={8} width="full"/>}
             </Text>
           </span>
           <Text className="!text-indigo-300 md:mt-4 text-xs md:text-md lg:text-lg z-20">
-              {props.subtitle}
+              {props.subtitle || <Loader height={4} width={64} />}
           </Text>
         </div>
       </div>

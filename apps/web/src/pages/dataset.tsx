@@ -4,31 +4,24 @@ import { trpc } from '@src/utils/trpc'
 import { useRouter } from 'next/router';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
-import LeaderboardTable from '@src/components/tables/LeaderboardTable';
-import SchoolTable from '@src/components/tables/SchoolTable';
-import TournamentTable from '@src/components/tables/TournamentTable';
-import CompetitorTable from '@src/components/tables/CompetitorTable';
-import JudgeTable from '@src/components/tables/JudgeTable';
-import BidTable from '@src/components/tables/BidTable';
+import {CompetitorTable, TournamentTable, SchoolTable, LeaderboardTable, JudgeTable, BidTable} from '@src/components/tables/dataset';
 
 const Dataset = () => {
   const { query, isReady } = useRouter();
-  const { data } = trpc.dataset.useQuery(
+  const { data } = trpc.dataset.summary.useQuery(
     {
       circuit: parseInt(query.circuit as string),
       season: parseInt(query.season as string)
     },
     {
       enabled: isReady,
-      // refetchOnWindowFocus: true,
-      // refetchOnMount: false,
-      // refetchOnReconnect: false,
-      // staleTime: 1000 * 60 * 60 * 24,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 60 * 24,
     }
   );
 
-  if (!data) return;
-  console.log(data)
   return (
     <>
       <NextSeo
@@ -44,37 +37,41 @@ const Dataset = () => {
       <div className="min-h-screen">
         <Overview
           label="Dataset"
-          heading={`${query.season as string} ${data.circuit?.name} ${data.circuit?.event}`}
+          heading={
+            data
+              ? `${query.season as string} ${data.circuit?.name} ${data.circuit?.event}`
+              : undefined
+          }
           subtitle="exclusively on Debate Land"
           underview={
             <Statistics
               primary={[
                 {
-                  value: data.numTournaments as number,
+                  value: data?.numTournaments,
                   description: "Tournaments"
                 },
                 {
-                  value: data.numTeams as number,
+                  value: data?.numTeams,
                   description: "Teams"
                 },
                 {
-                  value: data.numSchools as number,
+                  value: data?.numSchools,
                   description: "Schools"
                 },
                 {
-                  value: data.numBids as number,
+                  value: data?.numBids || undefined,
                   description: "Bids"
                 }
               ]}
             />
           }
         />
-        <LeaderboardTable count={data.numTeams}  />
-        <TournamentTable count={data.numTournaments} />
-        <CompetitorTable count={data.numCompetitors} />
-        <JudgeTable count={data.numJudges} />
-        <SchoolTable count={data.numSchools} />
-        <BidTable count={data.numBids!} />
+        <LeaderboardTable count={data?.numTeams || 50}  />
+        <TournamentTable count={data?.numTournaments || 50} />
+        <CompetitorTable count={data?.numCompetitors || 50} />
+        <JudgeTable count={data?.numJudges || 50} />
+        <SchoolTable count={data?.numSchools || 50} />
+        <BidTable count={data?.numBids! || 50} />
       </div>
     </>
   )

@@ -4,16 +4,16 @@ import { trpc } from '@src/utils/trpc'
 import { ThemeProvider } from 'next-themes'
 import Script from 'next/script'
 import type { AppProps } from 'next/app'
-import { Poppins } from 'next/font/google'
+// import { Poppins } from 'next/font/google'
 import clsx from 'clsx'
 import {Header, Footer} from '@src/components/layout'
 
-const poppins = Poppins({
-  style: ['italic', 'normal'],
-  subsets: ['latin'],
-  weight: ['400'],
-  variable: '--font-poppins'
-})
+// const poppins = Poppins({
+//   style: ['italic', 'normal'],
+//   subsets: ['latin'],
+//   weight: ['400'],
+//   variable: '--font-poppins'
+// })
 
 const App = ({ Component, router, pageProps }: AppProps) => {
   const [mounted, setMounted] = useState(false)
@@ -28,8 +28,8 @@ const App = ({ Component, router, pageProps }: AppProps) => {
   return (
     <ThemeProvider attribute='class'>
       <div
-        className={clsx('flex flex-col w-full min-h-screen scroll-smooth', poppins.className, {
-          'dark:bg-stone-900': router.pathname !== '/',
+        className={clsx('flex flex-col w-full min-h-screen scroll-smooth', {
+          'dark:bg-coal': router.pathname !== '/',
         })}
       >
         <Header />

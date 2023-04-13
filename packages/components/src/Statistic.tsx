@@ -3,7 +3,7 @@ import React from 'react'
 import Text from './Text'
 
 export interface StatisticProps {
-  value: string | number
+  value?: string | number
   description: string
   primary?: boolean
   className?: {
@@ -17,12 +17,12 @@ export interface StatisticProps {
 }
 
 const Statistic = ({ value, description, primary, className, round, isPercentage }: StatisticProps) => {
-  if (round) {
+  if (round && value) {
     value = Math.round(value as number * (isPercentage ? 100 : 0) * Math.pow(10, round)) / Math.pow(10, round);
   }
 
   return (
-    <div className={clsx('flex flex-col bg-sblack', className?.wrapper, { 'h-full py-4 border-gray-300/40 md:border-r': primary })}>
+    <div className={clsx('flex flex-col', className?.wrapper, { 'h-full py-4 border-gray-300/40 md:border-r': primary })}>
       <div
         className={clsx(
           'flex flex-col items-center justify-start min-w-full mx-auto my-auto !text-white',
@@ -33,8 +33,18 @@ const Statistic = ({ value, description, primary, className, round, isPercentage
           className?.inner,
         )}
       >
-        <Text bold className={clsx('foo', { 'text-xl sm:text-2xl md:text-3xl': primary }, className?.value)}>
-          {value}{isPercentage ? '%' : ''}
+        <Text className={
+          clsx(
+            {
+              'text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-sky-400': primary && value,
+              'bg-gray-300/40 dark:bg-gray-700/40 animate-pulse rounded': value === undefined,
+              'w-16 min-h-[2rem]': primary && value === undefined,
+              'w-16 min-h-[1.5rem]': !primary && value === undefined,
+            },
+            className?.value
+          )
+        }>
+          {value || ''}{value && isPercentage ? '%' : ''}
         </Text>
         <Text size="xs" className={clsx('text-center px-2', className?.description)}>
           {description}

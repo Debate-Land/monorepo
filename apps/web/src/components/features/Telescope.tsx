@@ -15,7 +15,7 @@ const Telescope = () => {
     <Card
       icon={<VscTelescope />}
       title="Telescope"
-      className="min-w-full md:min-w-[600px] md:max-w-[600px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-violet-600/50"
+      className="min-w-full md:min-w-[600px] md:max-w-[600px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-red-400/50 p-2"
     >
       <div className="flex justify-start w-full space-x-4 md:py-3">
         <Select

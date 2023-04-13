@@ -7,6 +7,7 @@ import Group from './Group'
 import Input from './Input'
 import Label from './Label'
 import Link from './Link'
+import Loader from './Loader'
 import Select from './Select'
 import Statistic from './Statistic'
 import Table from './Table'
@@ -21,6 +22,7 @@ export {
     Input,
     Label,
     Link,
+    Loader,
     Select,
     Statistic,
     Table,

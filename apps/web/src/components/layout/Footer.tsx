@@ -48,10 +48,10 @@ const Footer = () => {
 									<li>
 										<Link
 											external
-											href="https://github.com"
+											href="https://github.com/Debate-Land"
 											text="GitHub"
 											icon={<BsGithub />}
-											className="!text-white bg-black/70 rounded max-w-[80px] px-1"
+											className="!text-white bg-black/70 rounded max-w-fit px-1"
 										/>
 									</li>
 									<li>
