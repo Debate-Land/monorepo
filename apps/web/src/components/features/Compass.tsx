@@ -18,7 +18,7 @@ const Compass = () => {
     <Card
       icon={<FaRegCompass />}
       title="Compass"
-      className="min-w-full md:min-w-[300px] max-w-[800px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-sky-400/70 dark:shadow-sky-400/50 p-2"
+      className="min-w-full md:min-w-[300px] max-w-[800px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-sky-400/70 dark:shadow-sky-400/50"
     >
       <Group
         character="1"

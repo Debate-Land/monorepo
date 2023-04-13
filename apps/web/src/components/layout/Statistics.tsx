@@ -3,7 +3,7 @@ import { Statistic } from '@shared/components';
 import clsx from 'clsx';
 
 interface RestrictedStatisticProp {
-  value?: string | number
+  value: string | number
   description: string
   round?: number
   isPercentage?: boolean
