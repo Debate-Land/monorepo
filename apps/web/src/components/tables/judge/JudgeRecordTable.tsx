@@ -2,12 +2,14 @@ import React from 'react'
 import { Table, Text } from '@shared/components'
 import { ColumnDef, createColumnHelper, SortingState } from '@tanstack/react-table'
 import { ExpandedJudgeRecord } from './JudgeRecordsTable';
+import { useRouter } from 'next/router';
 
 export interface JudgeRecordTableProps {
   data: ExpandedJudgeRecord;
 }
 
 const JudgeRecordTable = ({ data }: JudgeRecordTableProps) => {
+  const { query, ...router } = useRouter();
   const column = createColumnHelper<ExpandedJudgeRecord['rounds'][0]>();
 
   return (
@@ -34,6 +36,10 @@ const JudgeRecordTable = ({ data }: JudgeRecordTableProps) => {
             })
           ] as ColumnDef<ExpandedJudgeRecord['rounds'][0]>[],
         }}
+        onRowClick={(row) => router.push({
+          pathname: `/teams/${row.result.team.id}`,
+          query
+        })}
       />
     </div>
 
