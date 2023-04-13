@@ -128,7 +128,7 @@ const datasetRouter = router({
         // # Judges
         prisma.judge.count({
           where: {
-            records: {
+            results: {
               some: {
                 tournament: {
                   circuits: {
@@ -364,58 +364,52 @@ const datasetRouter = router({
       })
     )
     .query(async ({ input }) => {
-      const result = await prisma.judge.findMany({
+      const result = await prisma.judgeRanking.findMany({
         where: {
-          records: {
-            some: {
-              tournament: {
-                circuits: {
-                  some: {
-                    id: {
-                      equals: input.circuit
-                    }
-                  }
-                },
-                season: {
-                  id: {
-                    equals: input.season
-                  }
-                }
-              }
+          circuit: {
+            id: {
+              equals: input.circuit
             }
-          }
-        },
-        orderBy: {
-          records: {
-            _count: "desc"
+          },
+          season: {
+            id: {
+              equals: input.season
+            }
           }
         },
         include: {
-          records: {
-            where: {
-              tournament: {
-                circuits: {
-                  some: {
-                    id: {
-                      equals: input.circuit
+          judge: {
+            include: {
+              records: {
+                where: {
+                  tournament: {
+                    circuits: {
+                      some: {
+                        id: {
+                          equals: input.circuit
+                        }
+                      }
+                    },
+                    season: {
+                      id: {
+                        equals: input.season
+                      }
                     }
                   }
                 },
-                season: {
-                  id: {
-                    equals: input.season
-                  }
+                select: {
+                  id: true,
                 }
               }
-            },
-            select: {
-              id: true,
             }
-          }
+          },
+        },
+        orderBy: {
+          index: "desc"
         },
         skip: input.page * input.limit,
         take: input.limit
-      });
+      })
 
       return result;
     }),

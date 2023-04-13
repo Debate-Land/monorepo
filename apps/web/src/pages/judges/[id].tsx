@@ -30,6 +30,22 @@ const Judge = () => {
     }
   );
 
+  const avgSpeaks = (data
+    ? (_.mean(
+      data.results
+        .filter(r => r.avgRawPoints)
+        .map(r => r.avgRawPoints) || [0]
+    )).toFixed(1)
+    : NaN) as number;
+
+  const avgSpeakStdDev = (data
+    ? (_.mean(
+      data.results
+        .filter(r => r.stdDevPoints)
+        .map(r => r.stdDevPoints) || [0]
+    )).toFixed(1)
+    : NaN) as number;
+
   return (
     <>
       <NextSeo
@@ -67,21 +83,12 @@ const Judge = () => {
                   description: "Tournaments"
                 },
                 {
-                  value: data
-                    ? _.mean(data.results
-                      .filter(r => r.avgRawPoints)
-                      .map(r => r.avgRawPoints) || [0]).toFixed(1) || '--'
-                    : undefined,
+                  value: !isNaN(avgSpeaks) ? avgSpeaks : '--',
                   description: "Avg. Speaks"
                 },
                 {
-                  value: data
-                    ? _.mean(data.results
-                      .filter(r => r.stdDevPoints)
-                      .map(r => r.stdDevPoints) || [0])
-                      .toFixed(1) || '--'
-                    : undefined,
-                  description: "Avg. σ Speaks"
+                  value: !isNaN(avgSpeakStdDev) ? avgSpeakStdDev : '--',
+                  description: "Avg. σ Speaks",
                 }
               ]}
             />

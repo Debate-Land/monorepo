@@ -42,7 +42,7 @@ const JudgeRecordsTable = ({ data: { id } }: JudgeRecordsTableProps) => {
 
   return (
     <Table
-      data={data}
+      data={data && data as ExpandedJudgeRecord[]}
       numLoadingRows={5}
       columnConfig={{
         core: [

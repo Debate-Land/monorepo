@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
-import { Judge } from '@shared/database';
+import { Judge, JudgeRanking } from '@shared/database';
 import { TbGavel } from 'react-icons/tb'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 
-type JudgeTableRow = Judge & {
-  records: {
-    id: number;
-  }[];
-}
+type ExpandedJudgeRanking = (JudgeRanking & {
+  judge: Judge & {
+    records: {
+      id: number;
+    }[];
+  };
+});
 
 interface JudgeTableProps {
   count: number
@@ -34,7 +36,7 @@ const JudgeTable = ({ count }: JudgeTableProps) => {
       enabled: isReady
     }
   );
-  const column = createColumnHelper<JudgeTableRow>();
+  const column = createColumnHelper<ExpandedJudgeRanking>();
 
   return (
     <Card icon={<TbGavel />} title="Judges" className="max-w-[800px] mx-auto my-16">
@@ -43,15 +45,21 @@ const JudgeTable = ({ count }: JudgeTableProps) => {
         numLoadingRows={10}
         columnConfig={{
           core: [
-            column.accessor('name', {
+            column.accessor('index', {
+              header: "Index",
+              cell: props => props.cell.getValue().toFixed(1),
+            }),
+            column.accessor('judge.name', {
               header: "Name",
               cell: props => props.cell.getValue(),
             }),
-            column.accessor('records', {
+          ] as ColumnDef<ExpandedJudgeRanking>[],
+          lg: [
+            column.accessor('judge.records', {
               header: "Rounds",
-              cell: props => props.cell.getValue().length
+              cell: props => props.cell.getValue().length,
             }),
-          ] as ColumnDef<JudgeTableRow>[]
+          ] as ColumnDef<ExpandedJudgeRanking>[]
         }}
         paginationConfig={{
           pagination,
@@ -59,9 +67,10 @@ const JudgeTable = ({ count }: JudgeTableProps) => {
           totalPages: Math.ceil(count / pagination.pageSize)
         }}
         onRowClick={(row) => router.push({
-          pathname: `/judges/${row.id}`,
+          pathname: `/judges/${row.judge.id}`,
           query
         })}
+        showPosition
       />
     </Card>
   )
