@@ -8,7 +8,7 @@ import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-
 
 type TournamentTableRow = Tournament & {
   _count: {
-      results: number;
+      teamResults: number;
   };
 }
 
@@ -53,7 +53,7 @@ const TournamentTable = ({count}: TournamentTableProps) => {
             }),
           ] as ColumnDef<TournamentTableRow>[],
           sm: [
-            column.accessor('_count.results', {
+            column.accessor('_count.teamResults', {
               header: "Entries",
               cell: props => props.getValue()
             })
