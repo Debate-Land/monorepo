@@ -58,7 +58,7 @@ const CompetitorTable = ({count}: CompetitorTableProps) => {
           setPagination,
           totalPages: Math.ceil(count/pagination.pageSize)
         }}
-        onRowClick={(row) => router.push(`/${query.event}/teams/${row.id}`)}
+        // onRowClick={(row) => router.push(`/${query.event}/teams/${row.id}`)}
       />
     </Card>
     )
