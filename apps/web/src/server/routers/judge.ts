@@ -1,6 +1,7 @@
-import { number, z } from 'zod';
+import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import { Event, prisma } from '@shared/database';
+import sortRecords from '@src/utils/sort-records';
 
 const judgeRouter = router({
   summary: procedure
@@ -44,6 +45,11 @@ const judgeRouter = router({
                     name: true,
                     start: true,
                   }
+                }
+              },
+              orderBy: {
+                tournament: {
+                  start: "asc"
                 }
               }
             },
@@ -138,7 +144,7 @@ const judgeRouter = router({
         },
       });
 
-      return records;
+      return sortRecords<typeof records[0]>(records);
     })
 });
 
