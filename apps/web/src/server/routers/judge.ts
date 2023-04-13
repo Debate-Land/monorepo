@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { number, z } from 'zod';
 import { procedure, router } from '../trpc';
 import { Event, prisma } from '@shared/database';
 
@@ -13,64 +13,133 @@ const judgeRouter = router({
       })
     )
     .query(async ({ input }) => {
-      let judge = await prisma.judge.findUnique({
-        where: {
-          id: input.id
-        },
-        include: {
-          records: {
-            where: {
-              tournament: {
-                circuits: {
-                  some: {
-                    id: {
-                      equals: input.circuit
-                    }
-                  }
-                },
-                seasonId: {
-                  equals: input.season
-                }
-              }
-            },
-            include: {
-              rounds: {
-                include: {
-                  speaking: {
-                    include: {
-                      competitor: {
-                        select: {
-                          name: true
+      const [judge, ranking] = await Promise.all([
+        prisma.judge.findUnique({
+          where: {
+            id: input.id
+          },
+          include: {
+            results: {
+              where: {
+                tournament: {
+                  ...(input.circuit && {
+                    circuits: {
+                      some: {
+                        id: {
+                          equals: input.circuit
                         }
                       }
                     }
-                  },
+                  }),
+                  ...(input.season && {
+                    seasonId: {
+                      in: input.season
+                    }
+                  }),
                 }
               },
-              teams: {
-                select: {
-                  aliases: {
-                    select: {
-                      code: true,
+              include: {
+                tournament: {
+                  select: {
+                    name: true,
+                    start: true,
+                  }
+                }
+              }
+            },
+            rankings: {
+              include: {
+                season: true,
+                circuit: true,
+              },
+              where: {
+                ...(input.circuit && {
+                  circuit: {
+                    id: {
+                      equals: input.circuit
                     },
-                    take: 1
-                  },
-                  id: true
+                    event: {
+                      equals: input.event as Event
+                    }
+                  }
+                }),
+                ...(input.season && {
+                  seasonId: {
+                    in: input.season
+                  }
+                }),
+              }
+            },
+            _count: {
+              select: {
+                records: true
+              }
+            }
+          }
+        }),
+        input.circuit && input.season
+          ? prisma.judgeRanking.findUnique({
+            where: {
+              judgeId_circuitId_seasonId: {
+                judgeId: input.id,
+                circuitId: input.circuit,
+                seasonId: input.season
+              }
+            },
+            select: {
+              index: true
+            }
+          })
+          : null
+      ]);
+
+      return judge
+        ? {
+          ...judge,
+          ...(ranking && { index: ranking.index })
+        }
+        : undefined
+    }),
+  records: procedure
+    .input(
+      z.object({
+        id: z.number()
+      })
+    )
+    .query(async ({ input }) => {
+      const records = await prisma.judgeRecord.findMany({
+        where: {
+          resultId: input.id
+        },
+        include: {
+          rounds: {
+            include: {
+              speaking: {
+                include: {
+                  competitor: true
                 }
               },
-              tournament: {
+              result: {
                 select: {
-                  name: true,
-                  start: true
+                  team: {
+                    include: {
+                      aliases: {
+                        select: {
+                          code: true
+                        },
+                        take: 1
+                      }
+                    }
+                  }
                 }
               }
             }
-          },
-        }
+          }
+        },
       });
 
-      return judge;
-    }),
+      return records;
+    })
 });
 
 export default judgeRouter;

@@ -284,6 +284,7 @@ const getRestHandlers = <T extends PrismaObject>(
   }
 });
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default function <T extends PrismaObject>(
   model: PrismaModel<T>,
   middleware: NextFunction[] = [],

@@ -43,9 +43,6 @@ const teamRouter = router({
             },
             where: {
               tournament: {
-                event: {
-                  equals: input.event as Event
-                },
                 ...(input.circuit && {
                   circuits: {
                     some: {
