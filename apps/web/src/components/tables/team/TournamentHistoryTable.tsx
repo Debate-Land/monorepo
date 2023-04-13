@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, { useState } from 'react'
 import { BsJournalBookmark } from 'react-icons/bs'
-import { Tournament, TournamentResult, Circuit, Alias, School, TournamentSpeakerResult, Competitor, Judge, Round, RoundSpeakerResult, Side } from '@shared/database'
+import { Tournament, TeamTournamentResult, Circuit, Alias, School, TournamentSpeakerResult, Competitor, Judge, Round, RoundSpeakerResult, Side, Bid } from '@shared/database'
 import { Table, Card } from '@shared/components'
-import { ColumnDef, createColumnHelper, SortingState } from '@tanstack/react-table'
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import TournamentRoundsTable from './TournamentRoundsTable'
 import TournamentSpeakingResultTable from './TournamentSpeakingResultTable'
 
@@ -13,19 +13,19 @@ export type ExpandedTournamentSpeakerResult = TournamentSpeakerResult & {
   }
 };
 
-export type ExpandedTournamentResult = TournamentResult & {
+export type ExpandedTournamentResult = TeamTournamentResult & {
   tournament: Tournament & {
     circuits: Circuit[];
   };
   alias: Alias;
   school: School;
   speaking: ExpandedTournamentSpeakerResult[];
+  bid: Bid;
 };
 
 export type ExpandedRoundJudgeRecord = {
   judge: Judge;
   decision: Side;
-  tabJudgeId: number;
 };
 
 export type ExpandedRoundSpeakerResult = RoundSpeakerResult & {
@@ -33,7 +33,7 @@ export type ExpandedRoundSpeakerResult = RoundSpeakerResult & {
 }
 
 export type ExpandedRound = Round & {
-  judgeRecords: ExpandedRoundJudgeRecord[];
+  records: ExpandedRoundJudgeRecord[];
   speaking: ExpandedRoundSpeakerResult[];
   opponent: {
     id: string;
@@ -62,7 +62,7 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
             }),
             column.accessor('tournament.start', {
               header: "Date",
-              cell: props => new Date(props.cell.getValue() * 1000).toLocaleDateString("en-us")
+              cell: props => new Date(props.cell.getValue() as number * 1000).toLocaleDateString("en-us")
             }),
             column.accessor('prelimPos', {
               header: "P.RK",
@@ -91,14 +91,13 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
               header: "Bid",
               cell: props => {
                 let bid = props.row.original.bid;
-                let isGhostBid = props.row.original.isGhostBid;
                 if (!bid) return '--';
-                return `${bid == 1 ? 'Full' : 'Partial'} ${isGhostBid ? '(ghost)' : ''}`;
+                return `${bid.value} ${bid.isGhostBid ? '(ghost)' : ''}`;
               }
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
           lg: [
-            column.accessor('opWpm', {
+            column.accessor('opWpM', {
               header: "OpWpM",
               cell: props => props.cell.getValue(),
             }),

@@ -168,7 +168,7 @@ const datasetRouter = router({
       })
     )
     .query(async ({ input }) => {
-      const teams = await prisma.circuitRanking.findMany({
+      const teams = await prisma.teamRanking.findMany({
         where: {
           seasonId: input.season,
           circuitId: input.circuit,
@@ -490,71 +490,9 @@ const datasetRouter = router({
       })
     )
     .query(async ({ input }) => {
-      const result = await prisma.teamTournamentResult.groupBy({
-        by: ['teamId'],
-        where: {
-          tournament: {
-            circuits: {
-              some: {
-                id: {
-                  equals: input.circuit
-                }
-              }
-            },
-            seasonId: {
-              equals: input.season
-            }
-          },
-          bid: {
-          
-          }
-        },
-        having: {
-          bid: {
-            _min: {
-              equals: 1
-            },
-            _sum: {
-              gte: 1
-            }
-          }
-        },
-        _sum: {
-          bid: true
-        }
-      });
+      // TODO: Implement
 
-      // @ts-ignore
-      let hydratedResults: {
-        code: string
-      } & typeof result = [];
-
-      if (result) {
-        result.forEach(async (r) => {
-          const lookup = await prisma.team.findUnique({
-            where: {
-              id: r.teamId
-            },
-            select: {
-              aliases: {
-                select: {
-                  code: true
-                },
-                take: 1
-              }
-            }
-          });
-          if (lookup && lookup.aliases[0]?.code) {
-            hydratedResults.push({
-              // @ts-ignore
-              code: lookup.aliases[0].code as string,
-              ...r
-            });
-          }
-        })
-      }
-
-      return hydratedResults;
+      return [];
     })
 });
 

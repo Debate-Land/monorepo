@@ -1,4 +1,4 @@
-import { Team, Circuit, Season, Competitor, TournamentResult, CircuitRanking, Tournament, TournamentSpeakerResult } from "@shared/database";
+import { Team, Circuit, Season, Competitor, TeamTournamentResult, TeamRanking, Tournament, TournamentSpeakerResult, Bid } from "@shared/database";
 import getRelativeTime from "@src/utils/get-relative-time";
 
 type ExpandedTeam = Team & {
@@ -8,11 +8,12 @@ type ExpandedTeam = Team & {
   circuits: Circuit[];
   seasons: Season[];
   competitors: Competitor[];
-  results: (TournamentResult & {
+  results: (TeamTournamentResult & {
     tournament: Tournament;
     speaking: TournamentSpeakerResult[];
+    bid: Bid | any;
   })[];
-  rankings: CircuitRanking[];
+  rankings: TeamRanking[];
 }
 
 interface TeamStatistics {
@@ -86,12 +87,12 @@ export default function getStatistics(data: ExpandedTeam) {
     }
 
     statistics.otr.push(result.otrComp);
-    statistics.avgOpWpM.push(result.opWpm);
+    statistics.avgOpWpM.push(result.opWpM);
     result.speaking.forEach(speakingResult => {
       statistics.avgSpeaks.push(speakingResult.rawAvgPoints);
     });
 
-    if (result.bid) statistics.bids += result.bid;
+    if (result.bid) statistics.bids += result.bid.value == 'Full' ? 1 : 0.5;
   });
 
   data.results.sort((a, b) => a.tournament.start - b.tournament.start).reverse();

@@ -28,6 +28,7 @@ const teamRouter = router({
                   circuits: true
                 }
               },
+              bid: true,
               alias: true,
               school: true,
               speaking: {
@@ -128,7 +129,6 @@ const teamRouter = router({
           records: {
             select: {
               decision: true,
-              tabJudgeId: true,
               judge: true,
             }
           },

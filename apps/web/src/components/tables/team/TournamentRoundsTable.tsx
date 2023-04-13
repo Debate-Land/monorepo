@@ -8,7 +8,6 @@ import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 export type ExpandedRoundJudgeRecord = {
   judge: Judge;
   decision: Side;
-  tabJudgeId: number;
 };
 
 export type ExpandedRoundSpeakerResult = RoundSpeakerResult & {
@@ -16,7 +15,7 @@ export type ExpandedRoundSpeakerResult = RoundSpeakerResult & {
 }
 
 export type ExpandedRound = Round & {
-  judgeRecords: ExpandedRoundJudgeRecord[];
+  records: ExpandedRoundJudgeRecord[];
   speaking: ExpandedRoundSpeakerResult[];
   opponent: {
     id: string;
@@ -59,7 +58,7 @@ const TournamentRoundsTable = ({ id }: TournamentRoundsTableProps) => {
               cell: props => props.row.original.opponent?.aliases[0].code || '--',
               enableSorting: false
             }),
-            column.accessor('result', {
+            column.accessor('outcome', {
               header: "Res.",
               cell: props => props.cell.getValue()
             }),

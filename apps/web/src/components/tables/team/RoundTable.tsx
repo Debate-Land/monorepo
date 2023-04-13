@@ -8,7 +8,7 @@ export interface RoundTableProps {
   row: ExpandedRound
 }
 
-const RoundTable = ({ row: { judgeRecords, speaking, ...round } }: RoundTableProps) => {
+const RoundTable = ({ row: { records: judgeRecords, speaking, ...round } }: RoundTableProps) => {
   const column = createColumnHelper<ExpandedRoundJudgeRecord>();
 
   return judgeRecords.length
@@ -41,7 +41,6 @@ const RoundTable = ({ row: { judgeRecords, speaking, ...round } }: RoundTablePro
             }),
           ] as ColumnDef<ExpandedRoundJudgeRecord>[],
         }}
-        onRowClick={(row) => alert(row.tabJudgeId)}
         sortable
       />
     )

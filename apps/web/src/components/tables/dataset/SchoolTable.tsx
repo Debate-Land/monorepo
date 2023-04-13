@@ -7,7 +7,7 @@ import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 
 type SchoolTableRow = School & {
-  tournamentResults: {
+  results: {
       id: number;
   }[];
 }
@@ -47,7 +47,7 @@ const SchoolTable = ({count}: SchoolTableProps) => {
               header: "Name",
               cell: props => props.cell.getValue(),
             }),
-            column.accessor('tournamentResults', {
+            column.accessor('results', {
               header: "Results",
               cell: props => props.cell.getValue().length
             }),
