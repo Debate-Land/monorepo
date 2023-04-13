@@ -7,10 +7,16 @@ import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 
 type SchoolTableRow = School & {
-  results: {
-      id: number;
+  tournaments: {
+    id: number;
   }[];
-}
+  teams: {
+    id: string;
+  }[];
+  results: {
+    id: number;
+  }[];
+};
 
 interface SchoolTableProps {
   count: number
@@ -48,7 +54,17 @@ const SchoolTable = ({count}: SchoolTableProps) => {
               cell: props => props.cell.getValue(),
             }),
             column.accessor('results', {
-              header: "Results",
+              header: "Entries",
+              cell: props => props.cell.getValue().length
+            }),
+          ] as ColumnDef<SchoolTableRow>[],
+          lg: [
+            column.accessor('teams', {
+              header: "Teams",
+              cell: props => props.cell.getValue().length
+            }),
+            column.accessor('tournaments', {
+              header: "Tourns.",
               cell: props => props.cell.getValue().length
             }),
           ] as ColumnDef<SchoolTableRow>[]

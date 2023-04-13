@@ -460,6 +460,46 @@ const datasetRouter = router({
             },
             select: {
               id: true,
+            },
+          },
+          teams: {
+            where: {
+              results: {
+                some: {
+                  tournament: {
+                    circuits: {
+                      some: {
+                        id: {
+                          equals: input.circuit
+                        }
+                      }
+                    },
+                    seasonId: {
+                      equals: input.season
+                    }
+                  }
+                }
+              }
+            },
+            select: {
+              id: true
+            }
+          },
+          tournaments: {
+            where: {
+              circuits: {
+                some: {
+                  id: {
+                    equals: input.circuit
+                  }
+                }
+              },
+              seasonId: {
+                equals: input.season
+              }
+            },
+            select: {
+              id: true,
             }
           }
         },
