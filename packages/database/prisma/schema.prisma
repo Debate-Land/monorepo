@@ -118,30 +118,32 @@ model ApiKey {
 /// Debate Data Models
 
 model Season {
-  id          Int              @id
-  circuits    Circuit[]
-  rankings    CircuitRanking[]
-  tournaments Tournament[]
-  teams       Team[]
+  id           Int            @id
+  circuits     Circuit[]
+  rankings     TeamRanking[]
+  tournaments  Tournament[]
+  teams        Team[]
+  JudgeRanking JudgeRanking[]
 
   @@map("seasons")
 }
 
 model Circuit {
-  id          Int              @id @default(autoincrement())
-  name        String
-  event       Event
-  rankings    CircuitRanking[]
-  tournaments Tournament[]
-  seasons     Season[]
-  teams       Team[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  event        Event
+  rankings     TeamRanking[]
+  tournaments  Tournament[]
+  seasons      Season[]
+  teams        Team[]
+  JudgeRanking JudgeRanking[]
 
   @@unique([name, event])
   @@index([name])
   @@map("circuits")
 }
 
-model CircuitRanking {
+model TeamRanking {
   id        Int     @id @default(autoincrement())
   season    Season  @relation(fields: [seasonId], references: [id])
   seasonId  Int     @default(2023) @map("season_id")
@@ -155,7 +157,24 @@ model CircuitRanking {
   @@index([teamId])
   @@index([circuitId])
   @@index([seasonId])
-  @@map("circuit_rankings")
+  @@map("team_rankings")
+}
+
+model JudgeRanking {
+  id        Int     @id @default(autoincrement())
+  season    Season  @relation(fields: [seasonId], references: [id])
+  seasonId  Int     @default(2023) @map("season_id")
+  judge     Judge   @relation(fields: [judgeId], references: [id])
+  judgeId   String  @map("judge_id")
+  index     Float
+  circuit   Circuit @relation(fields: [circuitId], references: [id])
+  circuitId Int     @map("circuit_id")
+
+  @@unique([judgeId, circuitId, seasonId])
+  @@index([judgeId])
+  @@index([circuitId])
+  @@index([seasonId])
+  @@map("judge_rankings")
 }
 
 model Tournament {
@@ -326,7 +345,7 @@ model Team {
   results        TeamTournamentResult[]
   rounds         Round[]
   aliases        Alias[]
-  rankings       CircuitRanking[]
+  rankings       TeamRanking[]
   allRecords     JudgeRecord[]          @relation(name: "AllJudgeRecords")
   winningRecords JudgeRecord[]          @relation(name: "WinningJudgeRecords")
   circuits       Circuit[]
@@ -343,29 +362,31 @@ model Judge {
   results  JudgeTournamentResult[]
   records  JudgeRecord[]
   speaking RoundSpeakerResult[]
+  rankings JudgeRanking[]
 
   @@fulltext([name])
   @@map("judges")
 }
 
 model JudgeTournamentResult {
-  id           Int           @id @default(autoincrement())
-  judge        Judge         @relation(fields: [judgeId], references: [id])
-  judgeId      String        @map("judge_id")
-  tabJudgeId   Int           @unique @map("tab_judge_id")
-  avgRawPoints Float?        @map("avg_raw_points")
-  avgAdjPoints Float?        @map("avg_adj_points")
-  stdDevPoints Float?        @map("std_dev_points")
-  numPrelims   Int
-  numElims     Int?
-  numSquirrels Int?          @map("num_squirrels")
-  numAff       Int?          @map("num_aff")
-  numNeg       Int?          @map("num_neg")
-  numPro       Int?          @map("num_pro")
-  numCon       Int?          @map("num_con")
-  records      JudgeRecord[]
-  tournament   Tournament?   @relation(fields: [tournamentId], references: [id])
-  tournamentId Int?          @map("tournament_id")
+  id              Int           @id @default(autoincrement())
+  judge           Judge         @relation(fields: [judgeId], references: [id])
+  judgeId         String        @map("judge_id")
+  tabJudgeId      Int           @unique @map("tab_judge_id")
+  avgRawPoints    Float?        @map("avg_raw_points")
+  avgAdjPoints    Float?        @map("avg_adj_points")
+  stdDevPoints    Float?        @map("std_dev_points")
+  numPrelims      Int
+  numPrelimScrews Float?        @map("num_prelim_screws")
+  numElims        Int?
+  numSquirrels    Int?          @map("num_squirrels")
+  numAff          Int?          @map("num_aff")
+  numNeg          Int?          @map("num_neg")
+  numPro          Int?          @map("num_pro")
+  numCon          Int?          @map("num_con")
+  records         JudgeRecord[]
+  tournament      Tournament?   @relation(fields: [tournamentId], references: [id])
+  tournamentId    Int?          @map("tournament_id")
 
   @@index([judgeId])
   @@index([tournamentId])

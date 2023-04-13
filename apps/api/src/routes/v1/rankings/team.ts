@@ -1,15 +1,15 @@
-import { prisma, CircuitRanking } from "@shared/database";
-import restHandler, { PrismaModel } from "../../utils/rest-handler";
+import { prisma, TeamRanking } from "@shared/database";
+import restHandler, { PrismaModel } from "../../../utils/rest-handler";
 import status from 'http-status'
 // import pscale from '../../services/pscale.service'
 
-const router = restHandler<CircuitRanking>(
-  prisma.circuitRanking as PrismaModel<CircuitRanking>,
+const router = restHandler<TeamRanking>(
+  prisma.teamRanking as PrismaModel<TeamRanking>,
   // [auth, rateLimiter, usage]
 );
 
 type RankQueryResponse = [
-  CircuitRanking[],
+  TeamRanking[],
   object[],
 ]
 
