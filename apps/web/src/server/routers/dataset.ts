@@ -485,14 +485,75 @@ const datasetRouter = router({
       z.object({
         circuit: z.number(),
         season: z.number(),
-        page: z.number(),
-        limit: z.number()
+        // page: z.number(),
+        // limit: z.number()
       })
     )
     .query(async ({ input }) => {
-      // TODO: Implement
+      let groups = await prisma.bid.groupBy({
+        by: ['teamId', 'value'],
+        where: {
+          result: {
+            tournament: {
+              circuits: {
+                some: {
+                  id: {
+                    equals: input.circuit
+                  }
+                }
+              },
+              season: {
+                id: {
+                  equals: input.season
+                }
+              }
+            }
+          }
+        },
+      });
 
-      return [];
+      let lookup: {
+        [key: string]: {
+          fullBids: number;
+          partialBids: number;
+        }
+      } = {};
+
+      groups.forEach(group => {
+        let id = group['teamId'];
+        if (!lookup[id]) lookup[id] = {
+          fullBids: 0,
+          partialBids: 0,
+        };
+        if (group['value'] === 'Full') lookup[id]['fullBids'] += 1;
+        else lookup[id]['partialBids'] += 1;
+      });
+
+      let results: {
+        code: string;
+        teamId: string;
+        fullBids: number;
+        partialBids: number;
+      }[] = [];
+
+      for (const [teamId, data] of Object.entries(lookup)) {
+        const code = (await prisma.alias.findFirst({
+          where: {
+            teamId
+          },
+          select: {
+            code: true
+          }
+        }))!['code'];
+
+        results.push({
+          code,
+          teamId,
+          ...data
+        });
+      };
+
+      return results;
     })
 });
 
