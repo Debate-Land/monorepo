@@ -28,6 +28,7 @@ interface TeamStatistics {
   madeElims: number;
   otr: number;
   avgSpeaks: number;
+  stdDevSpeaks: number;
   rankings: any;
   bids: number;
   inTop20Pct: number;
@@ -52,17 +53,18 @@ function getDeflator(tourns: number) {
 
 export default function getStatistics(data: ExpandedTeam) {
   let statistics: any = {
-    lastActive: '', //
-    tWp: 0, //
-    pWp: 0, //
-    eWp: 0, //
-    pRecord: [0, 0], //
-    eRecord: [0, 0], //
-    avgOpWpM: [], //
-    breakPct: [0, 0], //
-    madeElims: 0, //
-    otr: [], //
-    avgSpeaks: [], //
+    lastActive: '',
+    tWp: 0,
+    pWp: 0,
+    eWp: 0,
+    pRecord: [0, 0],
+    eRecord: [0, 0],
+    avgOpWpM: [],
+    breakPct: [0, 0],
+    madeElims: 0,
+    otr: [],
+    avgSpeaks: [],
+    stdDevSpeaks: [],
     rankings: [],
     bids: 0,
     inTop20Pct: 0,
@@ -90,6 +92,7 @@ export default function getStatistics(data: ExpandedTeam) {
     statistics.avgOpWpM.push(result.opWpM);
     result.speaking.forEach(speakingResult => {
       statistics.avgSpeaks.push(speakingResult.rawAvgPoints);
+      statistics.stdDevSpeaks.push(speakingResult.stdDevPoints);
     });
 
     if (result.bid) statistics.bids += result.bid.value == 'Full' ? 1 : 0.5;
@@ -113,6 +116,7 @@ export default function getStatistics(data: ExpandedTeam) {
   statistics.otr = getDeflator(data.results.length) * getAvg(statistics.otr);
   statistics.avgOpWpM = getAvg(statistics.avgOpWpM);
   statistics.avgSpeaks = getAvg(statistics.avgSpeaks);
+  statistics.stdDevSpeaks = getAvg(statistics.stdDevSpeaks)
 
   return statistics as TeamStatistics;
 }

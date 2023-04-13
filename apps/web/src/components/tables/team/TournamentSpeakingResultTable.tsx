@@ -32,6 +32,10 @@ const TournamentSpeakingResultTable = ({ data }: TournamentSpeakingResultProps) 
                     header: "Adj. Avg.",
                     cell: props => props.cell.getValue().toFixed(1)
                   }),
+                  column.accessor('stdDevPoints', {
+                    header: "σ",
+                    cell: props => props.cell.getValue().toFixed(1)
+                  }),
                 ] as ColumnDef<ExpandedTournamentSpeakerResult>[]
               }}
             />

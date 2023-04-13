@@ -96,22 +96,22 @@ const Team = () => {
                   description: "Tournaments"
                 },
                 {
-                  value: data?._count.rounds,
-                  description: "Rounds"
+                  value: data ? Math.round(data.statistics.stdDevSpeaks * 100) / 100 : undefined,
+                  description: "Avg. σ Speaks"
                 },
                 {
                   value: data?.statistics.lastActive,
                   description: "Last Active"
                 },
                 {
+                  value: data ? `${data.statistics.pRecord[0]}-${data.statistics.pRecord[1]}` : undefined,
+                  description: "Prelim Rcd."
+                },
+                {
                   value: data?.statistics.avgOpWpM,
                   isPercentage: true,
                   round: 1,
                   description: "Avg. OpWpM"
-                },
-                {
-                  value: data ? `${data.statistics.pRecord[0]}-${data.statistics.pRecord[1]}` : undefined,
-                  description: "Prelim Rcd."
                 },
                 {
                   value: data?.statistics.pWp,

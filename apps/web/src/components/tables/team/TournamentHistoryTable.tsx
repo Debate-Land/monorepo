@@ -20,7 +20,7 @@ export type ExpandedTournamentResult = TeamTournamentResult & {
   alias: Alias;
   school: School;
   speaking: ExpandedTournamentSpeakerResult[];
-  bid: Bid;
+  bid: Bid | any;
 };
 
 export type ExpandedRoundJudgeRecord = {
