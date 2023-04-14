@@ -22,24 +22,27 @@ const Dataset = () => {
     }
   );
 
+  const label = `${query.season as string} ${data?.circuit?.name} ${data?.circuit?.event}`;
+
   return (
     <>
       <NextSeo
-        title={`Debate Land: --`}
-        description={`--, exclusively on Debate Land.`}
+        title={`Debate Land: Dataset`}
+        description={`${data ? label : '--'} dataset, exclusively on Debate Land.`}
         additionalLinkTags={[
           {
             rel: 'icon',
             href: '/favicon.ico',
           },
         ]}
+        noindex
       />
       <div className="min-h-screen">
         <Overview
           label="Dataset"
           heading={
             data
-              ? `${query.season as string} ${data.circuit?.name} ${data.circuit?.event}`
+              ? label
               : undefined
           }
           subtitle="exclusively on Debate Land"

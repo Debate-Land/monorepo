@@ -40,6 +40,7 @@ const Team = () => {
             href: '/favicon.ico',
           },
         ]}
+        noindex
       />
       <div className="min-h-screen">
         <Overview

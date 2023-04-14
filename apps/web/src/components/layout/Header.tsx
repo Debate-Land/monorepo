@@ -11,7 +11,7 @@ import { Text, Button, Link } from '@shared/components'
 const Header = ({ router }: any) => {
 	const { theme, setTheme } = useTheme()
 	const scrollY = useScrollYPosition()
-	const headerWrapperStyle = 'px-2 rounded-xl bg-gray-200/40 hover:bg-gray-200/80'
+	const headerWrapperStyle = 'px-2 rounded-xl bg-gray-300/60 hover:bg-gray-300/90'
 	const headerTextStyle = 'hidden sm:inline-block !text-cyan-300 hover:!text-blue-400'
 
 	return (
@@ -32,10 +32,10 @@ const Header = ({ router }: any) => {
 				</Text>
 			</a>
 			<div className="flex items-center space-x-2">
-				<Link primary external href="https://cutit.cards" text="Cut It" className={headerTextStyle} wrapperClassName={headerWrapperStyle} />
+				{/* <Link primary external href="https://cutit.cards" text="Cut It" className={headerTextStyle} wrapperClassName={headerWrapperStyle} />
 				<Link primary href="/#about" text="About" className={headerTextStyle} wrapperClassName={headerWrapperStyle} />
 				<Link primary href="/#mobile" text="Mobile" className={headerTextStyle} wrapperClassName={headerWrapperStyle} />
-				<Link primary href="/#api" text="API" className={headerTextStyle} wrapperClassName={headerWrapperStyle} />
+				<Link primary href="/#api" text="API" className={headerTextStyle} wrapperClassName={headerWrapperStyle} /> */}
 				<span className="w-2" />
 				<Button
 					icon={theme === 'dark' ? <FaSun /> : <FaMoon />}

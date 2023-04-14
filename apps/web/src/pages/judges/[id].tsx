@@ -57,6 +57,7 @@ const Judge = () => {
             href: '/favicon.ico',
           },
         ]}
+        noindex
       />
       <div className="min-h-screen">
         <Overview
