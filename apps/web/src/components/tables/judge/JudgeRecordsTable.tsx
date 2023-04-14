@@ -66,7 +66,7 @@ const JudgeRecordsTable = ({ data: { id } }: JudgeRecordsTableProps) => {
           }),
           column.accessor('avgSpeakerPoints', {
             header: "Avg. Speaks",
-            cell: props => props.cell.getValue() || '--'
+            cell: props => props.cell.getValue()?.toFixed(1) || '--'
           }),
         ] as ColumnDef<ExpandedJudgeRecord>[],
       }}

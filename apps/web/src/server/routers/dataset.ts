@@ -406,9 +406,18 @@ const datasetRouter = router({
             }
           },
         },
-        orderBy: {
-          index: "desc"
-        },
+        orderBy: [
+          {
+            index: "desc"
+          },
+          {
+            judge: {
+              records: {
+                _count: "desc"
+              }
+            }
+          }
+        ],
         skip: input.page * input.limit,
         take: input.limit
       })

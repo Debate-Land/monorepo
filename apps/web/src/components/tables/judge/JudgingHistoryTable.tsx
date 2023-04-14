@@ -43,11 +43,11 @@ const JudgingHistoryTable = ({ data }: JudgingHistoryTableProps) => {
           lg: [
             column.accessor('avgRawPoints', {
               header: "Avg. Speaks",
-              cell: props => Math.round((props.cell.getValue() || 0) * 100) / 100 || '--'
+              cell: props => props.cell.getValue()?.toFixed(1) || '--'
             }),
             column.accessor('stdDevPoints', {
               header: "σ Speaks",
-              cell: props => Math.round((props.cell.getValue() || 0) * 100) / 100 || '--'
+              cell: props => props.cell.getValue()?.toFixed(2) || '--'
             }),
           ] as ColumnDef<ExpandedJudgeTournamentResult>[],
         }}
