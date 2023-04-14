@@ -1,11 +1,14 @@
 import clsx from 'clsx'
 import React, { ReactNode } from 'react'
-import Label from './Label'
-import Text from './Text'
+
+interface Option {
+  name: string;
+  value: any;
+};
 
 export interface SelectProps {
   onChange(value: string, index: number): void
-  options: string[]
+  options: Option[]
   initial?: string
   label?: ReactNode
   className?: string
@@ -34,9 +37,9 @@ const Select = ({ onChange, options, className, initial, label, ...props }: Sele
         ref={elem}
         {...props}
       >
-        {options.map((val) => (
-          <option value={val} key={val}>
-            {val}
+        {options.map(({name, value}, idx) => (
+          <option value={value} key={idx}>
+            {name}
           </option>
         ))}
       </select>
