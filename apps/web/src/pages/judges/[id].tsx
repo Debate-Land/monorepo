@@ -14,7 +14,6 @@ const Judge = () => {
   const { data } = trpc.judge.summary.useQuery(
     {
       id: query.id as string,
-      event: query.event as string,
       ...(query.circuit && {
         circuit: parseInt(query.circuit as unknown as string)
       }),

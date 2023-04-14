@@ -13,7 +13,6 @@ const Team = () => {
   const { data } = trpc.team.summary.useQuery(
     {
       id: query.id as string,
-      event: query.event as string,
       ...(query.circuit && {
         circuit: parseInt(query.circuit as unknown as string)
       }),

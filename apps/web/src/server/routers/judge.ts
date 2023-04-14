@@ -10,7 +10,6 @@ const judgeRouter = router({
         id: z.string(),
         season: z.number().optional(),
         circuit: z.number().optional(),
-        event: z.string().refine((data) => Object.values(Event).includes(data as Event)),
       })
     )
     .query(async ({ input }) => {
@@ -63,9 +62,6 @@ const judgeRouter = router({
                   circuit: {
                     id: {
                       equals: input.circuit
-                    },
-                    event: {
-                      equals: input.event as Event
                     }
                   }
                 }),
