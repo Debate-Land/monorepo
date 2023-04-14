@@ -73,8 +73,8 @@ export default function getStatistics(data: ExpandedTeam) {
   data.results.forEach(result => {
     statistics.pRecord[0] += result.prelimBallotsWon;
     statistics.pRecord[1] += result.prelimBallotsLost;
-    statistics.eRecord[0] += result.elimBallotsWon || 0;
-    statistics.eRecord[1] += result.elimBallotsLost || 0;
+    statistics.eRecord[0] += result.elimWins || 0;
+    statistics.eRecord[1] += result.elimLosses || 0;
 
     if (result.prelimPos / result.prelimPoolSize <= .2) statistics.inTop20Pct += 1;
 

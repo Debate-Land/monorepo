@@ -598,7 +598,11 @@ const datasetRouter = router({
         });
       };
 
-      return results;
+      return results?.sort((a, b) => {
+        if (a.fullBids > b.fullBids) return -1;
+        else if (a.partialBids > b.partialBids) return 1;
+        return -1;
+      });
     })
 });
 
