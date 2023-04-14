@@ -107,7 +107,7 @@ export default function getStatistics(data: ExpandedTeam) {
   statistics.pWp = statistics.pRecord[0] / numPrelims;
   statistics.eWp = statistics.eRecord[0] / numElims;
 
-  statistics.tWp = (statistics.pRecord[0] + statistics.eRecord[0]) / (numPrelims + numElims) + statistics.eWp * 0.1;
+  statistics.tWp = (statistics.pRecord[0] + (statistics.eRecord[0] || 0)) / (numPrelims + (numElims || 0)) + (statistics.eWp || 0) * 0.1;
   if (statistics.tWp > 1) statistics.tWp = 1;
 
   statistics.madeElims = statistics.breakPct[0];

@@ -230,8 +230,9 @@ const datasetRouter = router({
           });
 
           let pWp = pRecord[0] / (pRecord[0] + pRecord[1]);
-          let tWp = (pRecord[0] + eRecord[0]) / (pRecord[0] + pRecord[1] + eRecord[0] + eRecord[1]) + eRecord[0] / (eRecord[0] + eRecord[1]) * 0.1;
+          let tWp = (pRecord[0] + (eRecord[0])) / (pRecord[0] + pRecord[1] + eRecord[0] + eRecord[1]) + eRecord[0] / (eRecord[0] + eRecord[1]) * 0.1;
           if (tWp > 1) tWp = 1;
+          else if (eRecord[0] == 0 && eRecord[1] == 0) tWp = pRecord[0] / (pRecord[0] + pRecord[1]);
 
           teamsWithStatistics.push({
             statistics: {
@@ -399,8 +400,9 @@ const datasetRouter = router({
                 },
                 select: {
                   id: true,
+                  avgSpeakerPoints: true
                 }
-              }
+              },
             }
           },
         },

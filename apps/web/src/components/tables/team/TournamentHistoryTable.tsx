@@ -99,7 +99,7 @@ const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
           lg: [
             column.accessor('opWpM', {
               header: "OpWpM",
-              cell: props => props.cell.getValue(),
+              cell: props => (props.cell.getValue() * 100).toFixed(1) + '%',
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
         }}

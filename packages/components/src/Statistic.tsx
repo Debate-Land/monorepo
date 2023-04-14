@@ -17,7 +17,7 @@ export interface StatisticProps {
 }
 
 const Statistic = ({ value, description, primary, className, round, isPercentage }: StatisticProps) => {
-  if (round && value) {
+  if (round && value && typeof value !== 'string') {
     value = Math.round(value as number * (isPercentage ? 100 : 0) * Math.pow(10, round)) / Math.pow(10, round);
   }
 
@@ -44,7 +44,7 @@ const Statistic = ({ value, description, primary, className, round, isPercentage
             className?.value
           )
         }>
-          {value || ''}{value && isPercentage ? '%' : ''}
+          {value || ''}{value && typeof value !== 'string' && isPercentage ? '%' : ''}
         </Text>
         <Text size="xs" className={clsx('text-center px-2', className?.description)}>
           {description}

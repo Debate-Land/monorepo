@@ -5,11 +5,13 @@ import { TbGavel } from 'react-icons/tb'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
+import { getAvg } from '@src/utils/get-statistics';
 
 type ExpandedJudgeRanking = (JudgeRanking & {
   judge: Judge & {
     records: {
       id: number;
+      avgSpeakerPoints: number | null;
     }[];
   };
 });
@@ -55,6 +57,17 @@ const JudgeTable = ({ count }: JudgeTableProps) => {
             }),
           ] as ColumnDef<ExpandedJudgeRanking>[],
           lg: [
+            column.accessor('judge.records', {
+              header: "Avg. Spks.",
+              cell: props => {
+                const points = props.row.original.judge.records
+                  .filter(r => r.avgSpeakerPoints)
+                  .map(r => r.avgSpeakerPoints) as number[];
+                return points.length
+                  ? getAvg(points).toFixed(1)
+                  : '--'
+              },
+            }),
             column.accessor('judge.records', {
               header: "Rounds",
               cell: props => props.cell.getValue().length,

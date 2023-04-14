@@ -82,11 +82,15 @@ const Team = () => {
                   description: "Top 20% Seed"
                 },
                 {
-                  value: data ? data.statistics.bids : undefined,
+                  value: data ? data.statistics.bids || '--' : undefined,
                   description: `TOC Bid${(data?.statistics.bids || 2) > 1 ? 's' : ''}`
                 },
                 {
-                  value: data ? Math.round(data.statistics.avgSpeaks * 10) / 10 : undefined,
+                  value: data
+                    ? data.statistics.avgSpeaks
+                      ? Math.round(data.statistics.avgSpeaks * 10) / 10
+                      : '--'
+                    : undefined,
                   description: "Avg Raw Spks."
                 }
               ]}
@@ -96,7 +100,11 @@ const Team = () => {
                   description: "Tournaments"
                 },
                 {
-                  value: data ? Math.round(data.statistics.stdDevSpeaks * 100) / 100 : undefined,
+                  value: data
+                    ? data.statistics.stdDevSpeaks
+                      ? Math.round(data.statistics.stdDevSpeaks * 100) / 100
+                      : '--'
+                    : undefined,
                   description: "Avg. σ Speaks"
                 },
                 {
@@ -120,7 +128,7 @@ const Team = () => {
                   description: "Prelim Win Pct."
                 },
                 {
-                  value: data?.statistics.breakPct,
+                  value: data ? data.statistics.breakPct || '--' : undefined,
                   isPercentage: true,
                   round: 1,
                   description: "Break Pct."

@@ -12,7 +12,7 @@ const Header = ({ router }: any) => {
 	const { theme, setTheme } = useTheme()
 	const scrollY = useScrollYPosition()
 	const headerWrapperStyle = 'px-2 rounded-xl bg-gray-200/40 hover:bg-gray-200/80'
-	const headerTextStyle = 'hidden sm:inline-block !text-blue-300 hover:!text-blue-400'
+	const headerTextStyle = 'hidden sm:inline-block !text-cyan-300 hover:!text-blue-400'
 
 	return (
 		<header
