@@ -22,8 +22,8 @@ export default function sortRounds<T>(rounds: RoundLike<T>[]) {
   });
 
   elims.sort((a, b) => {
-    const idxA = Object.keys(ElimRoundName).indexOf(a.nameStd);
-    const idxB = Object.keys(ElimRoundName).indexOf(b.nameStd);
+    const idxA = Object.keys(ElimRoundName).indexOf(a.nameStd.replace(' ', ''));
+    const idxB = Object.keys(ElimRoundName).indexOf(b.nameStd.replace(' ', ''));
 
     return idxB - idxA
   });

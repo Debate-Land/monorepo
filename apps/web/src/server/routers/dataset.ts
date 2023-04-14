@@ -187,8 +187,8 @@ const datasetRouter = router({
                 select: {
                   prelimBallotsWon: true,
                   prelimBallotsLost: true,
-                  elimBallotsWon: true,
-                  elimBallotsLost: true,
+                  elimWins: true,
+                  elimLosses: true,
                   opWpM: true,
                   speaking: {
                     select: {
@@ -223,8 +223,8 @@ const datasetRouter = router({
           t.team.results.forEach(r => {
             pRecord[0] += r.prelimBallotsWon;
             pRecord[1] += r.prelimBallotsLost;
-            eRecord[0] += r.elimBallotsWon || 0;
-            eRecord[1] += r.elimBallotsLost || 0;
+            eRecord[0] += r.elimWins || 0;
+            eRecord[1] += r.elimLosses || 0;
             opWpm.push(r.opWpM);
             speaks.push(...r.speaking.map(d => d.rawAvgPoints));
           });

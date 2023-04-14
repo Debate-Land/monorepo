@@ -1,8 +1,4 @@
-import { z } from 'zod';
-import { procedure, router } from '../trpc';
-import { Event, prisma } from '@shared/database';
-import sortRounds from '@src/utils/sort-rounds';
-import getStatistics, { getAvg } from '@src/utils/get-statistics';
+import { router } from '../trpc';
 import datasetRouter from './dataset';
 import teamRouter from './team';
 import judgeRouter from './judge';

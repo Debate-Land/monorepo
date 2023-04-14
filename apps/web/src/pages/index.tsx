@@ -50,7 +50,7 @@ const Home: NextPage = () => {
         className="absolute -z-10 -top-[30%] w-full h-[60%] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 -skew-y-12 2xl:-skew-y-6"
       />
       <section id="hero" className="w-full min-h-screen flex flex-col justify-start md:justify-around">
-        <div className="flex flex-col md:flex-row justify-center items-center z-30 mt-20 md:mt-10">
+        <div className="flex flex-col md:flex-row justify-center items-center z-30 mt-20 md:mt-0">
           <div id="hero-left" className="max-w-[600px] md:ml-5 lg:mr-20">
             <h1 className="dark:text-white font-bold text-8xl text-center md:text-left md:text-[7rem] lg:text-[8rem] xl:text-[9rem] 2xl:text-[10rem]">
               DEBATE LAND
