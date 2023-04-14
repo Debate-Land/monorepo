@@ -6,6 +6,7 @@ import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import _ from 'lodash';
 import { JudgingHistoryTable } from '@src/components/tables/judge';
+import getEventName from '@src/utils/get-event-name';
 
 
 const Judge = () => {
@@ -69,7 +70,7 @@ const Judge = () => {
           }
           subtitle={
             data
-              ? `${query.event || "All Events"} | ${data.rankings[0].circuit.name} | ${query.season || "All Seasons"}`
+              ? `${getEventName(data.rankings[0].circuit.event)} | ${data.rankings[0].circuit.name} | ${query.season || "All Seasons"}`
               : undefined
           }
           underview={

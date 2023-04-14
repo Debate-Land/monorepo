@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import {CompetitorTable, TournamentTable, SchoolTable, LeaderboardTable, JudgeTable, BidTable} from '@src/components/tables/dataset';
+import getEventName from '@src/utils/get-event-name';
 
 const Dataset = () => {
   const { query, isReady } = useRouter();
@@ -22,7 +23,7 @@ const Dataset = () => {
     }
   );
 
-  const label = `${query.season as string} ${data?.circuit?.name} ${data?.circuit?.event}`;
+  const label = `${query.season as string} ${data?.circuit?.name} ${getEventName(data?.circuit?.event)}`;
 
   return (
     <>
