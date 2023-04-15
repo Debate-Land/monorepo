@@ -4,6 +4,7 @@ import { IoMedalOutline } from 'react-icons/io5'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
+import { Event } from '@shared/database';
 
 type BidTableRow = {
   teamId: string;
@@ -12,7 +13,11 @@ type BidTableRow = {
   partialBids: number;
 };
 
-const BidTable = () => {
+interface BidTableProps {
+  event?: Event;
+};
+
+const BidTable = ({ event }: BidTableProps) => {
   // const [pagination, setPagination] = useState<PaginationState>({
   //   pageIndex: 0,
   //   pageSize: 10
@@ -58,13 +63,14 @@ const BidTable = () => {
         //   setPagination,
         //   totalPages: Math.ceil(count/pagination.pageSize)
         // }}
-        onRowClick={(row) => router.push(`/teams/${row.teamId}?event=${query.event}`)}
+        onRowClick={(row) => router.push(`/teams/${row.teamId}`)}
+        showPosition
         sortable
       />
       <Text className='mx-auto'>
-        {data?.filter(r => r['fullBids'] >= 2).length} {query.event == 'PublicForum' ? 'gold' : ''} qualifying teams.
+        {data?.filter(r => r['fullBids'] >= 2).length} {event == 'PublicForum' ? 'gold' : ''} {event && 'qualifying teams'}.
         {
-          query.event == 'PublicForum' &&
+          event == 'PublicForum' &&
             ` ${data?.filter(r => r['fullBids'] < 2 && (r['fullBids'] == 1 || r['partialBids'] == 2)).length} silver qualifying teams.`
         }
       </Text>

@@ -73,7 +73,7 @@ const Dataset = () => {
         <LeaderboardTable count={data?.numTeams || 50} />
         <JudgeTable count={data?.numJudges || 50} />
         <TournamentTable count={data?.numTournaments || 50} />
-        <BidTable />
+        <BidTable event={data?.circuit?.event} />
         <SchoolTable count={data?.numSchools || 50} />
         <CompetitorTable count={data?.numCompetitors || 50} />
       </div>

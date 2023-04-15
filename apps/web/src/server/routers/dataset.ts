@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import { prisma } from '@shared/database';
 import { getAvg } from '@src/utils/get-statistics';
+import { sortBy } from 'lodash';
 
 const datasetRouter = router({
   summary: procedure
@@ -555,6 +556,9 @@ const datasetRouter = router({
             }
           }
         },
+        _count: {
+          value: true
+        }
       });
 
       let lookup: {
@@ -570,8 +574,8 @@ const datasetRouter = router({
           fullBids: 0,
           partialBids: 0,
         };
-        if (group['value'] === 'Full') lookup[id]['fullBids'] += 1;
-        else lookup[id]['partialBids'] += 1;
+        if (group['value'] === 'Full') lookup[id]['fullBids'] += group._count.value;
+        else lookup[id]['partialBids'] += group._count.value;
       });
 
       let results: {
@@ -598,11 +602,7 @@ const datasetRouter = router({
         });
       };
 
-      return results?.sort((a, b) => {
-        if (a.fullBids > b.fullBids) return -1;
-        else if (a.partialBids > b.partialBids) return 1;
-        return -1;
-      });
+      return sortBy(results, ['fullBids', 'partialBids']).reverse();
     })
 });
 
