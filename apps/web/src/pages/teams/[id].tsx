@@ -5,6 +5,7 @@ import { TournamentHistoryTable } from '@src/components/tables/team'
 import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
+import getEventName from '@src/utils/get-event-name';
 
 // TODO: National Rank at some point...
 const Team = () => {
@@ -12,7 +13,6 @@ const Team = () => {
   const { data } = trpc.team.summary.useQuery(
     {
       id: query.id as string,
-      event: query.event as string,
       ...(query.circuit && {
         circuit: parseInt(query.circuit as unknown as string)
       }),
@@ -40,6 +40,7 @@ const Team = () => {
             href: '/favicon.ico',
           },
         ]}
+        noindex
       />
       <div className="min-h-screen">
         <Overview
@@ -67,7 +68,7 @@ const Team = () => {
           }
           subtitle={
             data
-              ? `${query.event} | ${data.circuits[0].name} | ${data.seasons[0].id}-${data.seasons[data.seasons.length - 1].id}`
+              ? `${getEventName(data.circuits[0].event)} | ${data.circuits[0].name} | ${data.seasons[0].id}-${data.seasons[data.seasons.length - 1].id}`
               : undefined
           }
           underview={
@@ -82,11 +83,15 @@ const Team = () => {
                   description: "Top 20% Seed"
                 },
                 {
-                  value: data ? data.statistics.bids : undefined,
+                  value: data ? data.statistics.bids || '--' : undefined,
                   description: `TOC Bid${(data?.statistics.bids || 2) > 1 ? 's' : ''}`
                 },
                 {
-                  value: data ? Math.round(data.statistics.avgSpeaks * 10) / 10 : undefined,
+                  value: data
+                    ? data.statistics.avgSpeaks
+                      ? Math.round(data.statistics.avgSpeaks * 10) / 10
+                      : '--'
+                    : undefined,
                   description: "Avg Raw Spks."
                 }
               ]}
@@ -96,12 +101,20 @@ const Team = () => {
                   description: "Tournaments"
                 },
                 {
-                  value: data?._count.rounds,
-                  description: "Rounds"
+                  value: data
+                    ? data.statistics.stdDevSpeaks
+                      ? Math.round(data.statistics.stdDevSpeaks * 100) / 100
+                      : '--'
+                    : undefined,
+                  description: "Avg. σ Speaks"
                 },
                 {
                   value: data?.statistics.lastActive,
                   description: "Last Active"
+                },
+                {
+                  value: data ? `${data.statistics.pRecord[0]}-${data.statistics.pRecord[1]}` : undefined,
+                  description: "Prelim Rcd."
                 },
                 {
                   value: data?.statistics.avgOpWpM,
@@ -110,17 +123,13 @@ const Team = () => {
                   description: "Avg. OpWpM"
                 },
                 {
-                  value: data ? `${data.statistics.pRecord[0]}-${data.statistics.pRecord[1]}` : undefined,
-                  description: "Prelim Rcd."
-                },
-                {
                   value: data?.statistics.pWp,
                   isPercentage: true,
                   round: 1,
                   description: "Prelim Win Pct."
                 },
                 {
-                  value: data?.statistics.breakPct,
+                  value: data ? data.statistics.breakPct || '--' : undefined,
                   isPercentage: true,
                   round: 1,
                   description: "Break Pct."

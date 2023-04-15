@@ -1,4 +1,4 @@
-import { Team, Circuit, Season, Competitor, TournamentResult, CircuitRanking, Tournament, TournamentSpeakerResult } from "@shared/database";
+import { Team, Circuit, Season, Competitor, TeamTournamentResult, TeamRanking, Tournament, TournamentSpeakerResult, Bid } from "@shared/database";
 import getRelativeTime from "@src/utils/get-relative-time";
 
 type ExpandedTeam = Team & {
@@ -8,11 +8,12 @@ type ExpandedTeam = Team & {
   circuits: Circuit[];
   seasons: Season[];
   competitors: Competitor[];
-  results: (TournamentResult & {
+  results: (TeamTournamentResult & {
     tournament: Tournament;
     speaking: TournamentSpeakerResult[];
+    bid: Bid | any;
   })[];
-  rankings: CircuitRanking[];
+  rankings: TeamRanking[];
 }
 
 interface TeamStatistics {
@@ -27,6 +28,7 @@ interface TeamStatistics {
   madeElims: number;
   otr: number;
   avgSpeaks: number;
+  stdDevSpeaks: number;
   rankings: any;
   bids: number;
   inTop20Pct: number;
@@ -51,17 +53,18 @@ function getDeflator(tourns: number) {
 
 export default function getStatistics(data: ExpandedTeam) {
   let statistics: any = {
-    lastActive: '', //
-    tWp: 0, //
-    pWp: 0, //
-    eWp: 0, //
-    pRecord: [0, 0], //
-    eRecord: [0, 0], //
-    avgOpWpM: [], //
-    breakPct: [0, 0], //
-    madeElims: 0, //
-    otr: [], //
-    avgSpeaks: [], //
+    lastActive: '',
+    tWp: 0,
+    pWp: 0,
+    eWp: 0,
+    pRecord: [0, 0],
+    eRecord: [0, 0],
+    avgOpWpM: [],
+    breakPct: [0, 0],
+    madeElims: 0,
+    otr: [],
+    avgSpeaks: [],
+    stdDevSpeaks: [],
     rankings: [],
     bids: 0,
     inTop20Pct: 0,
@@ -70,8 +73,8 @@ export default function getStatistics(data: ExpandedTeam) {
   data.results.forEach(result => {
     statistics.pRecord[0] += result.prelimBallotsWon;
     statistics.pRecord[1] += result.prelimBallotsLost;
-    statistics.eRecord[0] += result.elimBallotsWon || 0;
-    statistics.eRecord[1] += result.elimBallotsLost || 0;
+    statistics.eRecord[0] += result.elimWins || 0;
+    statistics.eRecord[1] += result.elimLosses || 0;
 
     if (result.prelimPos / result.prelimPoolSize <= .2) statistics.inTop20Pct += 1;
 
@@ -86,12 +89,13 @@ export default function getStatistics(data: ExpandedTeam) {
     }
 
     statistics.otr.push(result.otrComp);
-    statistics.avgOpWpM.push(result.opWpm);
+    statistics.avgOpWpM.push(result.opWpM);
     result.speaking.forEach(speakingResult => {
       statistics.avgSpeaks.push(speakingResult.rawAvgPoints);
+      statistics.stdDevSpeaks.push(speakingResult.stdDevPoints);
     });
 
-    if (result.bid) statistics.bids += result.bid;
+    if (result.bid) statistics.bids += result.bid.value == 'Full' ? 1 : 0.5;
   });
 
   data.results.sort((a, b) => a.tournament.start - b.tournament.start).reverse();
@@ -103,7 +107,7 @@ export default function getStatistics(data: ExpandedTeam) {
   statistics.pWp = statistics.pRecord[0] / numPrelims;
   statistics.eWp = statistics.eRecord[0] / numElims;
 
-  statistics.tWp = (statistics.pRecord[0] + statistics.eRecord[0]) / (numPrelims + numElims) + statistics.eWp * 0.1;
+  statistics.tWp = (statistics.pRecord[0] + (statistics.eRecord[0] || 0)) / (numPrelims + (numElims || 0)) + (statistics.eWp || 0) * 0.1;
   if (statistics.tWp > 1) statistics.tWp = 1;
 
   statistics.madeElims = statistics.breakPct[0];
@@ -112,6 +116,7 @@ export default function getStatistics(data: ExpandedTeam) {
   statistics.otr = getDeflator(data.results.length) * getAvg(statistics.otr);
   statistics.avgOpWpM = getAvg(statistics.avgOpWpM);
   statistics.avgSpeaks = getAvg(statistics.avgSpeaks);
+  statistics.stdDevSpeaks = getAvg(statistics.stdDevSpeaks)
 
   return statistics as TeamStatistics;
 }

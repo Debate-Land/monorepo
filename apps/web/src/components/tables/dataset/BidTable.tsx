@@ -1,34 +1,34 @@
 import React, { useState } from 'react'
-import { Card, Table } from '@shared/components'
+import { Card, Table, Text } from '@shared/components'
 import { IoMedalOutline } from 'react-icons/io5'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
+import { Event } from '@shared/database';
 
 type BidTableRow = {
-  _sum: {
-    bid: number
-  };
   teamId: string;
   code: string;
+  fullBids: number;
+  partialBids: number;
 };
 
 interface BidTableProps {
-  count: number
-}
+  event?: Event;
+};
 
-const BidTable = ({count}: BidTableProps) => {
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10
-  });
+const BidTable = ({ event }: BidTableProps) => {
+  // const [pagination, setPagination] = useState<PaginationState>({
+  //   pageIndex: 0,
+  //   pageSize: 10
+  // });
   const {query, isReady, ...router} = useRouter();
   const { data } = trpc.dataset.bids.useQuery(
     {
       season: parseInt(query.season as unknown as string),
       circuit: parseInt(query.circuit as unknown as string),
-      limit: pagination.pageSize,
-      page: pagination.pageIndex
+      // limit: pagination.pageSize,
+      // page: pagination.pageIndex
     },
     {
       keepPreviousData: true,
@@ -48,20 +48,32 @@ const BidTable = ({count}: BidTableProps) => {
               header: "Team",
               cell: props => props.cell.getValue()
             }),
-            column.accessor('_sum.bid', {
-              header: "Bids",
+            column.accessor('fullBids', {
+              header: "Full Bids",
+              cell: props => props.cell.getValue()
+            }),
+            column.accessor('partialBids', {
+              header: "Partial Bids",
               cell: props => props.cell.getValue()
             })
           ] as ColumnDef<BidTableRow>[]
         }}
-        paginationConfig={{
-          pagination,
-          setPagination,
-          totalPages: Math.ceil(count/pagination.pageSize)
-        }}
-        onRowClick={(row) => router.push(`/${query.event}/teams/${row.team.id}`)}
+        // paginationConfig={{
+        //   pagination,
+        //   setPagination,
+        //   totalPages: Math.ceil(count/pagination.pageSize)
+        // }}
+        onRowClick={(row) => router.push(`/teams/${row.teamId}`)}
         showPosition
+        sortable
       />
+      <Text className='mx-auto'>
+        {data?.filter(r => r['fullBids'] >= 2).length} {event == 'PublicForum' ? 'gold' : ''} {event && 'qualifying teams'}.
+        {
+          event == 'PublicForum' &&
+            ` ${data?.filter(r => r['fullBids'] < 2 && (r['fullBids'] == 1 || r['partialBids'] == 2)).length} silver qualifying teams.`
+        }
+      </Text>
     </Card>
     )
 }

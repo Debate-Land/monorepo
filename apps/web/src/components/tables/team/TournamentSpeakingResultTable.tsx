@@ -32,12 +32,16 @@ const TournamentSpeakingResultTable = ({ data }: TournamentSpeakingResultProps) 
                     header: "Adj. Avg.",
                     cell: props => props.cell.getValue().toFixed(1)
                   }),
+                  column.accessor('stdDevPoints', {
+                    header: "σ",
+                    cell: props => props.cell.getValue().toFixed(1)
+                  }),
                 ] as ColumnDef<ExpandedTournamentSpeakerResult>[]
               }}
             />
           )
           : (
-            <div className="w-full flex justify-center dark:text-gray-300 text-gray-700">
+            <div className="w-full flex justify-center dark:text-gray-300 text-gray-700 pb-3">
               <Text>
                 No speaking results!
               </Text>

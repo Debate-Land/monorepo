@@ -11,7 +11,6 @@ const teamRouter = router({
         id: z.string(),
         season: z.number().optional(),
         circuit: z.number().optional(),
-        event: z.string().refine((data) => Object.values(Event).includes(data as Event)),
       })
     )
     .query(async ({ input }) => {
@@ -28,6 +27,7 @@ const teamRouter = router({
                   circuits: true
                 }
               },
+              bid: true,
               alias: true,
               school: true,
               speaking: {
@@ -42,9 +42,6 @@ const teamRouter = router({
             },
             where: {
               tournament: {
-                event: {
-                  equals: input.event as Event
-                },
                 ...(input.circuit && {
                   circuits: {
                     some: {
@@ -78,9 +75,6 @@ const teamRouter = router({
                 circuit: {
                   id: {
                     equals: input.circuit
-                  },
-                  event: {
-                    equals: input.event as Event
                   }
                 }
               }),
@@ -128,7 +122,6 @@ const teamRouter = router({
           records: {
             select: {
               decision: true,
-              tabJudgeId: true,
               judge: true,
             }
           },

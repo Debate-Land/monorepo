@@ -26,7 +26,7 @@ const App = ({ Component, router, pageProps }: AppProps) => {
   }
 
   return (
-    <ThemeProvider attribute='class'>
+    <ThemeProvider attribute='class' defaultTheme='dark'>
       <div
         className={clsx('flex flex-col w-full min-h-screen scroll-smooth', {
           'dark:bg-coal': router.pathname !== '/',

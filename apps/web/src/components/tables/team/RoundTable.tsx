@@ -3,12 +3,14 @@ import { Table, Text } from '@shared/components'
 import { ExpandedRound, ExpandedRoundJudgeRecord } from './TournamentHistoryTable'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import RoundSpeakingResultTable from './RoundSpeakingResultTable'
+import { useRouter } from 'next/router'
 
 export interface RoundTableProps {
   row: ExpandedRound
 }
 
-const RoundTable = ({ row: { judgeRecords, speaking, ...round } }: RoundTableProps) => {
+const RoundTable = ({ row: { records: judgeRecords, speaking, ...round } }: RoundTableProps) => {
+  const { query, ...router } = useRouter();
   const column = createColumnHelper<ExpandedRoundJudgeRecord>();
 
   return judgeRecords.length
@@ -41,7 +43,10 @@ const RoundTable = ({ row: { judgeRecords, speaking, ...round } }: RoundTablePro
             }),
           ] as ColumnDef<ExpandedRoundJudgeRecord>[],
         }}
-        onRowClick={(row) => alert(row.tabJudgeId)}
+        onRowClick={(row) => router.push({
+          pathname: `/judges/${row.judge.id}`,
+          query
+        })}
         sortable
       />
     )

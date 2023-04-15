@@ -6,14 +6,14 @@ import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import _ from 'lodash';
 import { JudgingHistoryTable } from '@src/components/tables/judge';
+import getEventName from '@src/utils/get-event-name';
 
-// TODO: National Rank at some point...
+
 const Judge = () => {
   const { query, isReady } = useRouter();
   const { data } = trpc.judge.summary.useQuery(
     {
       id: query.id as string,
-      event: query.event as string,
       ...(query.circuit && {
         circuit: parseInt(query.circuit as unknown as string)
       }),
@@ -30,6 +30,22 @@ const Judge = () => {
     }
   );
 
+  const avgSpeaks = (data
+    ? (_.mean(
+      data.results
+        .filter(r => r.avgRawPoints)
+        .map(r => r.avgRawPoints) || [0]
+    )).toFixed(1)
+    : NaN) as number;
+
+  const avgSpeakStdDev = (data
+    ? (_.mean(
+      data.results
+        .filter(r => r.stdDevPoints)
+        .map(r => r.stdDevPoints) || [0]
+    )).toFixed(1)
+    : NaN) as number;
+
   return (
     <>
       <NextSeo
@@ -41,10 +57,11 @@ const Judge = () => {
             href: '/favicon.ico',
           },
         ]}
+        noindex
       />
       <div className="min-h-screen">
         <Overview
-          label="Team"
+          label="Judge"
           heading={
             data
               ? data.name
@@ -52,48 +69,33 @@ const Judge = () => {
           }
           subtitle={
             data
-              ? `${query.event || "All Events"} | ${query.circuit || "All Circuits"} | ${query.season || "All Seasons"}`
+              ? `${getEventName(data.rankings[0].circuit.event)} | ${data.rankings[0].circuit.name} | ${query.season || "All Seasons"}`
               : undefined
           }
           underview={
             <Statistics
               primary={[
                 {
-                  value: '--',
+                  value: data ? data.index?.toFixed(1) : undefined,
+                  description: "Judge Index"
+                },
+                {
+                  value: data ? data.results?.length : undefined,
                   description: "Tournaments"
                 },
                 {
-                  value: data ? data.records.length : undefined,
-                  description: "Rounds"
-                },
-                {
-                  value: data
-                    ? _.mean(data.records
-                      .filter(r => r.avgSpeakerPoints)
-                      .map(r => r.avgSpeakerPoints) || [0]).toFixed(1) || '--'
-                    : undefined,
+                  value: !isNaN(avgSpeaks) ? avgSpeaks : '--',
                   description: "Avg. Speaks"
                 },
                 {
-                  value: data ?
-                    (
-                      () => {
-                        let points = data.records
-                          .map(r => r.avgSpeakerPoints)
-                          .filter(pts => pts !== null) as number[];
-                        let mean = _.mean(points);
-                        return _.mean(points.map(pts => Math.abs(pts - mean))).toFixed(2);
-                      }
-                    )()
-                    : undefined,
-                  description: "σ Speaks"
+                  value: !isNaN(avgSpeakStdDev) ? avgSpeakStdDev : '--',
+                  description: "Avg. σ Speaks",
                 }
               ]}
             />
           }
         />
-        <JudgingHistoryTable data={data?.records} />
-        {/* TODO: Alias/School Tables & Charts */}
+        <JudgingHistoryTable data={data?.results} />
       </div>
     </>
   )

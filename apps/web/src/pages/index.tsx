@@ -9,6 +9,7 @@ import Image from 'next/image'
 import { useMediaQuery } from 'react-responsive'
 import { Compass, Telescope, Radar } from '@src/components/features'
 import { NextSeo } from 'next-seo'
+import { FaLock } from 'react-icons/fa';
 import MobileGraphic from '../../public/assets/img/mobile_graphic.png'
 import WebGraphicDark from '../../public/assets/img/web_graphic_dark.png'
 import WebGraphicLight from '../../public/assets/img/web_graphic_light.png';
@@ -16,6 +17,7 @@ import AppStoreGraphic from '../../public/assets/img/app_store.svg'
 import GooglePlayGraphic from '../../public/assets/img/google_play.svg'
 import code from '@src/const/api-demo-code';
 import { useTheme } from 'next-themes';
+import {useRouter} from 'next/router';
 
 const Home: NextPage = () => {
   const isLarge = useMediaQuery({
@@ -23,6 +25,7 @@ const Home: NextPage = () => {
   });
 
   const { theme } = useTheme();
+  const router = useRouter();
 
   return (
     <>
@@ -47,7 +50,7 @@ const Home: NextPage = () => {
         className="absolute -z-10 -top-[30%] w-full h-[60%] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 -skew-y-12 2xl:-skew-y-6"
       />
       <section id="hero" className="w-full min-h-screen flex flex-col justify-start md:justify-around">
-        <div className="flex flex-col md:flex-row justify-center items-center z-30 mt-20 md:mt-10">
+        <div className="flex flex-col md:flex-row justify-center items-center z-30 mt-20 md:mt-0">
           <div id="hero-left" className="max-w-[600px] md:ml-5 lg:mr-20">
             <h1 className="dark:text-white font-bold text-8xl text-center md:text-left md:text-[7rem] lg:text-[8rem] xl:text-[9rem] 2xl:text-[10rem]">
               DEBATE LAND
@@ -56,9 +59,20 @@ const Home: NextPage = () => {
               Data for all things debate.
             </h4>
           </div>
-          <div id="hero-right" className="overflow-hidden">
+          <div id="hero-right" className="overflow-hidden cursor-pointer" onClick={() => router.push('/teams/7f6e1f6807d8416c6f5ac659?season=2023&circuit=5&event=PublicForum')}>
             {isLarge && (
-              <div className="w-[750px] h-auto flex flex-col overflow-hidden border border-gray-400 rounded-lg">
+              <div className="w-[750px] xl:w-[1000px] 2xl:w-[1250px] h-auto flex flex-col overflow-hidden border border-gray-400/50 rounded-lg relative">
+                <div className="absolute w-full h-6 bg-white dark:bg-gray-800 flex justify-between items-center">
+                  <div className="w-18 h-6 flex justify-start items-center px-3 space-x-1">
+                    <div className="w-3 h-3 bg-red-500 rounded-full" />
+                    <div className="w-3 h-3 bg-yellow-500 rounded-full" />
+                    <div className="w-3 h-3 bg-green-500 rounded-full" />
+                  </div>
+                  <div className="w-full h-4 bg-gray-300 rounded border border-gray-400 dark:border-gray-600 dark:bg-coal mr-4 flex items-center justify-start">
+                      <FaLock size={8} className="mx-1" />
+                      <p className="text-[0.6rem] align-middle">debate.land/teams/7f6e1f6807d8416c6f5ac659</p>
+                  </div>
+                </div>
                 <Image
                   src={
                     theme == 'dark'

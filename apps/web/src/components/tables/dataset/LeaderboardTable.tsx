@@ -77,7 +77,9 @@ const LeaderboardTable = ({ count }: LeaderboardTableProps) => {
             }),
             column.accessor('statistics.avgRawSpeaks', {
               header: "Avg. Spks.",
-              cell: props => props.cell.getValue().toFixed(1)
+              cell: props => props.cell.getValue() != 0
+                ? props.cell.getValue().toFixed(1)
+                : '--'
             }),
           ] as ColumnDef<LeaderboardRow>[]
         }}

@@ -3,37 +3,22 @@ import React, { useState } from 'react'
 import { BsJournalBookmark } from 'react-icons/bs'
 import { Table, Card } from '@shared/components'
 import { ColumnDef, createColumnHelper, SortingState } from '@tanstack/react-table'
-import { JudgeRecord, RoundSpeakerResult } from '@shared/database';
-import { JudgeTable } from '../dataset';
-import JudgeRoundTable from './JudgeRoundTable';
+import { JudgeRecord, JudgeTournamentResult, RoundSpeakerResult } from '@shared/database';
+import JudgeRecordsTable from './JudgeRecordsTable';
 
-type JudgeRound = JudgeRecord & {
-  teams: {
-    id: string;
-    aliases: {
-      code: string;
-    }[];
-  }[];
-  rounds: {
-    speaking: (RoundSpeakerResult & {
-      competitor: {
-        name: string;
-      }
-    })[];
-    nameStd: string;
-  }[];
+export type ExpandedJudgeTournamentResult = JudgeTournamentResult & {
   tournament: {
     name: string;
     start: number;
-  };
+  } | null
 };
 
 export interface JudgingHistoryTableProps {
-  data?: JudgeRound[];
+  data?: ExpandedJudgeTournamentResult[];
 }
 
 const JudgingHistoryTable = ({ data }: JudgingHistoryTableProps) => {
-  const column = createColumnHelper<JudgeRound>();
+  const column = createColumnHelper<ExpandedJudgeTournamentResult>();
 
   return (
     <Card icon={<BsJournalBookmark />} title="Judging History" className="max-w-[800px] mx-auto my-16">
@@ -42,29 +27,32 @@ const JudgingHistoryTable = ({ data }: JudgingHistoryTableProps) => {
         numLoadingRows={5}
         columnConfig={{
           core: [
-            column.display({
-              header: "Round",
-              cell: props => `${props.row.original.tournament.name} (${props.row.original.rounds[0].nameStd})`,
-              enableSorting: false,
+            column.accessor('tournament.name', {
+              header: "Name",
+              cell: props => props.cell.getValue()
             }),
             column.accessor('tournament.start', {
               header: "Date",
               cell: props => new Date(props.cell.getValue() * 1000).toLocaleDateString("en-us")
             }),
-          ] as ColumnDef<JudgeRound>[],
+            column.accessor('numPrelims', {
+              header: "Rounds",
+              cell: props => props.row.original.numPrelims + (props.row.original.numElims || 0)
+            }),
+          ] as ColumnDef<ExpandedJudgeTournamentResult>[],
           lg: [
-            column.accessor('decision', {
-              header: "Dec.",
-              cell: props => props.cell.getValue()
-            }),
-            column.accessor('avgSpeakerPoints', {
+            column.accessor('avgRawPoints', {
               header: "Avg. Speaks",
-              cell: props => props.cell.getValue()
+              cell: props => props.cell.getValue()?.toFixed(1) || '--'
             }),
-          ] as ColumnDef<JudgeRound>[],
+            column.accessor('stdDevPoints', {
+              header: "σ Speaks",
+              cell: props => props.cell.getValue()?.toFixed(2) || '--'
+            }),
+          ] as ColumnDef<ExpandedJudgeTournamentResult>[],
         }}
         child={({ row: parent }) => (
-          <JudgeRoundTable data={parent} />
+          <JudgeRecordsTable data={parent} />
         )}
         sortable
       />

@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import {CompetitorTable, TournamentTable, SchoolTable, LeaderboardTable, JudgeTable, BidTable} from '@src/components/tables/dataset';
+import getEventName from '@src/utils/get-event-name';
 
 const Dataset = () => {
   const { query, isReady } = useRouter();
@@ -22,24 +23,27 @@ const Dataset = () => {
     }
   );
 
+  const label = `${query.season as string} ${data?.circuit?.name} ${getEventName(data?.circuit?.event)}`;
+
   return (
     <>
       <NextSeo
-        title={`Debate Land: --`}
-        description={`--, exclusively on Debate Land.`}
+        title={`Debate Land: Dataset`}
+        description={`${data ? label : '--'} dataset, exclusively on Debate Land.`}
         additionalLinkTags={[
           {
             rel: 'icon',
             href: '/favicon.ico',
           },
         ]}
+        noindex
       />
       <div className="min-h-screen">
         <Overview
           label="Dataset"
           heading={
             data
-              ? `${query.season as string} ${data.circuit?.name} ${data.circuit?.event}`
+              ? label
               : undefined
           }
           subtitle="exclusively on Debate Land"
@@ -66,12 +70,12 @@ const Dataset = () => {
             />
           }
         />
-        <LeaderboardTable count={data?.numTeams || 50}  />
-        <TournamentTable count={data?.numTournaments || 50} />
-        <CompetitorTable count={data?.numCompetitors || 50} />
+        <LeaderboardTable count={data?.numTeams || 50} />
         <JudgeTable count={data?.numJudges || 50} />
+        <TournamentTable count={data?.numTournaments || 50} />
+        <BidTable event={data?.circuit?.event} />
         <SchoolTable count={data?.numSchools || 50} />
-        <BidTable count={data?.numBids! || 50} />
+        <CompetitorTable count={data?.numCompetitors || 50} />
       </div>
     </>
   )

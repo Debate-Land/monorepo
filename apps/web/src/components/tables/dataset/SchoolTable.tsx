@@ -7,10 +7,16 @@ import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 
 type SchoolTableRow = School & {
-  tournamentResults: {
-      id: number;
+  tournaments: {
+    id: number;
   }[];
-}
+  teams: {
+    id: string;
+  }[];
+  results: {
+    id: number;
+  }[];
+};
 
 interface SchoolTableProps {
   count: number
@@ -47,8 +53,18 @@ const SchoolTable = ({count}: SchoolTableProps) => {
               header: "Name",
               cell: props => props.cell.getValue(),
             }),
-            column.accessor('tournamentResults', {
-              header: "Results",
+            column.accessor('results', {
+              header: "Entries",
+              cell: props => props.cell.getValue().length
+            }),
+          ] as ColumnDef<SchoolTableRow>[],
+          lg: [
+            column.accessor('teams', {
+              header: "Teams",
+              cell: props => props.cell.getValue().length
+            }),
+            column.accessor('tournaments', {
+              header: "Tourns.",
               cell: props => props.cell.getValue().length
             }),
           ] as ColumnDef<SchoolTableRow>[]
@@ -58,7 +74,7 @@ const SchoolTable = ({count}: SchoolTableProps) => {
           setPagination,
           totalPages: Math.ceil(count/pagination.pageSize)
         }}
-        onRowClick={(row) => router.push(`/${query.event}/teams/${row.id}`)}
+        // onRowClick={(row) => router.push(`/${query.event}/teams/${row.id}`)}
       />
     </Card>
     )
