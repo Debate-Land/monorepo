@@ -49,7 +49,9 @@ const BidTable = ({ event }: BidTableProps) => {
             column.accessor('fullBids', {
               header: "Full Bids",
               cell: props => props.cell.getValue()
-            }),
+            })
+          ] as ColumnDef<BidTableRow>[],
+          sm: [
             column.accessor('partialBids', {
               header: "Partial Bids",
               cell: props => props.cell.getValue()
