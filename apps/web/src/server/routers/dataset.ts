@@ -531,8 +531,6 @@ const datasetRouter = router({
       z.object({
         circuit: z.number(),
         season: z.number(),
-        // page: z.number(),
-        // limit: z.number()
       })
     )
     .query(async ({ input }) => {
@@ -558,7 +556,7 @@ const datasetRouter = router({
         },
         _count: {
           value: true
-        }
+        },
       });
 
       let lookup: {

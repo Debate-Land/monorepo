@@ -86,7 +86,7 @@ const Compass = () => {
         />
         <Select
           // @ts-ignore
-          options={seasons?.map() || []}
+          options={seasons?.seasons?.map() || []}
           onChange={(v) => setQuery({ ...query, season: parseInt(v) })}
           enabled={false}
           label={<Label character="c">Season</Label>}
