@@ -282,7 +282,9 @@ const datasetRouter = router({
         },
         orderBy: {
           start: "asc"
-        }
+        },
+        skip: input.page * input.limit,
+        take: input.limit
       });
 
       return result;

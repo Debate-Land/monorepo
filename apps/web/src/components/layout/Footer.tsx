@@ -30,7 +30,7 @@ const Footer = () => {
 										<Link external href="https://docs.debate.land" text="Docs" />
 									</li>
 									<li>
-										<Link external href="https://api.debate.land" text="Status" />
+										<Link external href="https://status.debate.land" text="Status" />
 									</li>
 								</ul>
 							</div>
