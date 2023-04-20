@@ -3,21 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 4000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@sanity/vision": "^3.9.0",
+    "@shared/cms": "*",
     "@types/node": "18.15.12",
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
     "next": "13.3.0",
+    "next-sanity": "^4.1.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "sanity": "^3.9.0",
+    "styled-components": "^5.3.9",
     "typescript": "5.0.4"
   }
 }
