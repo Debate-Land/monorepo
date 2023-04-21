@@ -3,9 +3,9 @@ import GetImage from '@src/utils/get-image';
 import React from 'react'
 import Image from 'next/image';
 
-const Page = ({title, body, author, ...props}: any) => {
+const Page = ({title, body, author}: any) => {
   const AuthorImageProps = GetImage(author.image)!;
-  console.log(author) // TODO: No blurDataUrl
+
   return (
     <article className="pt-8 min-h-screen">
       <div className="max-w-[700px] mx-auto rounded-lg grid place-items-center aspect-video bg-gradient-to-r from-sky-400 via-purple-500 to-red-400">
@@ -14,7 +14,7 @@ const Page = ({title, body, author, ...props}: any) => {
           <div className="flex justify-center items-center gap-3 w-full">
             <Image
               src={AuthorImageProps.src}
-              blurDataURL={AuthorImageProps.blurDataUrl}
+              // blurDataURL={AuthorImageProps.}
               loader={AuthorImageProps.loader}
               alt={author.name}
               // placeholder="blur"
@@ -24,7 +24,7 @@ const Page = ({title, body, author, ...props}: any) => {
             />
             <div>
               <p className="text-gray-300">
-                {author.name} 
+                {author.name}
                 {/* TODO: Go to /team page from here */}
               </p>
             </div>
@@ -39,33 +39,29 @@ const Page = ({title, body, author, ...props}: any) => {
 }
 
 export const getStaticPaths = async () => {
-  // const pages = await client.fetch < { slug: string }[] >(`*[_type=='page']`);
-  // return {
-  //   paths: pages?.map(page => ({
-  //     params: {
-  //       slug: page.slug
-  //     }
-  //   })) || [{
-  //     params: {
-  //       slug: 'debate-land-blog'
-  //     }
-  //   }],
-  //   fallback: true
-  // }
+  const pages = await client.fetch < { slug: { current: string } }[] >(`*[_type=='page']`);
   return {
-    paths: [
-      {
-        params: {
-          slug: 'debate-land-blog'
-        }
+    paths: pages?.map(page => ({
+      params: {
+        slug: page.slug.current
       }
-    ],
+    })) || [{
+      params: {
+        slug: 'debate-land-blog'
+      }
+    }],
     fallback: true
   }
 }
 
-// @ts-ignore
-export const getStaticProps = async ({ params, preview = false }) => {
+interface StaticProps {
+  params: {
+    slug: string;
+  },
+  preview?: boolean;
+}
+
+export const getStaticProps = async ({ params, preview = false }: StaticProps) => {
   const page = await getClient(preview).fetch(`*[_type=='page' && slug.current=='${params.slug}'] {
     ...,
     author->

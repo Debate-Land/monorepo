@@ -1,12 +1,14 @@
+import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import client from "../lib/sanity";
-import { useNextSanityImage } from "next-sanity-image";
+import { UseNextSanityImageBuilder, UseNextSanityImageProps, useNextSanityImage } from "next-sanity-image";
 
-// @ts-ignore
-export default function GetImage(image, CustomImageBuilder = null) {
+export default function GetImage(image: SanityImageSource | null, CustomImageBuilder: UseNextSanityImageBuilder | null = null) {
   const imageProps = useNextSanityImage(client, image, {
-    // @ts-ignore
-    imageBuilder: CustomImageBuilder
-  });
+    ...(CustomImageBuilder && {
+      imageBuilder: CustomImageBuilder
+    })
+  })
+  // @ts-ignore
   if (!image || !image.asset) {
     return null;
   }

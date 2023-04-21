@@ -63,6 +63,7 @@ const components = {
     )
   }
 };
+
 // Set up Portable Text serialization
 export const PortableText = (props: any) => (
   <PortableTextComponent components={components} {...props} />
