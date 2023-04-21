@@ -10,5 +10,6 @@ export default defineConfig({
   plugins: [deskTool(), visionTool()],
   schema: {
     types: schemas
-  }
+  },
+  title: 'Debate Land',
 });

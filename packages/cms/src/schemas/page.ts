@@ -1,8 +1,8 @@
 import {defineField, defineType} from 'sanity'
 
 export default defineType({
-  name: 'post',
-  title: 'Blog Post',
+  name: 'page',
+  title: 'Page',
   type: 'document',
   fields: [
     defineField({
@@ -20,10 +20,23 @@ export default defineType({
       },
     }),
     defineField({
+      title: 'Page Type',
+      name: 'pageType',
+      type: 'string',
+      initialValue: 'blog-post',
+      options: {
+        list: [
+          { title: 'Blog Post', value: 'blog-post' },
+          { title: 'General Page', value: 'general-page' }
+        ],
+        layout: 'radio'
+      }
+    }),
+    defineField({
       name: 'author',
       title: 'Author',
       type: 'reference',
-      to: {type: 'author'},
+      to: { type: 'author' },
     }),
     defineField({
       name: 'mainImage',
