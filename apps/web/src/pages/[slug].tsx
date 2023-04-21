@@ -3,25 +3,9 @@ import GetImage from '@src/utils/get-image';
 import React from 'react'
 import Image from 'next/image';
 
-const MainImage = ({ image }: any) => {
-  return (
-    <div className="mt-12 mb-12 ">
-      {/* @ts-ignore */}
-      <Image {...GetImage(image)} alt={image.alt || "Thumbnail"} />
-      <figcaption className="text-center ">
-        {image.caption && (
-          <span className="text-sm italic text-gray-600 dark:text-gray-400">
-            {image.caption}
-          </span>
-        )}
-      </figcaption>
-    </div>
-  );
-};
-
 const Page = ({title, body, author, ...props}: any) => {
   const AuthorImageProps = GetImage(author.image)!;
-  console.log(AuthorImageProps)
+  console.log(author) // TODO: No blurDataUrl
   return (
     <article className="pt-8 min-h-screen">
       <div className="max-w-[700px] mx-auto rounded-lg grid place-items-center aspect-video bg-gradient-to-r from-sky-400 via-purple-500 to-red-400">
@@ -39,7 +23,10 @@ const Page = ({title, body, author, ...props}: any) => {
               className="rounded-full"
             />
             <div>
-              <p className="text-gray-300">{author.name}</p>
+              <p className="text-gray-300">
+                {author.name} 
+                {/* TODO: Go to /team page from here */}
+              </p>
             </div>
           </div>
         </div>
