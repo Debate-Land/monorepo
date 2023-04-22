@@ -44,9 +44,6 @@ const Footer = () => {
 										<Link href="/blog" text="Blog" />
 									</li>
 									<li>
-										<Link href="/roadmap" text="Roadmap" />
-									</li>
-									<li>
 										<Link href="/contact" text="Contact" />
 									</li>
 								</ul>
@@ -109,6 +106,9 @@ const Footer = () => {
 								</Text>
 								<ul className="mt-2 space-y-2">
 									<li>
+										<Link href="/roadmap" text="Roadmap" />
+									</li>
+									<li>
 										<Link external href="https://staging.debate.land" text="Staging" />
 									</li>
 									<li>
@@ -119,7 +119,7 @@ const Footer = () => {
 											href="https://cutit.cards"
 											text="Cut-It"
 											icon={<RiScissors2Fill />}
-											className="text-sky-200"
+											className="text-yellow-400"
 										/>
 									</li>
 								</ul>
