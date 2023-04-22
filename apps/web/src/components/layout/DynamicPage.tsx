@@ -4,14 +4,14 @@ import GetImage from '@src/utils/get-image';
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
 
-const DynamicPage = ({ title, body, author, _type, description, ...props }: any) => {
-  const isBlog = _type == 'blog';
+const DynamicPage = ({ title, body, author, pageType, description, ...props }: any) => {
+  const isBlog = pageType == 'blog-post';
   const AuthorImageProps = GetImage(author.image)!;
 
   return (
     <>
       <NextSeo
-        title={`${title} — Debate Land ${isBlog && 'Blog'}`}
+        title={`${title} — Debate Land ${isBlog ? 'Blog' : ''}`}
         description={description}
       />
       <article className="pt-8 min-h-screen mx-2">
@@ -19,7 +19,7 @@ const DynamicPage = ({ title, body, author, _type, description, ...props }: any)
           <div className="flex flex-col justify-center items-center">
             <h1 className="text-white mb-4 text-3xl sm:text-4xl md:text-6xl text-center font-black">{title}</h1>
             {
-              isBlog && <div className="flex justify-center items-center gap-3 w-full">
+              isBlog && <div className="flex justify-center items-center gap-3 w-full bg-gray-50/10 px-2 py-1 rounded-2xl w-fit">
                 <Image
                   src={AuthorImageProps.src}
                   // blurDataURL={AuthorImageProps.}
@@ -31,7 +31,7 @@ const DynamicPage = ({ title, body, author, _type, description, ...props }: any)
                   className="rounded-full"
                 />
                 <div>
-                  <p className="text-gray-300">
+                  <p className="text-gray-200">
                     {author.name}
                     {/* TODO: Go to /team page from here */}
                   </p>
