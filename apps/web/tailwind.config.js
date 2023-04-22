@@ -14,7 +14,10 @@ module.exports = {
           200: 'rgb(0, 68, 147)',
         },
         coal: 'rgb(15, 13, 14)',
-      },
+      }
     },
   },
+  plugins: [
+    require('@tailwindcss/typography')
+  ]
 }

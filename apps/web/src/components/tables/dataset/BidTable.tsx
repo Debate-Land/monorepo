@@ -67,7 +67,7 @@ const BidTable = ({ event }: BidTableProps) => {
         showPosition
         sortable
       />
-      <Text className='mx-auto'>
+      <Text className='mx-auto text-center'>
         {data?.filter(r => r['fullBids'] >= 2).length} {event == 'PublicForum' ? 'gold' : ''} {event && 'qualifying teams'}.
         {
           event == 'PublicForum' &&
