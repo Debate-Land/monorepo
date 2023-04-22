@@ -62,7 +62,7 @@ const Index = ({ pages }: Props) => {
         subtitle="Case Studies | Research | Insights"
         underview={
           <div className='py-3 uppercase' style={{letterSpacing: '0.1em'}}>
-            <p className="text-center">Thoughts from the creators of Debate Land</p>
+            <p className="bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 text-transparent bg-clip-text text-center">Thoughts from the creators of Debate Land</p>
           </div>
         }
       />
