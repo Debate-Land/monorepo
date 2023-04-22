@@ -3,8 +3,13 @@ import { PortableText } from '@src/lib/sanity'
 import GetImage from '@src/utils/get-image';
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
+import { types } from '@shared/cms';
 
-const DynamicPage = ({ title, body, author, pageType, description, ...props }: any) => {
+export type DynamicPageProps = types.Page & {
+  author: types.Author;
+}
+
+const DynamicPage = ({ title, body, author, pageType, description }: DynamicPageProps) => {
   const isBlog = pageType == 'blog-post';
   const AuthorImageProps = GetImage(author.image)!;
 

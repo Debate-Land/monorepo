@@ -1,3 +1,4 @@
 import schemas from "./schemas";
+import * as types from "./types";
 
-export default schemas;
+export { schemas, types };

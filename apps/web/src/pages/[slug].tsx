@@ -1,8 +1,8 @@
 import client, { getClient } from '@src/lib/sanity'
-import { DynamicPage } from '@src/components/layout';
+import { DynamicPage, DynamicPageProps } from '@src/components/layout';
 
 export const getStaticPaths = async () => {
-  const pages = await client.fetch < { slug: { current: string } }[] >(`*[_type=='page' && pageType == 'general-page']`);
+  const pages = await client.fetch <DynamicPageProps[]>(`*[_type=='page' && pageType == 'general-page']`);
   return {
     paths: pages?.map(page => ({
       params: {
@@ -21,7 +21,7 @@ interface StaticProps {
 }
 
 export const getStaticProps = async ({ params, preview = false }: StaticProps) => {
-  const page = await getClient(preview).fetch(`*[_type=='page' && pageType == 'general-page' && slug.current=='${params.slug}'] {
+  const page = await getClient(preview).fetch<DynamicPageProps[]>(`*[_type=='page' && pageType == 'general-page' && slug.current=='${params.slug}'] {
     ...,
     author->
   }`);
