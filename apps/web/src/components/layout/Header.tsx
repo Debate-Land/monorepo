@@ -17,7 +17,7 @@ const Header = ({ router }: any) => {
 	return (
 		<header
 			className={clsx('h-[3.35rem] fixed w-full z-40 p-2 flex justify-between', {
-				'bg-white dark:bg-stone-900': router.pathname !== '/' && scrollY < 33,
+				'bg-white dark:bg-coal': router.pathname !== '/' && scrollY < 33,
 				'backdrop-blur-xl': scrollY > 33,
 			})}
 		>

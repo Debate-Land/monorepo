@@ -1,5 +1,6 @@
 import Text from './Text';
-import { FaSort, FaSortUp, FaSortDown, FaChevronCircleDown, FaChevronCircleUp } from 'react-icons/fa';
+import { FaSort, FaSortUp, FaSortDown, FaChevronUp, FaChevronDown } from 'react-icons/fa';
+import { BsChevronRight } from 'react-icons/bs';
 import { FiChevronRight, FiChevronsRight, FiChevronLeft, FiChevronsLeft } from 'react-icons/fi';
 import { ColumnDef, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, useReactTable } from '@tanstack/react-table';
 import React, { Fragment, Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -18,15 +19,17 @@ const getPositionColumn = <T,>(pagination: PaginationState = { pageIndex: 0, pag
 const getExpandingColumn = <T,>() => (
   {
     id: "expander",
-    header: "Details",
+    header: "More",
     cell: ({ row }: { row: Row<T> }) => (
       row.getCanExpand()
-        ? <button onClick={row.getToggleExpandedHandler()} className="w-full flex flex-row items-center justify-start px-4">
-          {
-            row.getIsExpanded()
-              ? <FaChevronCircleUp/>
-              : <FaChevronCircleDown/>
-          }
+        ? <button onClick={row.getToggleExpandedHandler()} className="w-full flex flex-row items-center justify-start">
+          <div className="p-1 bg-gray-50/30 dark:bg-transparent rounded-full">
+            {
+              row.getIsExpanded()
+                ? <FaChevronUp className='text-red-400'/>
+                : <FaChevronDown className='text-red-400'/>
+            }
+          </div>
         </button>
         : <>--</>
     )
@@ -36,8 +39,12 @@ const getExpandingColumn = <T,>() => (
 const getOnClickColumn = <T,>() => (
   {
     id: "onClick",
-    header: "Details",
-    cell: () => <BiLinkExternal className="ml-4"/>
+    header: () => <p className="mx-auto text-center">Details</p>,
+    cell: () => (
+      <div className="mx-auto rounded-full bg-gray-50/30 dark:bg-transparent w-6 h-6 flex justify-center items-center">
+        <BiLinkExternal className="text-red-400" />
+      </div>
+    )
   } as ColumnDef<T>
 );
 
@@ -123,7 +130,7 @@ const Table = <T,>({
     };
 
     if (showPosition) newColumns = [getPositionColumn(paginationConfig?.pagination), ...newColumns];
-    if (ExpandedRow) newColumns = [getExpandingColumn(), ...newColumns];
+    if (ExpandedRow) newColumns = [...newColumns, getExpandingColumn()];
     if (onRowClick) newColumns = [getOnClickColumn(), ...newColumns];
 
     setColumns(newColumns);

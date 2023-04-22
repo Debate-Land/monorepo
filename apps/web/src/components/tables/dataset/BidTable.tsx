@@ -18,17 +18,15 @@ interface BidTableProps {
 };
 
 const BidTable = ({ event }: BidTableProps) => {
-  // const [pagination, setPagination] = useState<PaginationState>({
-  //   pageIndex: 0,
-  //   pageSize: 10
-  // });
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  });
   const {query, isReady, ...router} = useRouter();
   const { data } = trpc.dataset.bids.useQuery(
     {
       season: parseInt(query.season as unknown as string),
       circuit: parseInt(query.circuit as unknown as string),
-      // limit: pagination.pageSize,
-      // page: pagination.pageIndex
     },
     {
       keepPreviousData: true,
@@ -40,7 +38,7 @@ const BidTable = ({ event }: BidTableProps) => {
   return (
     <Card icon={<IoMedalOutline />} title="Bids" className="max-w-[800px] mx-auto my-16">
       <Table
-        data={data}
+        data={data?.slice(pagination.pageSize * pagination.pageIndex, pagination.pageSize * (pagination.pageIndex + 1))}
         numLoadingRows={10}
         columnConfig={{
           core: [
@@ -51,23 +49,25 @@ const BidTable = ({ event }: BidTableProps) => {
             column.accessor('fullBids', {
               header: "Full Bids",
               cell: props => props.cell.getValue()
-            }),
+            })
+          ] as ColumnDef<BidTableRow>[],
+          sm: [
             column.accessor('partialBids', {
               header: "Partial Bids",
               cell: props => props.cell.getValue()
             })
           ] as ColumnDef<BidTableRow>[]
         }}
-        // paginationConfig={{
-        //   pagination,
-        //   setPagination,
-        //   totalPages: Math.ceil(count/pagination.pageSize)
-        // }}
+        paginationConfig={{
+          pagination,
+          setPagination,
+          totalPages: Math.ceil((data?.length || 0)/pagination.pageSize)
+        }}
         onRowClick={(row) => router.push(`/teams/${row.teamId}`)}
         showPosition
         sortable
       />
-      <Text className='mx-auto'>
+      <Text className='mx-auto text-center'>
         {data?.filter(r => r['fullBids'] >= 2).length} {event == 'PublicForum' ? 'gold' : ''} {event && 'qualifying teams'}.
         {
           event == 'PublicForum' &&
