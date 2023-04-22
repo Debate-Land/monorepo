@@ -1,12 +1,11 @@
-import { Card } from '@shared/components';
 import { DynamicPageProps } from '@src/components/layout';
 import { getClient } from '@src/lib/sanity';
 import React from 'react';
 import Image from 'next/image';
-import { IoNewspaperOutline } from 'react-icons/io5';
 import GetImage from '@src/utils/get-image';
 import { parseISO, format } from "date-fns";
 import { NextRouter, useRouter } from 'next/router';
+import Overview from '@src/components/layout/Overview';
 
 interface PostCardProps extends DynamicPageProps {
   router: NextRouter;
@@ -56,19 +55,24 @@ const Index = ({ pages }: Props) => {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col w-full max-w-[700px] mx-auto px-2 min-h-screen pt-8">
-      <Card
-        title="Blog"
-        icon={<IoNewspaperOutline />}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 p-2 gap-3">
-          {
-            pages.map(page => <PostCard key={page._id} router={router} {...page} />)
-          }
-        </div>
-      </Card>
-
+    <div className="min-h-screen">
+      <Overview
+        label="Blog"
+        heading="The Forensics Files"
+        subtitle="Case Studies | Research | Insights"
+        underview={
+          <div className='py-3 uppercase' style={{letterSpacing: '0.1em'}}>
+            <p className="text-center">Thoughts from the creators of Debate Land</p>
+          </div>
+        }
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 mt-12 p-2 gap-3 max-w-[700px] mx-auto">
+        {
+          pages.map(page => <PostCard key={page._id} router={router} {...page} />)
+        }
+      </div>
     </div>
+
   )
 }
 
