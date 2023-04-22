@@ -2,7 +2,7 @@ import client, { getClient } from '@src/lib/sanity'
 import { DynamicPage } from '@src/components/layout';
 
 export const getStaticPaths = async () => {
-  const pages = await client.fetch < { slug: { current: string } }[] >(`*[_type=='page'] && pageType == 'blog-post'`);
+  const pages = await client.fetch < { slug: { current: string } }[] >(`*[_type=='page' && pageType == 'blog-post']`);
   return {
     paths: pages?.map(page => ({
       params: {
