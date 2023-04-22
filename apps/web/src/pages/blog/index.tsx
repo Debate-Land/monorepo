@@ -17,10 +17,10 @@ const PostCard = ({ slug, title, author, publishedAt, router }: PostCardProps) =
 
   return (
     <div
-      className="flex flex-col p-1 rounded-lg bg-gradient-to-r from-sky-400 via-purple-500 to-red-400"
+      className="flex flex-col p-1 rounded-lg bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 cursor-pointer"
       onClick={() => router.push(`/blog/${slug.current}`)}
     >
-      <div className="bg-white dark:bg-coal hover:bg-transparent w-full h-full p-3 rounded-md">
+      <div className="bg-white dark:bg-coal hover:bg-transparent w-full h-full p-3 rounded-md flex flex-col justify-between">
         <h1 className="text-xl">{title}</h1>
         <div className='w-full border-t border-dashed border-gray-600 dark:border-gray-400 flex items-center space-x-2 pt-3 mt-3'>
           <Image
@@ -31,7 +31,7 @@ const PostCard = ({ slug, title, author, publishedAt, router }: PostCardProps) =
               // placeholder="blur"
               width={32}
               height={32}
-              className="rounded-full w-32 h-32"
+              className="rounded-full max-w-32 max-h-32"
           />
           <div>
             <p className="text-red-400">{author.name}</p>
@@ -61,7 +61,7 @@ const Index = ({ pages }: Props) => {
         title="Blog"
         icon={<IoNewspaperOutline />}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 p-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 p-2 gap-3">
           {
             pages.map(page => <PostCard key={page._id} router={router} {...page} />)
           }

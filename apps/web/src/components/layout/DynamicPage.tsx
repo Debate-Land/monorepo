@@ -22,9 +22,9 @@ const DynamicPage = ({ title, body, author, pageType, description }: DynamicPage
       <article className="pt-8 min-h-screen mx-2">
         <div className="max-w-[700px] mx-auto rounded-lg grid place-items-center aspect-video bg-gradient-to-r from-sky-400 via-purple-500 to-red-400">
           <div className="flex flex-col justify-center items-center">
-            <h1 className="text-white mb-4 text-3xl sm:text-4xl md:text-6xl text-center font-black">{title}</h1>
+            <h1 className="text-white mb-4 text-3xl sm:text-4xl md:text-6xl text-center font-black md:!leading-[4.5rem]">{title}</h1>
             {
-              isBlog && <div className="flex justify-center items-center gap-3 w-full bg-gray-50/10 px-2 py-1 rounded-2xl w-fit">
+              isBlog && <div className="flex justify-center items-center gap-3 w-full bg-gray-50/10 px-2 py-1 rounded-2xl max-w-fit">
                 <Image
                   src={AuthorImageProps.src}
                   // blurDataURL={AuthorImageProps.}
@@ -35,7 +35,7 @@ const DynamicPage = ({ title, body, author, pageType, description }: DynamicPage
                   height={32}
                   className="rounded-full"
                 />
-                <div>
+              <div>
                   <p className="text-gray-200">
                     {author.name}
                     {/* TODO: Go to /team page from here */}
