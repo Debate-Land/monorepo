@@ -14,7 +14,7 @@ import { prisma } from '@shared/database';
 
 // TODO: National Rank at some point...
 const Team = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { query, isReady, ...router } = useRouter();
+  const { query, isReady, asPath } = useRouter();
   const { data } = trpc.team.summary.useQuery(
     {
       id: query.id as string,
@@ -35,7 +35,7 @@ const Team = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
   );
 
   const SEO_TITLE = `Debate Land: ${data?.aliases[0]?.code || '--'}'s Profile`;
-  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics in ${query.event}, exclusively on Debate Land.`;
+  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics in ${getEventName(data?.circuits[0].event)}, exclusively on Debate Land.`;
 
   return (
     <>
@@ -46,7 +46,7 @@ const Team = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
           title: SEO_TITLE,
           description: SEO_DESCRIPTION,
           type: 'website',
-          url: `https://debate.land/${router.pathname}`,
+          url: `https://debate.land${asPath}`,
           images: [{
             url: `https://debate.land/api/og?title=${data?.aliases[0].code}&label=Team`
           }]
