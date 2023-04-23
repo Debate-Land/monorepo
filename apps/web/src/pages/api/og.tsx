@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
 
@@ -21,7 +22,6 @@ export default async function handler(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const imageData = await image;
-    const isBlog = false;
 
     return new ImageResponse(
       (
@@ -31,20 +31,26 @@ export default async function handler(request: NextRequest) {
             backgroundImage: 'linear-gradient(to right, #38bdf8, #a855f7, #f87171)'
           }}
         >
+          <h3 tw='text-white text-3xl bg-gray-50/10 p-1 rounded shadow-xl text-center flex items-center'>
+            <img
+              // @ts-ignore
+              src={imageData}
+              alt="Logo"
+              tw="mr-1"
+            />
+            Debate Land
+          </h3>
+          <h1 tw='text-white text-6xl text-center -mt-2'>
+            {searchParams.get('title')!}
+          </h1>
           <span
-            tw="bg-purple-400 px-2 text-white/80 rounded-xl"
+            tw="bg-purple-400 px-3 text-white/80 text-xl rounded-2xl shadow-xl mt-2"
           >
             {searchParams.get('label')}
           </span>
-          <h1 tw='text-white text-6xl text-center'>
-            {searchParams.get('title')!}
-          </h1>
-          <h1 tw='text-white text-xl bg-gray-50/10 px-1 rounded shadow-xl text-center'>
-            exclusively on Debate Land
-          </h1>
-          <img
-            src={imageData} />
-          <p tw="absolute bottom-0 text-white/80">{formatISO(searchParams.get('publishedAt')!)}</p>
+          {
+            searchParams.has('publishedAt') && <p tw="absolute bottom-0 text-white/80">{formatISO(searchParams.get('publishedAt')!)}</p>
+          }
         </div>
       ),
       {
