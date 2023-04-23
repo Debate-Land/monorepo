@@ -6,9 +6,14 @@ import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import getEventName from '@src/utils/get-event-name';
+import { appRouter } from '../../server/routers/_app';
+import { createProxySSGHelpers } from '@trpc/react-query/ssg';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { ParsedUrlQuery } from 'querystring';
+import { prisma } from '@shared/database';
 
 // TODO: National Rank at some point...
-const Team = () => {
+const Team = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { query, isReady } = useRouter();
   const { data } = trpc.team.summary.useQuery(
     {
@@ -149,6 +154,36 @@ const Team = () => {
       </div>
     </>
   )
+}
+
+interface TeamParams extends ParsedUrlQuery {
+  id: string;
+  circuit: string;
+  season: string;
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: {
+      prisma
+    },
+  });
+
+  const { id, circuit, season } = ctx.query as TeamParams;
+
+  await ssg.team.summary.prefetch({
+    id,
+    circuit: parseInt(circuit),
+    season: parseInt(season)
+  });
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    }
+  }
 }
 
 export default Team
