@@ -21,7 +21,7 @@ const DynamicPage = ({ title, body, author, pageType, description, publishedAt }
         description={description}
       />
       <article className="pt-8 min-h-screen mx-2">
-        <div className="relative max-w-[700px] mx-auto rounded-lg grid place-items-center aspect-video bg-gradient-to-r from-sky-400 via-purple-500 to-red-400">
+        <div className="relative max-w-[700px] mx-auto rounded-lg flex justify-center items-center aspect-video bg-gradient-to-r from-sky-400 via-purple-500 to-red-400">
           <div className="flex flex-col justify-center items-center">
             <h1 className="text-white mb-4 text-3xl sm:text-4xl md:text-6xl text-center font-black md:!leading-[4.5rem]">{title}</h1>
             {
