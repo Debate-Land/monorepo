@@ -14,7 +14,7 @@ import { prisma } from '@shared/database';
 
 // TODO: National Rank at some point...
 const Team = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { query, isReady } = useRouter();
+  const { query, isReady, ...router } = useRouter();
   const { data } = trpc.team.summary.useQuery(
     {
       id: query.id as string,
@@ -34,11 +34,23 @@ const Team = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
     }
   );
 
+  const SEO_TITLE = `Debate Land: ${data?.aliases[0]?.code || '--'}'s Profile`;
+  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics in ${query.event}, exclusively on Debate Land.`;
+
   return (
     <>
       <NextSeo
-        title={`Debate Land: ${data?.aliases[0]?.code || '--'}'s Profile`}
-        description={`${data?.aliases[0].code || '--'}'s competitive statistics in ${query.event}, exclusively on Debate Land.`}
+        title={SEO_TITLE}
+        description={SEO_DESCRIPTION}
+        openGraph={{
+          title: SEO_TITLE,
+          description: SEO_DESCRIPTION,
+          type: 'website',
+          url: `https://debate.land/${router.pathname}`,
+          images: [{
+            url: `https://debate.land/api/og?title=${data?.aliases[0].code}&label=Team`
+          }]
+        }}
         additionalLinkTags={[
           {
             rel: 'icon',
