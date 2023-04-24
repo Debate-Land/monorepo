@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Validate signature
   if (!isValid) {
-    res.send(401);
+    res.send(`${signature} ${process.env.SANITY_WEBHOOK_SIGNATURE!}`);
     return;
   }
 
@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const document = req.body as unknown as types.Page;
     const pathToRevalidate = document.slug.current;
 
-    await res.revalidate(`${document.pageType === 'blog-post' ? 'blog/' : ''}${pathToRevalidate}`);
+    await res.revalidate(`${document.pageType === 'blog-post' ? 'blog' : ''}/${pathToRevalidate}`);
 
     return res.json({ revalidated: true });
   }
