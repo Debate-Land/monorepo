@@ -7,19 +7,20 @@ import GetImage from "@src/utils/get-image";
 import { defineConfig } from "sanity";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
-export const config = defineConfig({
+export const client = createClient({
   projectId: '2ayk9qf1',
   dataset: 'production',
   useCdn: true,
   title: 'Debate Land',
+  apiVersion: 'v2021-10-21'
 });
 
 
 export const urlFor = (source: SanityImageSource) =>
-  createImageUrlBuilder(config).image(source);
+  createImageUrlBuilder(client).image(source);
 
 export const imageBuilder = (source: SanityImageSource) =>
-  createImageUrlBuilder(config).image(source);
+  createImageUrlBuilder(client).image(source);
 
 // Barebones lazy-loaded image component
 // @ts-ignore
@@ -69,7 +70,7 @@ export const PortableText = (props: any) => (
   <PortableTextComponent components={components} {...props} />
 );
 
-const client = createClient(config);
+// const client = createClient(config);
 
 export const getClient = (usePreview: any) => client;
 

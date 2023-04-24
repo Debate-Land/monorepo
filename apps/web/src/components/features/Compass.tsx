@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { Text, Button, Input, Group, Card, Select, Label } from '@shared/components'
 import { FaRegCompass, FaSearch } from 'react-icons/fa'
-import DATASETS from '@src/const/datasets'
 import { Event } from '@shared/database'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc'

@@ -6,6 +6,7 @@ import { NextSeo } from 'next-seo';
 import { types } from '@shared/cms';
 import { parseISO, format } from "date-fns";
 import { useRouter } from 'next/router';
+import formatISO from '@src/utils/format-iso';
 
 export type DynamicPageProps = types.Page & {
   author: types.Author;
@@ -15,7 +16,7 @@ const DynamicPage = ({ title, body, author, pageType, description, publishedAt }
   const { asPath } = useRouter();
 
   const isBlog = pageType == 'blog-post';
-  const AuthorImageProps = GetImage(author.image)!;
+  const AuthorImageProps = isBlog && author && author.image ? GetImage(author.image) : {};
 
   const SEO_TITLE = `${title} — Debate Land ${isBlog ? 'Blog' : ''}`;
   const SEO_DESCRIPTION = `${description} ${isBlog ? 'Exclusively on the Debate Land Blog.' : ''}`
@@ -47,14 +48,16 @@ const DynamicPage = ({ title, body, author, pageType, description, publishedAt }
             {
               isBlog && <div className="flex justify-center items-center gap-3 w-full bg-gray-50/10 px-2 py-1 rounded-2xl max-w-fit">
                 <Image
+                  // @ts-ignore
                   src={AuthorImageProps.src}
                   // blurDataURL={AuthorImageProps.}
+                  // @ts-ignore
                   loader={AuthorImageProps.loader}
                   alt={author.name}
                   // placeholder="blur"
                   width={32}
                   height={32}
-                  className="rounded-full"
+                  className="rounded-full w-8 h-8 -mr-2"
                 />
                 <div>
                   <p className="text-gray-200">
@@ -66,10 +69,7 @@ const DynamicPage = ({ title, body, author, pageType, description, publishedAt }
             }
             <p className="text-white/50 absolute bottom-1 sm:bottom-3 md:bottom-5">
               {
-                format(
-                  parseISO(publishedAt),
-                  "MMMM dd, yyyy"
-                )
+                formatISO(publishedAt)
               }
             </p>
           </div>

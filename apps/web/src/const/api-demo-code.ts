@@ -1,4 +1,4 @@
-export default `const teams = await fetch(
+const code = `const teams = await fetch(
   'https://api.debate.land/core/v1/teams',
   {
     method: 'GET',
@@ -7,3 +7,5 @@ export default `const teams = await fetch(
     }
   }
 );`;
+
+export default code;
