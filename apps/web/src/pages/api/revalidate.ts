@@ -9,6 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Validate signature
   if (!isValid) {
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
     res.send(`${signature} ${process.env.SANITY_WEBHOOK_SIGNATURE!}`);
     return;
   }
