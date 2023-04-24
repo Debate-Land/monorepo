@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@linear/sdk": "^3.0.0",
     "@sanity/icons": "2",
     "@sanity/types": "3",
     "@sanity/ui": "1",
