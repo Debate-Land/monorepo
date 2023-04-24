@@ -91,7 +91,7 @@ const Home: NextPage = () => {
               Data for all things debate.
             </h4>
           </div>
-          <div id="hero-right" className="overflow-hidden cursor-pointer" onClick={() => router.push('/teams/7f6e1f6807d8416c6f5ac659?season=2023&circuit=5&event=PublicForum')}>
+          <div id="hero-right" className="overflow-hidden cursor-pointer" onClick={() => router.push('/teams/7f6e1f6807d8416c6f5ac659?season=2023&circuit=36&event=PublicForum')}>
             {isLarge && (
               <div className="w-[750px] xl:w-[1000px] 2xl:w-[1250px] h-auto flex flex-col overflow-hidden border border-gray-400/50 rounded-lg relative">
                 <div className="absolute w-full h-6 bg-white dark:bg-gray-800 flex justify-between items-center">
