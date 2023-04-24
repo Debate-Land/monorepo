@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@linear/sdk": "^3.0.0",
     "@sanity/icons": "2",
     "@sanity/types": "3",
     "@sanity/ui": "1",
@@ -29,6 +30,7 @@
     "clsx": "^1.2.1",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
+    "formik": "^2.2.9",
     "next": "13",
     "next-sanity": "4.1.7",
     "next-sanity-image": "^6.0.0",
@@ -46,6 +48,7 @@
     "sharp": "^0.32.0",
     "styled-components": "^5.2",
     "typescript": "5.0.2",
+    "yup": "^1.1.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {
