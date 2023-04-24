@@ -27,11 +27,23 @@ const Home: NextPage = () => {
   const { theme } = useTheme();
   const router = useRouter();
 
+  const SEO_TITLE = "Debate Land";
+  const SEO_DESCRIPTION = "Data for all things debate";
+
   return (
     <>
       <NextSeo
-        title="Debate Land"
-        description="Data and rankings for high school debate."
+        title={SEO_TITLE}
+        description={SEO_DESCRIPTION}
+        openGraph={{
+          title: SEO_TITLE,
+          description: SEO_DESCRIPTION,
+          type: 'website',
+          url: `https://debate.land`,
+          images: [{
+            url: `https://debate.land/api/og?title=${SEO_TITLE}&label=${SEO_DESCRIPTION}`
+          }]
+        }}
         additionalLinkTags={[
           {
             rel: 'icon',

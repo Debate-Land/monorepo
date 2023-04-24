@@ -6,9 +6,14 @@ import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import {CompetitorTable, TournamentTable, SchoolTable, LeaderboardTable, JudgeTable, BidTable} from '@src/components/tables/dataset';
 import getEventName from '@src/utils/get-event-name';
+import { prisma } from '@shared/database';
+import { appRouter } from '@src/server/routers/_app';
+import { createProxySSGHelpers } from '@trpc/react-query/ssg';
+import { GetServerSideProps } from 'next';
+import { ParsedUrlQuery } from 'querystring';
 
 const Dataset = () => {
-  const { query, isReady } = useRouter();
+  const { query, isReady, asPath } = useRouter();
   const { data } = trpc.dataset.summary.useQuery(
     {
       circuit: parseInt(query.circuit as string),
@@ -25,11 +30,23 @@ const Dataset = () => {
 
   const label = `${query.season as string} ${data?.circuit?.name} ${getEventName(data?.circuit?.event)}`;
 
+  const SEO_TITLE = `${label} Dataset — Debate Land`;
+  const SEO_DESCRIPTION = `The latest ${label} dataset, exclusively on Debate Land.`;
+
   return (
     <>
       <NextSeo
-        title={`Debate Land: Dataset`}
-        description={`${data ? label : '--'} dataset, exclusively on Debate Land.`}
+        title={SEO_TITLE}
+        description={SEO_DESCRIPTION}
+        openGraph={{
+          title: SEO_TITLE,
+          description: SEO_DESCRIPTION,
+          type: 'website',
+          url: `https://debate.land${asPath}`,
+          images: [{
+            url: `https://debate.land/api/og?title=${label}&label=Dataset`
+          }]
+        }}
         additionalLinkTags={[
           {
             rel: 'icon',
@@ -79,6 +96,34 @@ const Dataset = () => {
       </div>
     </>
   )
+}
+
+interface DatasetParams extends ParsedUrlQuery {
+  circuit: string;
+  season: string;
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: {
+      prisma
+    },
+  });
+
+  const { circuit, season } = ctx.query as DatasetParams;
+
+  await ssg.dataset.summary.prefetch({
+    circuit: parseInt(circuit),
+    season: parseInt(season)
+  });
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    }
+  }
 }
 
 export default Dataset

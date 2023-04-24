@@ -6,10 +6,15 @@ import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import getEventName from '@src/utils/get-event-name';
+import { appRouter } from '../../server/routers/_app';
+import { createProxySSGHelpers } from '@trpc/react-query/ssg';
+import { GetServerSideProps } from 'next';
+import { ParsedUrlQuery } from 'querystring';
+import { prisma } from '@shared/database';
 
 // TODO: National Rank at some point...
 const Team = () => {
-  const { query, isReady } = useRouter();
+  const { query, isReady, asPath } = useRouter();
   const { data } = trpc.team.summary.useQuery(
     {
       id: query.id as string,
@@ -29,11 +34,23 @@ const Team = () => {
     }
   );
 
+  const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
+  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${getEventName(data?.circuits[0].event)}, exclusively on Debate Land.`;
+
   return (
     <>
       <NextSeo
-        title={`Debate Land: ${data?.aliases[0]?.code || '--'}'s Profile`}
-        description={`${data?.aliases[0].code || '--'}'s competitive statistics in ${query.event}, exclusively on Debate Land.`}
+        title={SEO_TITLE}
+        description={SEO_DESCRIPTION}
+        openGraph={{
+          title: SEO_TITLE,
+          description: SEO_DESCRIPTION,
+          type: 'website',
+          url: `https://debate.land${asPath}`,
+          images: [{
+            url: `https://debate.land/api/og?title=${data?.aliases[0].code}&label=Team`
+          }]
+        }}
         additionalLinkTags={[
           {
             rel: 'icon',
@@ -149,6 +166,36 @@ const Team = () => {
       </div>
     </>
   )
+}
+
+interface TeamParams extends ParsedUrlQuery {
+  id: string;
+  circuit: string;
+  season: string;
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: {
+      prisma
+    },
+  });
+
+  const { id, circuit, season } = ctx.query as TeamParams;
+
+  await ssg.team.summary.prefetch({
+    id,
+    circuit: parseInt(circuit),
+    season: parseInt(season)
+  });
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    }
+  }
 }
 
 export default Team
