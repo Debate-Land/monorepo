@@ -34,7 +34,7 @@ const HomeSEO = ({ title, description }: HomeSEOProps) => (
       type: 'website',
       url: `https://debate.land`,
       images: [{
-        url: `https://debate.land/api/og?title=${description}`
+        url: `https://debate.land/api/og?title=${description.replace('.', '')}`
       }]
     }}
     additionalLinkTags={[
@@ -56,7 +56,7 @@ const Home: NextPage = () => {
   useEffect(() => { setMounted(true) }, []);
 
   const SEO_TITLE = "Debate Land";
-  const SEO_DESCRIPTION = "Data for all things debate";
+  const SEO_DESCRIPTION = "Data for all things debate.";
 
   if (!mounted) return (
     <HomeSEO
