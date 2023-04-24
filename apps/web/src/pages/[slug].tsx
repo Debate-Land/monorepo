@@ -33,4 +33,8 @@ export const getStaticProps = async ({ params, preview = false }: StaticProps) =
   }
 }
 
-export default DynamicPage;
+const GeneralPage = (props: DynamicPageProps) => (
+  <DynamicPage {...props} />
+)
+
+export default GeneralPage;

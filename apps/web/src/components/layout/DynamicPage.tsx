@@ -6,6 +6,7 @@ import { NextSeo } from 'next-seo';
 import { types } from '@shared/cms';
 import { parseISO, format } from "date-fns";
 import { useRouter } from 'next/router';
+import formatISO from '@src/utils/format-iso';
 
 export type DynamicPageProps = types.Page & {
   author: types.Author;
@@ -68,10 +69,7 @@ const DynamicPage = ({ title, body, author, pageType, description, publishedAt }
             }
             <p className="text-white/50 absolute bottom-1 sm:bottom-3 md:bottom-5">
               {
-                format(
-                  parseISO(publishedAt),
-                  "MMMM dd, yyyy"
-                )
+                formatISO(publishedAt)
               }
             </p>
           </div>
