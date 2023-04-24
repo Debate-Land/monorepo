@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import formatISO from '@src/utils/format-iso';
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
 
@@ -7,15 +8,6 @@ export const config = {
 };
 
 const image = fetch(new URL('public/assets/img/logo_32.png', import.meta.url)).then(res => res.arrayBuffer());
-
-function formatISO(isoString: string) {
-  const date = new Date(isoString);
-  return date.toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
-  });
-}
 
 
 export default async function handler(request: NextRequest) {

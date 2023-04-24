@@ -3,10 +3,10 @@ import { getClient } from '@src/lib/sanity';
 import React from 'react';
 import Image from 'next/image';
 import GetImage from '@src/utils/get-image';
-import { parseISO, format } from "date-fns";
 import { NextRouter, useRouter } from 'next/router';
 import Overview from '@src/components/layout/Overview';
 import { NextSeo } from 'next-seo';
+import formatISO from '@src/utils/format-iso';
 
 interface PostCardProps extends DynamicPageProps {
   router: NextRouter;
@@ -31,16 +31,13 @@ const PostCard = ({ slug, title, author, publishedAt, router }: PostCardProps) =
               // placeholder="blur"
               width={32}
               height={32}
-              className="rounded-full max-w-32 max-h-32"
+              className="rounded-full w-8 h-8"
           />
           <div>
             <p className="text-red-400">{author.name}</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{
-              format(
-                parseISO(publishedAt),
-                "MMMM dd, yyyy"
-              )
-            }</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              { formatISO(publishedAt) }
+            </p>
           </div>
         </div>
       </div>
