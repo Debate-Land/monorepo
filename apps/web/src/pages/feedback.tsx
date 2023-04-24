@@ -140,7 +140,7 @@ const Feedback = () => {
                     </Button>
                   </form>
                 )
-                : !props.status.success
+                : props.status.success
                   ? (
                     <div className="bg-luka-200/10 p-3 rounded-xl mt-8 mx-auto max-w-[500px] my-16 flex flex-col space-y-2">
                       <Text as="h1" className="text-3xl text-green-500 dark:text-green-300 mx-auto text-center flex items-center">
