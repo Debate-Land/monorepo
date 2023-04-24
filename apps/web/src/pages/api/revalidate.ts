@@ -15,10 +15,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const document = req.body as unknown as types.Page;
-    const pathToRevalidate = document.slug.current;
+    const pathToRevalidate = `${document.pageType === 'blog-post' ? '/blog' : ''}/${document.slug.current}`;
 
-    await res.revalidate(`${document.pageType === 'blog-post' ? '/blog' : ''}/${pathToRevalidate}`);
-    return res.json({ revalidated: true });
+    await res.revalidate(pathToRevalidate);
+    document.pageType == 'blog-post' && await res.revalidate('/blog');
+
+    return res.json({ revalidated: pathToRevalidate });
   }
   catch (err) {
     return res.status(500).send('Error while revalidating');
