@@ -41,7 +41,7 @@ const Home: NextPage = () => {
           type: 'website',
           url: `https://debate.land`,
           images: [{
-            url: `https://debate.land/api/og?title=${SEO_TITLE}&label=${SEO_DESCRIPTION}`
+            url: `https://debate.land/api/og?title=${SEO_DESCRIPTION}`
           }]
         }}
         additionalLinkTags={[
