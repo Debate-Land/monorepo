@@ -57,7 +57,7 @@ const DynamicPage = ({ title, body, author, pageType, description, publishedAt }
                   // placeholder="blur"
                   width={32}
                   height={32}
-                  className="rounded-full"
+                  className="rounded-full w-8 h-8 -mr-2"
                 />
                 <div>
                   <p className="text-gray-200">

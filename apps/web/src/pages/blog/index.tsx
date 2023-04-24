@@ -31,7 +31,7 @@ const PostCard = ({ slug, title, author, publishedAt, router }: PostCardProps) =
               // placeholder="blur"
               width={32}
               height={32}
-              className="rounded-full max-w-32 max-h-32"
+              className="rounded-full w-8 h-8"
           />
           <div>
             <p className="text-red-400">{author.name}</p>
