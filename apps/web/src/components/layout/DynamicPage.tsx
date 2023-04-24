@@ -15,7 +15,7 @@ const DynamicPage = ({ title, body, author, pageType, description, publishedAt }
   const { asPath } = useRouter();
 
   const isBlog = pageType == 'blog-post';
-  const AuthorImageProps = GetImage(author.image)!;
+  const AuthorImageProps = isBlog && author && author.image ? GetImage(author.image) : {};
 
   const SEO_TITLE = `${title} — Debate Land ${isBlog ? 'Blog' : ''}`;
   const SEO_DESCRIPTION = `${description} ${isBlog ? 'Exclusively on the Debate Land Blog.' : ''}`
@@ -47,8 +47,10 @@ const DynamicPage = ({ title, body, author, pageType, description, publishedAt }
             {
               isBlog && <div className="flex justify-center items-center gap-3 w-full bg-gray-50/10 px-2 py-1 rounded-2xl max-w-fit">
                 <Image
+                  // @ts-ignore
                   src={AuthorImageProps.src}
                   // blurDataURL={AuthorImageProps.}
+                  // @ts-ignore
                   loader={AuthorImageProps.loader}
                   alt={author.name}
                   // placeholder="blur"
