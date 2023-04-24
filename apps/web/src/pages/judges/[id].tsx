@@ -7,10 +7,15 @@ import Statistics from '@src/components/layout/Statistics';
 import _ from 'lodash';
 import { JudgingHistoryTable } from '@src/components/tables/judge';
 import getEventName from '@src/utils/get-event-name';
+import { ParsedUrlQuery } from 'querystring';
+import { prisma } from '@shared/database';
+import { appRouter } from '@src/server/routers/_app';
+import { createProxySSGHelpers } from '@trpc/react-query/ssg';
+import { GetServerSideProps } from 'next';
 
 
 const Judge = () => {
-  const { query, isReady } = useRouter();
+  const { query, isReady, asPath } = useRouter();
   const { data } = trpc.judge.summary.useQuery(
     {
       id: query.id as string,
@@ -46,11 +51,23 @@ const Judge = () => {
     )).toFixed(1)
     : NaN) as number;
 
+  const SEO_TITLE = `${data?.name || '--'}'s Profile — Debate Land`;
+  const SEO_DESCRIPTION = `${data?.name || '--'}'s judge statistics for ${getEventName(data?.rankings[0].circuit.event)}, exclusively on Debate Land.`;
+
   return (
     <>
       <NextSeo
-        title={`Debate Land: ${data?.name || '--'}'s Profile`}
-        description={`${data?.name[0] || '--'}'s judge statistics in ${query.event}, exclusively on Debate Land.`}
+        title={SEO_TITLE}
+        description={SEO_DESCRIPTION}
+        openGraph={{
+          title: SEO_TITLE,
+          description: SEO_DESCRIPTION,
+          type: 'website',
+          url: `https://debate.land${asPath}`,
+          images: [{
+            url: `https://debate.land/api/og?title=${data?.name}&label=Judge`
+          }]
+        }}
         additionalLinkTags={[
           {
             rel: 'icon',
@@ -99,6 +116,36 @@ const Judge = () => {
       </div>
     </>
   )
+}
+
+interface JudgeParams extends ParsedUrlQuery {
+  id: string;
+  circuit: string;
+  season: string;
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: {
+      prisma
+    },
+  });
+
+  const { id, circuit, season } = ctx.query as JudgeParams;
+
+  await ssg.judge.summary.prefetch({
+    id,
+    circuit: parseInt(circuit),
+    season: parseInt(season)
+  });
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    }
+  }
 }
 
 export default Judge

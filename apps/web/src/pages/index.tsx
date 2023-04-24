@@ -27,11 +27,23 @@ const Home: NextPage = () => {
   const { theme } = useTheme();
   const router = useRouter();
 
+  const SEO_TITLE = "Debate Land";
+  const SEO_DESCRIPTION = "Data for all things debate";
+
   return (
     <>
       <NextSeo
-        title="Debate Land"
-        description="Data and rankings for high school debate."
+        title={SEO_TITLE}
+        description={SEO_DESCRIPTION}
+        openGraph={{
+          title: SEO_TITLE,
+          description: SEO_DESCRIPTION,
+          type: 'website',
+          url: `https://debate.land`,
+          images: [{
+            url: `https://debate.land/api/og?title=${SEO_DESCRIPTION}`
+          }]
+        }}
         additionalLinkTags={[
           {
             rel: 'icon',
@@ -119,7 +131,15 @@ const Home: NextPage = () => {
           }}
         />
         <span className="absolute w-full h-[50%] -bottom-5 right-0 -skew-y-6 bg-sky-200 dark:bg-gray-900 -z-10" />
-        <div className="flex flex-col justify-center w-full pb-32">
+        <div className="flex flex-col justify-center w-full pb-32 relative">
+          <div className='backdrop-blur w-full h-full absolute z-20 flex justify-center items-center'>
+            <h1 className="text-5xl text-center flex flex-col md:flex-row justify-center items-center">
+              <div className=' bg-gray-50/20 w-fit px-2 py-1 rounded-2xl md:mr-2'>
+                <span className='bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 bg-clip-text text-transparent'>beta</span>
+              </div>
+              Coming April 2023
+            </h1>
+          </div>
           <h2 className="text-5xl text-center">
             Meet your new{' '}
             <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-600">
