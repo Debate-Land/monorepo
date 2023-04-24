@@ -34,7 +34,7 @@ const Footer = () => {
 									<li>
 										<Link
 											external
-											href="https://github.com/Debate-Land"
+											href="/issue"
 											text="Report Issue"
 											icon={<GoIssueOpened />}
 											className="text-red-400 bg-gray-50/10 rounded-2xl max-w-fit px-2"

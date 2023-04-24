@@ -6,7 +6,7 @@ const issueRouter = router({
   create: procedure
     .input(z.object({
       email: z.string(),
-      name: z.string(),
+      title: z.string(),
       description: z.string(),
     }))
     .mutation(async ({ input }) => {
@@ -21,10 +21,9 @@ const issueRouter = router({
 
       await client.createIssue({
         teamId: team.id,
-        title: input.name,
+        title: input.title,
         description: `${input.description} (Submitted by ${input.email})`,
         // labelIds: [
-
         // ]
       })
     })
