@@ -12,6 +12,7 @@
     "@sanity/icons": "2",
     "@sanity/types": "3",
     "@sanity/ui": "1",
+    "@sanity/webhook": "^2.0.0",
     "@shared/components": "*",
     "@shared/database": "*",
     "@tanstack/react-query": "^4.28.0",
