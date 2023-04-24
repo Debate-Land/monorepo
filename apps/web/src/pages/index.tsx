@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Code from "react-code-ui";
 import "react-code-ui/dist/index.css";
 import { NextPage } from 'next'
@@ -17,39 +17,59 @@ import AppStoreGraphic from '../../public/assets/img/app_store.svg'
 import GooglePlayGraphic from '../../public/assets/img/google_play.svg'
 import code from '@src/const/api-demo-code';
 import { useTheme } from 'next-themes';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
+
+interface HomeSEOProps {
+  title: string;
+  description: string
+}
+
+const HomeSEO = ({ title, description }: HomeSEOProps) => (
+  <NextSeo
+    title={title}
+    description={description}
+    openGraph={{
+      title: title,
+      description: description,
+      type: 'website',
+      url: `https://debate.land`,
+      images: [{
+        url: `https://debate.land/api/og?title=${description}`
+      }]
+    }}
+    additionalLinkTags={[
+      {
+        rel: 'icon',
+        href: '/favicon.ico',
+      },
+    ]}
+  />
+)
 
 const Home: NextPage = () => {
+  const [mounted, setMounted] = useState(false);
   const isLarge = useMediaQuery({
     query: '(min-width: 768px)',
   });
-
   const { theme } = useTheme();
   const router = useRouter();
+  useEffect(() => { setMounted(true) }, []);
 
   const SEO_TITLE = "Debate Land";
   const SEO_DESCRIPTION = "Data for all things debate";
 
+  if (!mounted) return (
+    <HomeSEO
+      title={SEO_TITLE}
+      description={SEO_DESCRIPTION}
+    />
+  )
+
   return (
     <>
-      <NextSeo
+      <HomeSEO
         title={SEO_TITLE}
         description={SEO_DESCRIPTION}
-        openGraph={{
-          title: SEO_TITLE,
-          description: SEO_DESCRIPTION,
-          type: 'website',
-          url: `https://debate.land`,
-          images: [{
-            url: `https://debate.land/api/og?title=${SEO_DESCRIPTION}`
-          }]
-        }}
-        additionalLinkTags={[
-          {
-            rel: 'icon',
-            href: '/favicon.ico',
-          },
-        ]}
       />
       <GridLine position={20} outer />
       <GridLine position={35} />
@@ -318,9 +338,7 @@ const Home: NextPage = () => {
             </div>
           </div>
           <div className="w-full max-w-[600px] mt-10 xl:mt-0 h-auto md:hover:scale-[105%] transition-all overflow-hidden text-xs">
-            <Code
-              code={code}
-            />
+            <Code code={code} />
           </div>
         </div>
       </section>

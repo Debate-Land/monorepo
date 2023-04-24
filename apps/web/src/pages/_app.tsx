@@ -16,14 +16,14 @@ import {Header, Footer} from '@src/components/layout'
 // })
 
 const App = ({ Component, router, pageProps }: AppProps) => {
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  // const [mounted, setMounted] = useState(false)
+  // useEffect(() => {
+  //   setMounted(true)
+  // }, [])
 
-  if (!mounted) {
-    return null
-  }
+  // if (!mounted) {
+  //   return null
+  // }
 
   return (
     <ThemeProvider attribute='class' defaultTheme='dark'>
