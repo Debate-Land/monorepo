@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import React, { ReactNode } from 'react'
+import React, { ChangeEventHandler, ReactNode } from 'react'
 
 interface Option {
   name: string;
@@ -7,7 +7,8 @@ interface Option {
 };
 
 export interface SelectProps {
-  onChange(value: string, index: number): void
+  onChange?(value: string, index: number): void
+  handleChange?: ChangeEventHandler<HTMLSelectElement>
   options: Option[]
   initial?: string
   label?: ReactNode
@@ -15,7 +16,7 @@ export interface SelectProps {
   [key: string]: any
 }
 
-const Select = ({ onChange, options, className, initial, label, ...props }: SelectProps) => {
+const Select = ({ onChange, handleChange: _handleChange, options, className, initial, label, ...props }: SelectProps) => {
   const elem = React.useRef(null)
 
   const handleChange = () => {
@@ -30,9 +31,9 @@ const Select = ({ onChange, options, className, initial, label, ...props }: Sele
       <select
         className={clsx(
           className,
-          'px-3 py-1 rounded-md  focus:outline-none w-full sm:w-[150px] dark:bg-gray-800 dark:border-gray-600 dark:text-white',
+          'px-3 py-1 rounded-md  focus:outline-none w-full sm:w-[150px] dark:bg-slate-800 dark:border-gray-600 dark:text-white',
         )}
-        onChange={handleChange}
+        onChange={_handleChange || handleChange}
         defaultValue={initial}
         ref={elem}
         {...props}

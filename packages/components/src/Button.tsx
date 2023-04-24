@@ -18,7 +18,7 @@ const Button = ({ onClick, icon, ghost, _type, children, size, className, ...pro
       onClick={onClick}
       className={clsx(
         className,
-        'px-5 py-1 rounded-md mx-5 drop-shadow-md hover:opacity-80 capitalize flex justify-center items-center',
+        'px-5 py-1 rounded-md mx-5 capitalize flex justify-center items-center',
         ghost
           ? {
             'border hover:text-white': true,
@@ -28,7 +28,7 @@ const Button = ({ onClick, icon, ghost, _type, children, size, className, ...pro
           }
           : {
             'text-white': true,
-            'bg-gradient-to-r from-sky-400 via-purple-500 to-red-400': _type == 'primary',
+            'bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded-xl': _type == 'primary',
             'bg-teal-600': _type == 'secondary',
             'bg-gray-900': !_type || _type == 'default',
           },
@@ -39,7 +39,9 @@ const Button = ({ onClick, icon, ghost, _type, children, size, className, ...pro
         },
         {
           '!p-2': icon,
-          'dark:text-gray-900 dark:bg-gray-300 dark:border-gray-600': _type == 'default' || !_type
+          'dark:text-gray-900 dark:bg-gray-300 dark:border-gray-600': _type == 'default' || !_type,
+          'hover:opacity-80': _type !== 'primary',
+          'hover:shadow-halo transition-all': _type === 'primary'
         }
       )}
       type="button"

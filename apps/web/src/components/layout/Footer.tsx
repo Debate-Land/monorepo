@@ -2,8 +2,8 @@ import React from 'react'
 import { Text, Link } from '@shared/components'
 import { BsGithub, BsApple } from 'react-icons/bs'
 import { DiAndroid } from 'react-icons/di'
-import { GoIssueOpened } from 'react-icons/go'
 import { RiScissors2Fill } from 'react-icons/ri'
+import { AiOutlineInfoCircle } from 'react-icons/ai'
 
 const Footer = () => {
 	return (
@@ -34,10 +34,10 @@ const Footer = () => {
 									<li>
 										<Link
 											external
-											href="/issue"
-											text="Report Issue"
-											icon={<GoIssueOpened />}
-											className="text-red-400 bg-gray-50/10 rounded-2xl max-w-fit px-2"
+											href="/feedback"
+											text="Feedback"
+											icon={<AiOutlineInfoCircle />}
+											className="text-rose-300 bg-gray-50/10 rounded-2xl max-w-fit px-2"
 										/>
 									</li>
 									<li>

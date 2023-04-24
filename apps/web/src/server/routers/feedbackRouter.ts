@@ -1,13 +1,15 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import { LinearClient } from '@linear/sdk';
+import { LINEAR_USER_SUBMISSION_LABEL_ID } from '@src/const/linear-label-options';
 
-const issueRouter = router({
+const feedbackRouter = router({
   create: procedure
     .input(z.object({
       email: z.string(),
       title: z.string(),
       description: z.string(),
+      category: z.string(),
     }))
     .mutation(async ({ input }) => {
       const client = new LinearClient({
@@ -19,14 +21,18 @@ const issueRouter = router({
       const team = teams.nodes[0];
       // const labels = await team.labels();
 
-      await client.createIssue({
+      const issue = await client.createIssue({
         teamId: team.id,
         title: input.title,
         description: `${input.description} (Submitted by ${input.email})`,
-        // labelIds: [
-        // ]
-      })
+        labelIds: [
+          LINEAR_USER_SUBMISSION_LABEL_ID,
+          input.category
+        ]
+      });
+
+      return issue;
     })
 });
 
-export default issueRouter;
+export default feedbackRouter;
