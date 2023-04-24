@@ -43,11 +43,15 @@ export default async function handler(request: NextRequest) {
           <h1 tw='text-white text-6xl text-center -mt-2'>
             {searchParams.get('title')!}
           </h1>
-          <span
-            tw="bg-purple-400 px-3 text-white/80 text-xl rounded-2xl shadow-xl mt-2"
-          >
-            {searchParams.get('label')}
-          </span>
+          {
+            searchParams.has('label') && (
+              <span
+                tw="bg-purple-400 px-3 text-white/80 text-xl rounded-2xl shadow-xl mt-2"
+              >
+                {searchParams.get('label')}
+              </span>
+            )
+          }
           {
             searchParams.has('publishedAt') && <p tw="absolute bottom-0 text-white/80">{formatISO(searchParams.get('publishedAt')!)}</p>
           }

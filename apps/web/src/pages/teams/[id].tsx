@@ -8,12 +8,12 @@ import Statistics from '@src/components/layout/Statistics';
 import getEventName from '@src/utils/get-event-name';
 import { appRouter } from '../../server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 import { prisma } from '@shared/database';
 
 // TODO: National Rank at some point...
-const Team = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Team = () => {
   const { query, isReady, asPath } = useRouter();
   const { data } = trpc.team.summary.useQuery(
     {
@@ -34,8 +34,8 @@ const Team = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
     }
   );
 
-  const SEO_TITLE = `Debate Land: ${data?.aliases[0]?.code || '--'}'s Profile`;
-  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics in ${getEventName(data?.circuits[0].event)}, exclusively on Debate Land.`;
+  const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
+  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${getEventName(data?.circuits[0].event)}, exclusively on Debate Land.`;
 
   return (
     <>

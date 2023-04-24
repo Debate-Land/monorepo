@@ -51,8 +51,8 @@ const Judge = () => {
     )).toFixed(1)
     : NaN) as number;
 
-  const SEO_TITLE = `Debate Land: ${data?.name || '--'}'s Profile`;
-  const SEO_DESCRIPTION = `${data?.name || '--'}'s judge statistics in ${getEventName(data?.rankings[0].circuit.event)}, exclusively on Debate Land.`;
+  const SEO_TITLE = `${data?.name || '--'}'s Profile — Debate Land`;
+  const SEO_DESCRIPTION = `${data?.name || '--'}'s judge statistics for ${getEventName(data?.rankings[0].circuit.event)}, exclusively on Debate Land.`;
 
   return (
     <>
