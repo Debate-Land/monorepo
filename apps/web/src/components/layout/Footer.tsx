@@ -33,7 +33,6 @@ const Footer = () => {
 									</li>
 									<li>
 										<Link
-											external
 											href="/feedback"
 											text="Feedback"
 											icon={<AiOutlineInfoCircle />}
