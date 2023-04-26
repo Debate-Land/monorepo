@@ -16,19 +16,10 @@ import {Header, Footer} from '@src/components/layout'
 // })
 
 const App = ({ Component, router, pageProps }: AppProps) => {
-  // const [mounted, setMounted] = useState(false)
-  // useEffect(() => {
-  //   setMounted(true)
-  // }, [])
-
-  // if (!mounted) {
-  //   return null
-  // }
-
   return (
     <ThemeProvider attribute='class' defaultTheme='dark'>
       <div
-        className={clsx('flex flex-col w-full min-h-screen scroll-smooth', {
+        className={clsx('flex flex-col w-full min-h-screen scroll-smooth overflow-hidden', {
           'dark:bg-coal': router.pathname !== '/',
         })}
       >

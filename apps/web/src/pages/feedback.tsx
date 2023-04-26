@@ -68,6 +68,8 @@ const Feedback = () => {
           onSubmit={async (values, actions) => {
             const { success } = await mutateAsync({ ...values });
             actions.setStatus({ success });
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            router.back();
           }}
         >
           {

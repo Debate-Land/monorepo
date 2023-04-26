@@ -16,7 +16,10 @@ module.exports = {
         coal: 'rgb(15, 13, 14)',
       },
       boxShadow: {
-        'halo': '0 0 30px #a855f7'
+        halo: '0 0 30px #a855f7'
+      },
+      backgroundImage: {
+        beams: "url('/assets/img/beams.png')"
       }
     },
   },

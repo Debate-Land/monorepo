@@ -10,7 +10,8 @@ import { useMediaQuery } from 'react-responsive'
 import { Compass, Telescope, Radar } from '@src/components/features'
 import { NextSeo } from 'next-seo'
 import { FaLock } from 'react-icons/fa';
-import MobileGraphic from '../../public/assets/img/mobile_graphic.png'
+import MobileGraphicLeaderboard from '../../public/assets/img/mobile_graphic_leaderboard.png'
+import MobileGraphicTeamPage from '../../public/assets/img/mobile_graphic_team_page.png'
 import WebGraphicDark from '../../public/assets/img/web_graphic_dark.png'
 import WebGraphicLight from '../../public/assets/img/web_graphic_light.png';
 import AppStoreGraphic from '../../public/assets/img/app_store.svg'
@@ -76,54 +77,55 @@ const Home: NextPage = () => {
       <GridLine position={50} />
       <GridLine position={65} />
       <GridLine position={80} outer />
-      <div id="dark-background" className="fixed top-0 left-0 h-screen w-full dark:bg-coal -z-40" />
+      <div id="dark-background" className="absolute inset-0 dark:coal fixed -z-40" />
       <div
         id="slanted-hero-top"
         className="absolute -z-10 -top-[30%] w-full h-[60%] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 -skew-y-12 2xl:-skew-y-6"
       />
-      <section id="hero" className="w-full min-h-screen flex flex-col justify-start md:justify-around">
+      <div
+        id="beams-bg"
+        className='absolute -z-20 w-full h-[200%] bg-cover bg-fixed bg-beams'
+      />
+      <section id="hero" className="!text-white w-full md:min-h-screen flex flex-col justify-start md:justify-around">
         <div className="flex flex-col md:flex-row justify-center items-center z-30 mt-20 md:mt-0">
           <div id="hero-left" className="max-w-[600px] md:ml-5 lg:mr-20">
-            <h1 className="dark:text-white font-bold text-8xl text-center md:text-left md:text-[7rem] lg:text-[8rem] xl:text-[9rem] 2xl:text-[10rem]">
+            <h1 className="text-white font-bold text-8xl text-center md:text-left md:text-[7rem] lg:text-[8rem] xl:text-[9rem] 2xl:text-[10rem]">
               DEBATE LAND
             </h1>
-            <h4 className="w-full text-center md:text-left mt-2 md:mt-0 text-indigo-300 font-bold text-2xl md:text-3xl lg:text-4xl md:pl-1 xl:pl-2">
+            <h4 className="w-full text-center md:text-left mt-2 md:mt-0 text-indigo-200 font-bold text-2xl md:text-3xl lg:text-4xl md:pl-1 xl:pl-2">
               Data for all things debate.
             </h4>
           </div>
-          <div id="hero-right" className="overflow-hidden cursor-pointer" onClick={() => router.push('/teams/7f6e1f6807d8416c6f5ac659?season=2023&circuit=38')}>
+          <div id="hero-right" className="transition-all hover:shadow-halo rounded-lg overflow-hidden cursor-pointer" onClick={() => router.push('/teams/7f6e1f6807d8416c6f5ac659?season=2023&circuit=38')}>
             {isLarge && (
               <div className="w-[750px] xl:w-[1000px] 2xl:w-[1250px] h-auto flex flex-col overflow-hidden border border-gray-400/50 rounded-lg relative">
-                <div className="absolute w-full h-6 bg-white dark:bg-gray-800 flex justify-between items-center">
+                <div className="absolute w-full h-6 bg-gray-800 flex justify-between items-center">
                   <div className="w-18 h-6 flex justify-start items-center px-3 space-x-1">
                     <div className="w-3 h-3 bg-red-500 rounded-full" />
                     <div className="w-3 h-3 bg-yellow-500 rounded-full" />
                     <div className="w-3 h-3 bg-green-500 rounded-full" />
                   </div>
-                  <div className="w-full h-4 bg-gray-300 rounded border border-gray-400 dark:border-gray-600 dark:bg-coal mr-4 flex items-center justify-start">
+                  <div className="w-full h-4 rounded border border-gray-600 bg-coal mr-4 flex items-center justify-start">
                       <FaLock size={8} className="mx-1" />
                       <p className="text-[0.6rem] align-middle">debate.land/teams/7f6e1f6807d8416c6f5ac659</p>
                   </div>
                 </div>
                 <Image
-                  src={
-                    theme == 'dark'
-                      ? WebGraphicDark
-                      : WebGraphicLight
-
-                  }
-                  layout="responsive"
+                  src={WebGraphicDark}
+                  priority={true}
                   draggable={false}
                   placeholder="blur"
                   alt="Team Sample Graphic"
+                  role="presentation"
                 />
               </div>
             )}
           </div>
         </div>
-        <section
+      </section>
+      <section
           id="stats"
-          className="w-full flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-0"
+          className="w-full !text-white flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-0"
         >
           <div className="flex flex-col items-center xl:items-start xl:ml-[20%] xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
             <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={950} end={1000} separator="," />
@@ -142,15 +144,14 @@ const Home: NextPage = () => {
             <Text className="!text-gray-400 pb-4 sm:pb-0">Queries</Text>
           </div>
         </section>
-      </section>
-      <section className="pt-20 mt-20 xl:mt-0 relative" id="query-tools">
+      <section className="!text-white pt-20 mt-20 relative" id="query-tools">
         <span
-          className="absolute w-full h-[70%] top-0 right-0 -z-10 bg-gradient-to-t from-sky-200 dark:from-gray-900 via-sky-100 dark:via-gray-900 to-white/40"
+          className="absolute w-full h-[70%] top-0 right-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900 to-white/0"
           style={{
             zIndex: -1,
           }}
         />
-        <span className="absolute w-full h-[50%] -bottom-5 right-0 -skew-y-6 bg-sky-200 dark:bg-gray-900 -z-10" />
+        <span className="absolute w-full h-[50%] -bottom-5 right-0 -skew-y-6 bg-gray-900 -z-10" />
         <div className="flex flex-col justify-center w-full pb-32 relative">
           <div className='backdrop-blur w-full h-full absolute z-20 flex justify-center items-center'>
             <h1 className="text-5xl text-center flex flex-col md:flex-row justify-center items-center">
@@ -170,7 +171,7 @@ const Home: NextPage = () => {
           <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col lg:flex-row items-center justify-between mt-12 xl:mt-8 2xl:max-w-[2000px]">
             <div className="lg:mr-10 lg:max-w-[40%] xl:ml-[10%] xl:max-w-[25%]">
               <h3 className="text-3xl">Search our datasets with ease</h3>
-              <div className="text-xl text-gray-500 dark:text-gray-400 mt-3">
+              <div className="text-xl text-gray-400 mt-3">
                 <p>
                   <span className="text-indigo-400">Compass</span> lets you easily select a debate event, circuit, and
                   year to query.
@@ -188,7 +189,7 @@ const Home: NextPage = () => {
           <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col lg:flex-row-reverse items-center justify-between mt-16 2xl:max-w-[2000px]">
             <div className="xl:mr-[10%] lg:ml-10 lg:max-w-[40%] xl:max-w-[25%]">
               <h3 className="text-3xl">Tailored scouting reports</h3>
-              <div className="text-xl text-gray-500 dark:text-gray-400 mt-3">
+              <div className="text-xl text-gray-400 mt-3">
                 <p>
                   You can use <span className="text-indigo-400">Radar</span> to generate a scouting report for any
                   Tabroom tournament.
@@ -206,7 +207,7 @@ const Home: NextPage = () => {
           <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col xl:flex-row items-center justify-between mt-16 2xl:max-w-[2000px]">
             <div className="xl:ml-[10%] xl:mr-5 xl:max-w-[25%]">
               <h3 className="text-3xl">Detailed judge analytics</h3>
-              <div className="text-xl text-gray-500 dark:text-gray-400 mt-3">
+              <div className="text-xl text-gray-400 mt-3">
                 <p>
                   No matter what you're debating, knowing your audience is key to success. That's why{' '}
                   <span className="text-indigo-400">Telescope</span> provides detailed information about your judges.
@@ -224,7 +225,7 @@ const Home: NextPage = () => {
         </div>
       </section>
       <section className="pt-32 mb-32 relative h-[70rem] md:h-[50rem] flex flex-col justify-center" id="faq">
-        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-slate-800" />
+        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-luka-200/80" />
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
             The{' '}
@@ -236,7 +237,7 @@ const Home: NextPage = () => {
           <div className="flex flex-col 2xl:flex-row 2xl:items-start items-center justify-center xl:justify-start 2xl:flex-none w-full mt-5 md:space-y-6 2xl:space-y-0 px-8 xl:px-0">
             <div className="flex flex-col md:flex-row justify-center xl:justify-start w-full">
               <div className="h-full rounded-xl p-3 xl:p-0 bg-transparent xl:rounded-none min-w-[200px] md:w-[300px] xl:min-w-[30%] xl:items-start xl:ml-[20%] 2xl:ml-[40%]">
-                <h3 className="mr-2 text-indigo-400 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
+                <h3 className="mr-2 text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   For debaters, by debaters.
                 </h3>
                 <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
@@ -246,7 +247,7 @@ const Home: NextPage = () => {
               </div>
 
               <div className="h-full rounded-xl p-3 xl:p-0 bg-transparent xl:rounded-none min-w-[200px] md:w-[300px] xl:min-w-[30%] xl:items-start 2xl:ml-0">
-                <h3 className="mr-2 text-sky-600 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
+                <h3 className="mr-2 text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   Intuitive, as it should be.
                 </h3>
                 <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
@@ -257,7 +258,7 @@ const Home: NextPage = () => {
             </div>
             <div className="flex flex-col-reverse md:flex-row justify-center xl:justify-start w-full">
               <div className="h-full rounded-xl p-3 xl:p-0 bg-transparent xl:rounded-none min-w-[200px] md:w-[300px] xl:min-w-[30%] xl:items-start xl:ml-[20%] 2xl:ml-0 2xl:max-w-[15%]">
-                <h3 className="mr-2 text-sky-600 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
+                <h3 className="mr-2 text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   A history of success.
                 </h3>
                 <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
@@ -265,7 +266,7 @@ const Home: NextPage = () => {
                 </p>
               </div>
               <div className="h-full rounded-xl p-3 xl:p-0 bg-transparent xl:rounded-none min-w-[200px] md:w-[300px] xl:min-w-[30%] xl:items-start 2xl:max-w-[15%]">
-                <h3 className="mr-2 text-indigo-400 xl:text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
+                <h3 className="mr-2 text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   Transparent, always.
                 </h3>
                 <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
@@ -277,9 +278,9 @@ const Home: NextPage = () => {
           </div>
         </div>
       </section>
-      <section className="mb-20 xl:mt-20 space-y-6" id="features">
-        <div className="flex flex-col mx-auto xl:flex-row md:w-2/3 xl:w-full xl:space-x-[20px] 2xl:space-x-[10%] px-5 items-center justify-around xl:justify-start">
-          <div className="flex flex-col md:max-w-[600px] 2xl:max-w-[35%] xl:ml-[20%] 2xl:mr-[3%]">
+      <section className="mb-20 xl:mt-20 space-y-8 2xl:space-y-0 flex flex-col 2xl:flex-row" id="features">
+        <div className="flex flex-col w-fit px-5 mx-auto xl:ml-[20%] xl:pl-3 2xl:w-[30%] 2xl:mr-0 2xl:pr-8 xl:space-y-8 items-center 2xl:items-start justify-around xl:justify-start">
+          <div className="flex flex-col md:max-w-[600px]">
             <h2
               className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-red-400 z-10"
               id="mobile"
@@ -290,12 +291,12 @@ const Home: NextPage = () => {
               </span>
               .
             </h2>
-            <p className="text-md text-gray-400 pr-5 xl:ml-2">
+            <p className="text-md text-gray-400 xl:ml-2">
               Our website is great, but our mobile app is just as easy to use. Get the same access to all of our tools,
               but more performant and native for your mobile device. Oh yeah, did we also mention it's completely free,
               cross-platform, and open-source?
             </p>
-            <div className="flex flex-col mt-4 self-center md:self-start sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full items-center sm:justify-start sm:items-center max-w-[300px] mt-2 xl:ml-2">
+            <div className="mx-auto sm:mx-0 flex flex-col mt-4 self-censter md:self-start sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full items-center sm:justify-start sm:items-center max-w-[300px] mt-2 xl:ml-2">
               <a href="https://apps.apple.com/us/app/tournaments-tech/id1598829136" className="w-1/2">
                 <Image src={AppStoreGraphic} layout="responsive" draggable={false} alt="App Store Graphic" />
               </a>
@@ -307,12 +308,14 @@ const Home: NextPage = () => {
               </a>
             </div>
           </div>
-          <div className="w-full mt-10 xl:mt-0 sm:w-[50%] max-w-[200px] h-auto md:hover:-translate-y-9 transition-all">
-            <Image src={MobileGraphic} layout="responsive" draggable={false} placeholder="blur" alt="Mobile Graphic" />
+          <div className="w-full max-w-[600px] bg-transparent sm:bg-gradient-to-r from-sky-400/80 via-purple-500/80 to-red-400/80 backdrop-blur-3xl aspect-video rounded-xl flex flex-row justify-center mt-8 py-2">
+            <Image src={MobileGraphicLeaderboard} className='w-1/3' draggable={false} placeholder="blur" alt="Mobile Graphic" />
+            <Image src={MobileGraphicLeaderboard} className='w-1/3 hidden sm:block' draggable={false} placeholder="blur" alt="Mobile Graphic" />
+            <Image src={MobileGraphicLeaderboard} className='w-1/3 hidden sm:block' draggable={false} placeholder="blur" alt="Mobile Graphic" />
           </div>
         </div>
-        <div className="flex flex-col mx-auto xl:flex-row md:w-2/3 xl:w-full xl:space-x-[20px] 2xl:space-x-[10%] px-5 items-center justify-around xl:justify-start ">
-          <div className="flex flex-col md:max-w-[600px] 2xl:max-w-[35%] xl:ml-[20%]">
+        <div className="flex flex-col w-fit md:px-5 mx-auto xl:ml-[20%] 2xl:ml-0 2xl:max-w-[30%] xl:pl-3 xl:space-y-8 items-center justify-around xl:justify-start">
+          <div className="flex flex-col items-center md:items-start md:max-w-[600px]">
             <h2
               className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-red-400 z-10"
               id="api"
@@ -323,21 +326,21 @@ const Home: NextPage = () => {
               </span>
               .
             </h2>
-            <p className="text-md text-gray-400 pr-5 xl:ml-2">
+            <p className="text-md text-gray-400 px-5 md:px-0 xl:ml-2">
               We love our developers. To truly unlock the power of Debate Land, we've built a robust API that allows you
               to query our data like never before. Search everything, including: judges, rounds, tournaments, and
               entries. Using the API for research? Get in touch and we might be able to give you free access.
             </p>
-            <div className="flex flex-col mt-4 self-center md:self-start sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full items-center sm:justify-start sm:items-center max-w-[300px] mt-2 xl:ml-2">
-              <div className="w-1/2 flex justify-center items-center border p-3 rounded-md border-sky-600 text-sky-600 hover:bg-sky-600/30 backdrop-blur-3xl transition-all">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 items-center max-w-[300px] w-full mx-auto sm:mx-0">
+              <div className="w-1/2 flex justify-center items-center border px-3 py-1 rounded-md border-sky-600 text-sky-600 hover:bg-sky-600 cursor-pointer hover:text-white backdrop-blur-3xl transition-all">
                 <a href="https://dashboard.debate.land">Dashboard</a>
               </div>
-              <div className="w-1/2 flex justify-center items-center border p-3 rounded-md border-indigo-600 text-indigo-600 hover:bg-indigo-600/30 backdrop-blur-3xl transition-all">
+              <div className="w-1/2 flex justify-center items-center border px-3 py-1 rounded-md border-indigo-600 text-indigo-600 hover:bg-indigo-600 cursor-pointer hover:text-white backdrop-blur-3xl transition-all">
                 <a href="https://docs.debate.land">Docs</a>
               </div>
             </div>
           </div>
-          <div className="w-full max-w-[600px] mt-10 xl:mt-0 h-auto md:hover:scale-[105%] transition-all overflow-hidden text-xs">
+          <div className="w-full p-2 max-w-[600px] mt-10 xl:mt-0 overflow-hidden text-[8px] sm:text-xs">
             <Code code={code} />
           </div>
         </div>
