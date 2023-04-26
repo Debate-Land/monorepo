@@ -225,7 +225,7 @@ const Home: NextPage = () => {
         </div>
       </section>
       <section className="pt-32 mb-32 relative h-[70rem] md:h-[50rem] flex flex-col justify-center" id="faq">
-        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-luka-200" />
+        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-luka-200/80" />
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
             The{' '}
@@ -278,8 +278,8 @@ const Home: NextPage = () => {
           </div>
         </div>
       </section>
-      <section className="mb-20 xl:mt-20 space-y-8" id="features">
-        <div className="flex flex-col w-fit px-5 mx-auto xl:ml-[20%] xl:pl-3 xl:space-y-8 items-center justify-around xl:justify-start">
+      <section className="mb-20 xl:mt-20 space-y-8 2xl:space-y-0 flex flex-col 2xl:flex-row" id="features">
+        <div className="flex flex-col w-fit px-5 mx-auto xl:ml-[20%] xl:pl-3 2xl:w-[30%] 2xl:mr-0 2xl:pr-8 xl:space-y-8 items-center 2xl:items-start justify-around xl:justify-start">
           <div className="flex flex-col md:max-w-[600px]">
             <h2
               className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-red-400 z-10"
@@ -291,12 +291,12 @@ const Home: NextPage = () => {
               </span>
               .
             </h2>
-            <p className="text-md text-gray-400 pr-5 xl:ml-2">
+            <p className="text-md text-gray-400 xl:ml-2">
               Our website is great, but our mobile app is just as easy to use. Get the same access to all of our tools,
               but more performant and native for your mobile device. Oh yeah, did we also mention it's completely free,
               cross-platform, and open-source?
             </p>
-            <div className="flex flex-col mt-4 self-center md:self-start sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full items-center sm:justify-start sm:items-center max-w-[300px] mt-2 xl:ml-2">
+            <div className="mx-auto sm:mx-0 flex flex-col mt-4 self-censter md:self-start sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full items-center sm:justify-start sm:items-center max-w-[300px] mt-2 xl:ml-2">
               <a href="https://apps.apple.com/us/app/tournaments-tech/id1598829136" className="w-1/2">
                 <Image src={AppStoreGraphic} layout="responsive" draggable={false} alt="App Store Graphic" />
               </a>
@@ -309,12 +309,12 @@ const Home: NextPage = () => {
             </div>
           </div>
           <div className="w-full max-w-[600px] bg-transparent sm:bg-gradient-to-r from-sky-400/80 via-purple-500/80 to-red-400/80 backdrop-blur-3xl aspect-video rounded-xl flex flex-row justify-center mt-8 py-2">
-            <Image src={MobileGraphicLeaderboard} className='w-48' draggable={false} placeholder="blur" alt="Mobile Graphic" />
-            <Image src={MobileGraphicLeaderboard} className='w-48 hidden sm:block' draggable={false} placeholder="blur" alt="Mobile Graphic" />
-            <Image src={MobileGraphicLeaderboard} className='w-48 hidden sm:block' draggable={false} placeholder="blur" alt="Mobile Graphic" />
+            <Image src={MobileGraphicLeaderboard} className='w-1/3' draggable={false} placeholder="blur" alt="Mobile Graphic" />
+            <Image src={MobileGraphicLeaderboard} className='w-1/3 hidden sm:block' draggable={false} placeholder="blur" alt="Mobile Graphic" />
+            <Image src={MobileGraphicLeaderboard} className='w-1/3 hidden sm:block' draggable={false} placeholder="blur" alt="Mobile Graphic" />
           </div>
         </div>
-        <div className="flex flex-col w-fit md:px-5 mx-auto xl:ml-[20%] xl:pl-3 xl:space-y-8 items-center justify-around xl:justify-start">
+        <div className="flex flex-col w-fit md:px-5 mx-auto xl:ml-[20%] 2xl:ml-0 2xl:max-w-[30%] xl:pl-3 xl:space-y-8 items-center justify-around xl:justify-start">
           <div className="flex flex-col items-center md:items-start md:max-w-[600px]">
             <h2
               className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-red-400 z-10"
@@ -331,7 +331,7 @@ const Home: NextPage = () => {
               to query our data like never before. Search everything, including: judges, rounds, tournaments, and
               entries. Using the API for research? Get in touch and we might be able to give you free access.
             </p>
-            <div className="px-5 flex flex-col mt-4 self-center md:self-start sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full items-center sm:justify-start sm:items-center max-w-[300px] mt-2 xl:ml-2">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 items-center max-w-[300px] w-full mx-auto sm:mx-0">
               <div className="w-1/2 flex justify-center items-center border px-3 py-1 rounded-md border-sky-600 text-sky-600 hover:bg-sky-600 cursor-pointer hover:text-white backdrop-blur-3xl transition-all">
                 <a href="https://dashboard.debate.land">Dashboard</a>
               </div>
@@ -340,7 +340,7 @@ const Home: NextPage = () => {
               </div>
             </div>
           </div>
-          <div className="w-full p-2 max-w-[600px] mt-10 xl:mt-0 h-auto overflow-hidden text-[8px] sm:text-xs">
+          <div className="w-full p-2 max-w-[600px] mt-10 xl:mt-0 overflow-hidden text-[8px] sm:text-xs">
             <Code code={code} />
           </div>
         </div>
