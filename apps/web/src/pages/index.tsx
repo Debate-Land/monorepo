@@ -153,14 +153,14 @@ const Home: NextPage = () => {
         />
         <span className="absolute w-full h-[50%] -bottom-5 right-0 -skew-y-6 bg-gray-900 -z-10" />
         <div className="flex flex-col justify-center w-full pb-32 relative">
-          {/* <div className='backdrop-blur w-full h-full absolute z-20 flex justify-center items-center'>
+          <div className='backdrop-blur w-full h-full absolute z-20 flex justify-center items-center'>
             <h1 className="text-5xl text-center flex flex-col md:flex-row justify-center items-center">
               <div className=' bg-gray-50/20 w-fit px-2 py-1 rounded-2xl md:mr-2'>
                 <span className='bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 bg-clip-text text-transparent'>beta</span>
               </div>
               Coming April 2023
             </h1>
-          </div> */}
+          </div>
           <h2 className="text-5xl text-center">
             Meet your new{' '}
             <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-600">
