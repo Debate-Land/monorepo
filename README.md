@@ -1,5 +1,5 @@
 # Debate Land Monorepo
-This is the monorepo for all the Node.js code that runs Debate Land.
+[![Vercel Logo](https://images.ctfassets.net/e5382hct74si/78Olo8EZRdUlcDUFQvnzG7/fa4cdb6dc04c40fceac194134788a0e2/1618983297-powered-by-vercel.svg)](https://vercel.com?utm_source=debate-land&utm_campaign=oss)
 
 ## What is it?
 Debate Land is a free and open-source project designed to democratize high school debate with easy access to high-quality, transparent data and rankings. Formerly tournaments.tech, we've had millions of page views and nearly 10,000 users since our inception in January 2020.
@@ -38,3 +38,8 @@ packages // All workspaces that don't "run", have a @shared import alias
   - database // Prisma ORM, see schema.prisma for database structure
   - tsconfig // Typescript configuration
 ```
+
+## Want to contribute?
+Send an email to [sam [at] debate.land](mailto:sam@debate.land) if you have any questions or need help getting started!
+
+> Debate Land | Democratizing data for all things debate
