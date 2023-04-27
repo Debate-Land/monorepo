@@ -4,7 +4,7 @@ import Code from "react-code-ui";
 import "react-code-ui/dist/index.css";
 import { NextPage } from 'next'
 import CountUp from 'react-countup'
-import { Text, GridLine } from '@shared/components'
+import { Text, GridLine, Button } from '@shared/components'
 import Image from 'next/image'
 import { useMediaQuery } from 'react-responsive'
 import { Compass, Telescope, Radar } from '@src/components/features'
@@ -19,6 +19,7 @@ import GooglePlayGraphic from '../../public/assets/img/google_play.svg'
 import code from '@src/const/api-demo-code';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/router';
+import { ChevronRightIcon } from '@sanity/icons';
 
 interface HomeSEOProps {
   title: string;
@@ -95,6 +96,17 @@ const Home: NextPage = () => {
             <h4 className="w-full text-center md:text-left mt-2 md:mt-0 text-indigo-200 font-bold text-2xl md:text-3xl lg:text-4xl md:pl-1 xl:pl-2">
               Data for all things debate.
             </h4>
+            <Button
+              onClick={() => router.push('/dataset?circuit=38&season=2023')}
+              _type="primary"
+              className="mx-auto mt-2 md:ml-2 !text-normal flex"
+            >
+              view the demo
+              {/* @ts-ignore */ ''}
+              <ChevronRightIcon
+                fontSize={26}
+              />
+            </Button>
           </div>
           <div id="hero-right" className="transition-all hover:shadow-halo rounded-lg overflow-hidden cursor-pointer" onClick={() => router.push('/teams/7f6e1f6807d8416c6f5ac659?season=2023&circuit=38')}>
             {isLarge && (
