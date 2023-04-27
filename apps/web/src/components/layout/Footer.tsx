@@ -1,11 +1,16 @@
 import React from 'react'
+import Image from 'next/image'
 import { Text, Link } from '@shared/components'
 import { BsGithub, BsApple } from 'react-icons/bs'
 import { DiAndroid } from 'react-icons/di'
 import { RiScissors2Fill } from 'react-icons/ri'
 import { AiOutlineInfoCircle } from 'react-icons/ai'
+import Vercel from '../../../public/assets/img/vercel.svg';
+import { useRouter } from 'next/router'
 
 const Footer = () => {
+	const router = useRouter();
+
 	return (
 		<footer className="z-20 border-t border-gray-400 bg-luka-200 text-white">
 			<div className="max-w-5xl mx-auto px-6 py-12">
@@ -17,6 +22,11 @@ const Footer = () => {
 						<Text weight="semibold" className="opacity-50">
 							Data for all things debate.
 						</Text>
+						<Image
+							src={Vercel}
+							alt="Vercel Logo"
+							onClick={() => router.push('https://vercel.com?utm_source=debate-land&utm_campaign=oss')}
+						/>
 					</div>
 					<div className="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
 						<div className="md:grid md:grid-cols-2 md:gap-8 ">
