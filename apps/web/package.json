@@ -43,6 +43,7 @@
     "react-icons": "^4.8.0",
     "react-query": "3",
     "react-responsive": "^9.0.2",
+    "react-reveal": "^1.2.2",
     "react-use-scroll-position": "^2.0.0",
     "sanity": "3",
     "sharp": "^0.32.0",

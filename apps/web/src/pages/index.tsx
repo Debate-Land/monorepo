@@ -20,6 +20,8 @@ import code from '@src/const/api-demo-code';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/router';
 import { ChevronRightIcon } from '@sanity/icons';
+// @ts-ignore
+import Fade from 'react-reveal/Fade';
 
 interface HomeSEOProps {
   title: string;
@@ -85,7 +87,7 @@ const Home: NextPage = () => {
       />
       <div
         id="beams-bg"
-        className='absolute -z-20 w-full h-[200%] bg-cover bg-fixed bg-beams'
+        className='absolute -z-20 w-full h-[300%] sm:h-[200%] bg-cover bg-fixed bg-beams'
       />
       <section id="hero" className="!text-white w-full md:min-h-screen flex flex-col justify-start md:justify-around">
         <div className="flex flex-col md:flex-row justify-center items-center z-30 mt-20 md:mt-0">
@@ -99,7 +101,7 @@ const Home: NextPage = () => {
             <Button
               onClick={() => router.push('/dataset?circuit=38&season=2023')}
               _type="primary"
-              className="mx-auto mt-2 md:ml-2 !text-normal flex"
+              className="mx-auto mt-2 md:ml-2 !normal-case flex"
             >
               view the demo
               {/* @ts-ignore */ ''}
@@ -129,8 +131,9 @@ const Home: NextPage = () => {
                   placeholder="blur"
                   alt="Team Sample Graphic"
                   role="presentation"
-                />
-              </div>
+                  loading="eager"
+                  />
+                </div>
             )}
           </div>
         </div>
@@ -165,21 +168,23 @@ const Home: NextPage = () => {
         />
         <span className="absolute w-full h-[50%] -bottom-5 right-0 -skew-y-6 bg-gray-900 -z-10" />
         <div className="flex flex-col justify-center w-full pb-32 relative">
-          <div className='backdrop-blur w-full h-full absolute z-20 flex justify-center items-center'>
+          {/* <div className='backdrop-blur w-full h-full absolute z-20 flex justify-center items-center'>
             <h1 className="text-5xl text-center flex flex-col md:flex-row justify-center items-center">
               <div className=' bg-gray-50/20 w-fit px-2 py-1 rounded-2xl md:mr-2'>
                 <span className='bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 bg-clip-text text-transparent'>beta</span>
               </div>
               Coming April 2023
             </h1>
-          </div>
+          </div> */}
           <h2 className="text-5xl text-center">
             Meet your new{' '}
-            <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-600">
-              superpowers
-            </span>
+            <Fade top>
+              <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-600">
+                superpowers
+              </span>
+            </Fade>
             .
-          </h2>
+            </h2>
           <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col lg:flex-row items-center justify-between mt-12 xl:mt-8 2xl:max-w-[2000px]">
             <div className="lg:mr-10 lg:max-w-[40%] xl:ml-[10%] xl:max-w-[25%]">
               <h3 className="text-3xl">Search our datasets with ease</h3>
@@ -194,9 +199,11 @@ const Home: NextPage = () => {
                 </p>
               </div>
             </div>
-            <div className="flex w-full">
-              <Compass />
-            </div>
+            <Fade left distance="50px">
+              <div className="flex w-full">
+                <Compass />
+              </div>
+            </Fade>
           </div>
           <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col lg:flex-row-reverse items-center justify-between mt-16 2xl:max-w-[2000px]">
             <div className="xl:mr-[10%] lg:ml-10 lg:max-w-[40%] xl:max-w-[25%]">
@@ -212,9 +219,11 @@ const Home: NextPage = () => {
                 </p>
               </div>
             </div>
-            <div className="flex w-full">
-              <Radar />
-            </div>
+            <Fade left distance="50px">
+              <div className="flex w-full">
+                <Radar />
+              </div>
+            </Fade>
           </div>
           <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col xl:flex-row items-center justify-between mt-16 2xl:max-w-[2000px]">
             <div className="xl:ml-[10%] xl:mr-5 xl:max-w-[25%]">
@@ -230,9 +239,11 @@ const Home: NextPage = () => {
                 </p>
               </div>
             </div>
-            <div className="flex w-full">
-              <Telescope />
-            </div>
+            <Fade left distance="50px">
+              <div className="flex w-full">
+                <Telescope />
+              </div>
+            </Fade>
           </div>
         </div>
       </section>
@@ -241,9 +252,12 @@ const Home: NextPage = () => {
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
             The{' '}
-            <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-600">
-              best
-            </span>{' '}
+            <Fade top distance="50px">
+              <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-600">
+                best
+              </span>
+            </Fade>
+              {' '}
             in the game.
           </h2>
           <div className="flex flex-col 2xl:flex-row 2xl:items-start items-center justify-center xl:justify-start 2xl:flex-none w-full mt-5 md:space-y-6 2xl:space-y-0 px-8 xl:px-0">
@@ -298,9 +312,11 @@ const Home: NextPage = () => {
               id="mobile"
             >
               Debate{' '}
+              <Fade top>
               <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-600">
                 on the go
-              </span>
+                </span>
+              </Fade>
               .
             </h2>
             <p className="text-md text-gray-400 xl:ml-2">
@@ -333,9 +349,11 @@ const Home: NextPage = () => {
               id="api"
             >
               API?{' '}
-              <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-600">
-                Supercharged
-              </span>
+              <Fade top>
+                <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-600">
+                  Supercharged
+                </span>
+              </Fade>
               .
             </h2>
             <p className="text-md text-gray-400 px-5 md:px-0 xl:ml-2">
@@ -360,5 +378,8 @@ const Home: NextPage = () => {
     </>
   )
 }
+
+// TODO: Use Sanity here?
+export const getStaticProps = () => ({props: {}}) ;
 
 export default Home
