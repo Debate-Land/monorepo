@@ -101,11 +101,12 @@ const Home: NextPage = () => {
             <Button
               onClick={() => router.push('/dataset?circuit=38&season=2023')}
               _type="primary"
-              className="mx-auto mt-2 md:ml-2 !normal-case flex"
+              className="mx-auto mt-2 md:ml-2 space-x-3 !normal-case w-[200px]"
             >
               view the demo
               {/* @ts-ignore */ ''}
               <ChevronRightIcon
+                className='hover:pl-1 transition-all'
                 fontSize={26}
               />
             </Button>
