@@ -14,6 +14,7 @@ const Telescope = () => {
     <Card
       icon={<VscTelescope />}
       title="Telescope"
+      theme="text-red-400"
       className="min-w-full md:min-w-[600px] md:max-w-[600px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-red-400/50 p-2"
     >
       <div className="flex justify-start w-full space-x-4 md:py-3">
