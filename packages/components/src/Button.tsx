@@ -9,22 +9,23 @@ export interface ButtonProps {
   children?: string
   size?: 'sm' | 'md' | 'lg' | 'xl'
   ghost?: boolean
+  disabled?: boolean
   [key: string]: any
 }
 
-const Button = ({ onClick, icon, ghost, _type, children, size, className, ...props }: ButtonProps) => {
+const Button = ({ onClick, icon, ghost, _type, children, size, className, disabled, ...props }: ButtonProps) => {
   return (
     <button
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       className={clsx(
         className,
         'px-5 py-1 rounded-md mx-5 capitalize flex justify-center items-center',
         ghost
           ? {
             'border hover:text-white': true,
-            'border-sky-800 text-sky-800 hover:bg-sky-800': _type == 'primary',
-            'border-teal-600 text-teal-600 hover:bg-teal-600': _type == 'secondary',
-            'border-gray-900 text-gray-900 hover:bg-gray-900': !_type || _type == 'default',
+            'border-sky-800 text-sky-800 hover:bg-sky-800': _type == 'primary' && !disabled,
+            'border-teal-600 text-teal-600 hover:bg-teal-600': _type == 'secondary' && !disabled,
+            'border-gray-900 text-gray-900 hover:bg-gray-900': !_type || _type == 'default' && !disabled,
           }
           : {
             'text-white': true,
@@ -40,11 +41,15 @@ const Button = ({ onClick, icon, ghost, _type, children, size, className, ...pro
         {
           '!p-2': icon,
           'dark:text-gray-900 dark:bg-gray-300 dark:border-gray-600': _type == 'default' || !_type,
-          'hover:opacity-80': _type !== 'primary',
-          'hover:shadow-halo transition-all': _type === 'primary'
+          'hover:opacity-80': _type !== 'primary' && !disabled,
+          'hover:shadow-halo transition-all': _type === 'primary' && !disabled
+        },
+        {
+          'opacity-50 cursor-not-allowed': disabled
         }
       )}
       type="button"
+      disabled={disabled}
       {...props}
     >
       {icon}{children}
