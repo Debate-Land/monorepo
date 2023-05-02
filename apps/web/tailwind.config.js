@@ -12,6 +12,7 @@ module.exports = {
         luka: {
           100: 'rgb(0, 84, 184)',
           200: 'rgb(0, 68, 147)',
+          300: 'rgb(37, 61, 119)',
         },
         coal: 'rgb(15, 13, 14)',
       },
@@ -19,7 +20,9 @@ module.exports = {
         halo: '0 0 30px #a855f7'
       },
       backgroundImage: {
-        beams: "url('/assets/img/beams.png')"
+        'beams-light': "url('/assets/img/beams-light.jpg')",
+        'beams-dark': "url('/assets/img/beams-dark.jpg')",
+        grid: "url('/assets/img/grid.svg')"
       }
     },
   },

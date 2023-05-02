@@ -87,12 +87,12 @@ const Home: NextPage = () => {
       />
       <div
         id="beams-bg"
-        className='absolute -z-20 w-full h-[300%] sm:h-[200%] bg-cover bg-fixed bg-beams'
+        className='absolute -z-20 w-full h-[300%] sm:h-[200%] bg-cover bg-fixed bg-beams-light dark:bg-beams-dark'
       />
-      <section id="hero" className="!text-white w-full md:min-h-screen flex flex-col justify-start md:justify-around">
+      <section id="hero" className="w-full md:min-h-screen flex flex-col justify-start md:justify-around">
         <div className="flex flex-col md:flex-row justify-center items-center z-30 mt-20 md:mt-0">
           <div id="hero-left" className="max-w-[600px] md:ml-5 lg:mr-20">
-            <h1 className="text-white font-bold text-8xl text-center md:text-left md:text-[7rem] lg:text-[8rem] xl:text-[9rem] 2xl:text-[10rem]">
+            <h1 className="font-bold text-8xl text-center md:text-left md:text-[7rem] lg:text-[8rem] xl:text-[9rem] 2xl:text-[10rem]">
               DEBATE LAND
             </h1>
             <h4 className="w-full text-center md:text-left mt-2 md:mt-0 text-indigo-200 font-bold text-2xl md:text-3xl lg:text-4xl md:pl-1 xl:pl-2">
@@ -114,19 +114,19 @@ const Home: NextPage = () => {
           <div id="hero-right" className="transition-all hover:shadow-halo rounded-lg overflow-hidden cursor-pointer" onClick={() => router.push('/teams/7f6e1f6807d8416c6f5ac659?season=2023&circuit=38')}>
             {isLarge && (
               <div className="w-[750px] xl:w-[1000px] 2xl:w-[1250px] h-auto flex flex-col overflow-hidden border border-gray-400/50 rounded-lg relative">
-                <div className="absolute w-full h-6 bg-gray-800 flex justify-between items-center">
+                <div className="absolute w-full h-6 bg-white dark:bg-gray-800 flex justify-between items-center">
                   <div className="w-18 h-6 flex justify-start items-center px-3 space-x-1">
                     <div className="w-3 h-3 bg-red-500 rounded-full" />
                     <div className="w-3 h-3 bg-yellow-500 rounded-full" />
                     <div className="w-3 h-3 bg-green-500 rounded-full" />
                   </div>
-                  <div className="w-full h-4 rounded border border-gray-600 bg-coal mr-4 flex items-center justify-start">
+                  <div className="w-full h-4 rounded border border-gray-400 dark:border-gray-600 bg-gray-50 dark:bg-coal mr-4 flex items-center justify-start">
                       <FaLock size={8} className="mx-1" />
                       <p className="text-[0.6rem] align-middle">debate.land/teams/7f6e1f6807d8416c6f5ac659</p>
                   </div>
                 </div>
                 <Image
-                  src={WebGraphicDark}
+                  src={theme == 'light' ? WebGraphicLight : WebGraphicDark}
                   priority={true}
                   draggable={false}
                   placeholder="blur"
@@ -141,7 +141,7 @@ const Home: NextPage = () => {
       </section>
       <section
           id="stats"
-          className="w-full !text-white flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-0"
+          className="w-full flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-0"
         >
           <div className="flex flex-col items-center xl:items-start xl:ml-[20%] xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
             <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={950} end={1000} separator="," />
@@ -160,14 +160,14 @@ const Home: NextPage = () => {
             <Text className="!text-gray-400 pb-4 sm:pb-0">Queries</Text>
           </div>
         </section>
-      <section className="!text-white pt-20 mt-20 relative" id="query-tools">
+      <section className="pt-20 mt-20 relative" id="query-tools">
         <span
-          className="absolute w-full h-[70%] top-0 right-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900 to-white/0"
+          className="absolute w-full h-[70%] top-0 right-0 -z-10 bg-gradient-to-t from-sky-100 via-sky-100/90 dark:from-gray-900 dark:via-gray-900 dark:to-white/0"
           style={{
             zIndex: -1,
           }}
         />
-        <span className="absolute w-full h-[50%] -bottom-5 right-0 -skew-y-6 bg-gray-900 -z-10" />
+        <span className="absolute w-full h-[50%] -bottom-5 right-0 -skew-y-6 bg-sky-100 dark:bg-gray-900 -z-10" />
         <div className="flex flex-col justify-center w-full pb-32 relative">
           {/* <div className='backdrop-blur w-full h-full absolute z-20 flex justify-center items-center'>
             <h1 className="text-5xl text-center flex flex-col md:flex-row justify-center items-center">
@@ -200,7 +200,7 @@ const Home: NextPage = () => {
                 </p>
               </div>
             </div>
-            <Fade left distance="50px">
+            <Fade left distance="20px">
               <div className="flex w-full">
                 <Compass />
               </div>
@@ -220,7 +220,7 @@ const Home: NextPage = () => {
                 </p>
               </div>
             </div>
-            <Fade left distance="50px">
+            <Fade left distance="20px">
               <div className="flex w-full">
                 <Radar />
               </div>
@@ -240,7 +240,7 @@ const Home: NextPage = () => {
                 </p>
               </div>
             </div>
-            <Fade left distance="50px">
+            <Fade left distance="20px">
               <div className="flex w-full">
                 <Telescope />
               </div>
@@ -249,11 +249,11 @@ const Home: NextPage = () => {
         </div>
       </section>
       <section className="pt-32 mb-32 relative h-[70rem] md:h-[50rem] flex flex-col justify-center" id="faq">
-        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-luka-200/80" />
+        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-luka-300" />
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
             The{' '}
-            <Fade top distance="50px">
+            <Fade top distance="20px">
               <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-600">
                 best
               </span>
@@ -362,7 +362,7 @@ const Home: NextPage = () => {
               to query our data like never before. Search everything, including: judges, rounds, tournaments, and
               entries. Using the API for research? Get in touch and we might be able to give you free access.
             </p>
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 items-center max-w-[300px] w-full mx-auto sm:mx-0">
+            <div className="xl:pl-2 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 items-center max-w-[300px] w-full mx-auto sm:mx-0">
               <div className="w-1/2 flex justify-center items-center border px-3 py-1 rounded-md border-sky-600 text-sky-600 hover:bg-sky-600 cursor-pointer hover:text-white backdrop-blur-3xl transition-all">
                 <a href="https://dashboard.debate.land">Dashboard</a>
               </div>
