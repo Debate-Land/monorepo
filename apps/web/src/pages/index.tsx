@@ -101,11 +101,12 @@ const Home: NextPage = () => {
             <Button
               onClick={() => router.push('/dataset?circuit=38&season=2023')}
               _type="primary"
-              className="mx-auto mt-2 md:ml-2 !normal-case flex"
+              className="mx-auto mt-2 md:ml-2 space-x-3 !normal-case w-[200px]"
             >
               view the demo
               {/* @ts-ignore */ ''}
               <ChevronRightIcon
+                className='hover:pl-1 transition-all'
                 fontSize={26}
               />
             </Button>
@@ -248,7 +249,7 @@ const Home: NextPage = () => {
         </div>
       </section>
       <section className="pt-32 mb-32 relative h-[70rem] md:h-[50rem] flex flex-col justify-center" id="faq">
-        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-luka-200/80" />
+        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-luka-200/50 backdrop-blur-3xl" />
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
             The{' '}

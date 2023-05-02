@@ -4,6 +4,8 @@ import { FaRegCompass, FaSearch } from 'react-icons/fa'
 import { Event } from '@shared/database'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
 
 interface CompassQuery {
   event: Event;
@@ -18,109 +20,121 @@ interface Option {
 
 const Compass = () => {
   const router = useRouter();
-  const [query, setQuery] = React.useState<CompassQuery>({
-    event: "PublicForum" // Initial Config.
-  });
-  const { data: circuits } = trpc.feature.circuits.useQuery({
-    event: query.event,
-  });
-  const { data: seasons } = trpc.feature.seasons.useQuery(
-    {
-      circuit: query.circuit!,
-    },
-    {
-      enabled: !!query.circuit
-    }
-  );
 
-  const getDataset = () => {
-    const { event, circuit, season } = query;
-    if (event && circuit && season) {
-      router.push({
-        pathname: '/dataset',
-        query: {
-          event,
-          circuit,
-          season
-        }
-      })
-    }
-  }
+  const { data } = trpc.feature.compass.useQuery();
 
-  console.log(seasons)
   return (
     <Card
       icon={<FaRegCompass />}
       title="Compass"
+      theme="text-sky-400"
       className="min-w-full md:min-w-[300px] max-w-[800px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-sky-400/70 dark:shadow-sky-400/50 p-2"
     >
-      <div className="flex flex-col space-y-3 px-3 sm:flex-row sm:space-x-3 sm:space-y-0 sm:justify-around w-full">
-        <Select
-          options={[
-            {
-              name: "Public Forum",
-              value: "PublicForum"
-            },
-            {
-              name: "Lincoln Douglas",
-              value: "LincolnDouglas"
-            },
-            {
-              name: "Policy",
-              value: "Policy"
-            },
-            {
-              name: "Parlimentary",
-              value: "Parlimentary"
-            },
-          ]}
-          onChange={(v: string) => setQuery({ ...query, event: v as Event })}
-          label={<Label character="a">Event</Label>}
-        />
-        <Select
-          // @ts-ignore
-          options={circuits?.map(d => ({ name: d.name, value: d.id})) || []}
-          onChange={(v: string) => setQuery({ ...query, circuit: parseInt(v) })}
-          label={<Label character="b">Circuit</Label>}
-        />
-        <Select
-          // @ts-ignore
-          options={seasons?.seasons?.map() || []}
-          onChange={(v) => setQuery({ ...query, season: parseInt(v) })}
-          enabled={false}
-          label={<Label character="c">Season</Label>}
-        />
-        <div className="flex h-full items-center justify-center">
-          <Button onClick={getDataset} icon={<FaSearch />} type="primary" className="w-8 h-8 mt-6 !p-0" />
-        </div>
-      </div>
-      {/* <Group character="2" legend="Get your results" className="flex flex-col items-center space-y-3 w-full">
-        <div className="flex w-full justify-between px-5">
-          <Input
-            onChange={(t) => setQuery(t)}
-            onSubmit={executeQuery}
-            label={<Label>Search individual entries</Label>}
-            placeholder='eg. "John Doe" or "Blake AB"'
-            className="w-full"
-          />
-          <Button onClick={executeQuery} icon={<FaSearch />} type="primary" className="w-8 h-8 mt-6 !mx-0 !ml-3" />
-        </div>
-        <Text className="text-gray-500 pt-3">— OR —</Text>
-        <div className="flex flex-col items-start w-full px-5">
-          <div className="w-full flex flex-col space-y-3 sm:flex-row sm:justify-center sm:space-y-0 dark:border-gray-600 py-4 rounded-md">
-            <Button onClick={goToLeaderboard} type="primary">
-              Leaderboard
-            </Button>
-            <Button onClick={goToBids} type="primary" className="min-w-[25%]">
-              Bid List
-            </Button>
-
-            <Button onClick={goToTournaments} type="primary">
-              Tournaments
-            </Button>
-          </div>
-        </div>
-      </Group> */}
+      <Formik
+        initialValues={{
+          event: 'PublicForum',
+          circuit: 36,
+          season: 2023,
+          query: ''
+        }}
+        validationSchema={
+          Yup.object().shape({
+            event: Yup
+              .string()
+              .required("An event is required."),
+            circuit: Yup
+              .number()
+              .required("A circuit is required."),
+            season: Yup
+              .number()
+              .required("A season is required."),
+            query: Yup
+              .string()
+              .optional()
+          })
+        }
+        onSubmit={async (values) => {
+          router.push({
+            pathname: values.query ? '/search' : '/dataset',
+            query: {
+              season: values.season,
+              circuit: values.circuit
+            }
+          })
+        }}
+      >
+        {
+          (props) => (
+            <form onSubmit={props.handleSubmit} className="space-y-2">
+              <Group character="1" legend="Select a dataset" className="flex flex-col items-center space-y-3 w-full">
+                <div className="flex flex-col space-y-3 px-3 sm:flex-row sm:space-x-3 sm:space-y-0 sm:justify-around w-full">
+                  <Select
+                    options={
+                      data
+                        ? Object.keys(data).map(event => ({
+                          name: (event.match(/[A-Z][a-z]+|[0-9]+/g) as string[]).join(" "),
+                          value: event
+                        }))
+                        : []
+                    }
+                    handleChange={props.handleChange}
+                    label={<Label character="a">Event</Label>}
+                  />
+                  <Select
+                    name="event"
+                    options={
+                      data && props.values.event
+                        ? data[props.values.event as Event].map(circuit => ({
+                          name: circuit.name,
+                          value: circuit.id
+                        }))
+                        : []
+                    }
+                    handleChange={props.handleChange}
+                    label={<Label character="b">Circuit</Label>}
+                  />
+                  <Select
+                    name="circuit"
+                    options={
+                      data && props.values.circuit
+                        ? data[props.values.event as Event]
+                          .filter(circuit => circuit.id === props.values.circuit)[0]
+                          .seasons.map(season => ({
+                            name: season.id.toString(),
+                            value: season.id
+                          }))
+                        : []
+                    }
+                    handleChange={props.handleChange}
+                    label={<Label character="c">Season</Label>}
+                  />
+                </div>
+              </Group>
+              <Group character="2" legend="Get your results" className="flex flex-col sm:flex-row items-center justify-center space-y-3 w-full">
+                <div className="flex w-full justify-between px-5">
+                  <Input
+                    name="query"
+                    onChange={props.handleChange}
+                    label={<Label>Search individual entries</Label>}
+                    placeholder='eg. "John Doe" or "Blake AB"'
+                    className="w-full"
+                  />
+                  <Button type="submit" icon={<FaSearch />} _type="primary" className="w-8 h-8 mt-6 !mx-0 !-ml-8" />
+                </div>
+                <p className="px-1 text-gray-100/50 border-gray-100/50 border rounded-full">OR</p>
+                <Button
+                  type="submit"
+                  _type="primary"
+                  className="w-64 text-sm"
+                  disabled={props.values.query !== ''}
+                >
+                  View Dataset
+                </Button>
+              </Group>
+            </form>
+          )
+        }
+      </Formik>
     </Card>
   )
 }
