@@ -8,10 +8,11 @@ export interface InputProps {
   placeholder?: string
   label?: ReactNode
   className?: string
+  disabled?: boolean
   [key: string]: any
 }
 
-const Input = ({ as = "input", placeholder, onChange, label, onSubmit, className, ...props }: InputProps) => {
+const Input = ({ as = "input", placeholder, onChange, label, onSubmit, className, disabled, ...props }: InputProps) => {
   const Tag = as;
 
   return (
@@ -21,7 +22,14 @@ const Input = ({ as = "input", placeholder, onChange, label, onSubmit, className
         onSubmit={(e: any) => onSubmit && onSubmit(e.target.value)}
         placeholder={placeholder}
         onChange={onChange}
-        className={clsx(className, ' px-3 py-1 rounded-lg focus:outline-none dark:text-white dark:bg-slate-800/90')}
+        disabled={disabled}
+        className={clsx(
+          className,
+          'px-3 py-1 rounded-lg focus:outline-none dark:text-white dark:bg-slate-800/90',
+          {
+            'cursor-not-allowed opacity-50': disabled
+          }
+        )}
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...props}
       />

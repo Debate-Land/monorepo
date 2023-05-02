@@ -5,14 +5,15 @@ import { BsGithub, BsApple } from 'react-icons/bs'
 import { DiAndroid } from 'react-icons/di'
 import { RiScissors2Fill } from 'react-icons/ri'
 import { AiOutlineInfoCircle } from 'react-icons/ai'
-import Vercel from '../../../public/assets/img/vercel.svg';
+import Vercel from '../../../public/assets/img/vercel.svg'
 import { useRouter } from 'next/router'
 
 const Footer = () => {
 	const router = useRouter();
 
 	return (
-		<footer className="z-20 border-t border-gray-400 bg-luka-200 text-white">
+		<footer className="z-20 border-t border-gray-400 bg-luka-200/90 backdrop-blur-3xl text-white relative">
+			<span className="bg-grid bg-fixed absolute inset-0 -z-10" />
 			<div className="max-w-5xl mx-auto px-6 py-12">
 				<div className="xl:grid xl:grid-cols-3 xl:gap-8">
 					<div className="space-y-6 xl:col-span-1 relative">
@@ -25,6 +26,7 @@ const Footer = () => {
 						<Image
 							src={Vercel}
 							alt="Vercel Logo"
+							className="cursor-pointer"
 							onClick={() => router.push('https://vercel.com?utm_source=debate-land&utm_campaign=oss')}
 						/>
 					</div>
