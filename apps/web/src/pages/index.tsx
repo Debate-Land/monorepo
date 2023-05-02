@@ -95,7 +95,7 @@ const Home: NextPage = () => {
             <h1 className="font-bold text-8xl text-center md:text-left md:text-[7rem] lg:text-[8rem] xl:text-[9rem] 2xl:text-[10rem]">
               DEBATE LAND
             </h1>
-            <h4 className="w-full text-center md:text-left mt-2 md:mt-0 text-indigo-200 font-bold text-2xl md:text-3xl lg:text-4xl md:pl-1 xl:pl-2">
+            <h4 className="w-full text-center md:text-left mt-2 md:mt-0 text-indigo-400/80 dark:text-indigo-200 font-bold text-2xl md:text-3xl lg:text-4xl md:pl-1 xl:pl-2">
               Data for all things debate.
             </h4>
             <Button

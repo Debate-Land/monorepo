@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Text, Button, Input, Group, Card, Select, Label } from '@shared/components'
 import { FaRegCompass, FaSearch } from 'react-icons/fa'
 import { Event } from '@shared/database'
@@ -7,21 +7,49 @@ import { trpc } from '@src/utils/trpc'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 
-interface CompassQuery {
-  event: Event;
-  circuit?: number;
-  season?: number;
-}
-
 interface Option {
   name: string;
-  value: number;
+  value: any;
 }
+
+interface FormOptions {
+  circuits: Option[];
+  seasons: Option[];
+}
+
+
 
 const Compass = () => {
   const router = useRouter();
-
+  const formik = useRef(null);
   const { data } = trpc.feature.compass.useQuery();
+  const [formOptions, setFormOptions] = useState<FormOptions>({
+    circuits: [],
+    seasons: []
+  });
+
+  useEffect(() => {
+    // @ts-ignore
+    let { event, circuit: selectedCircuit, season } = formik.current?.values;
+    if (formik.current && data && event) {
+      const circuits = data[event as Event].map(circuit => ({
+        name: circuit.name,
+        value: circuit.id
+      }));
+
+      const seasons = data[event as Event]
+        .filter(circuit => circuit.id === selectedCircuit)[0].seasons
+        .map(season => ({
+          name: season.id.toString(),
+          value: season.id
+        }));
+
+      setFormOptions({
+        circuits,
+        seasons
+      });
+    }
+  }, [formik, data]);
 
   return (
     <Card
@@ -31,9 +59,10 @@ const Compass = () => {
       className="min-w-full md:min-w-[300px] max-w-[800px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-sky-400/70 dark:shadow-sky-400/50 p-2"
     >
       <Formik
+        innerRef={formik}
         initialValues={{
           event: 'PublicForum',
-          circuit: 36,
+          circuit: 37,
           season: 2023,
           query: ''
         }}
@@ -69,6 +98,7 @@ const Compass = () => {
               <Group character="1" legend="Select a dataset" className="flex flex-col items-center space-y-3 w-full">
                 <div className="flex flex-col space-y-3 px-3 sm:flex-row sm:space-x-3 sm:space-y-0 sm:justify-around w-full">
                   <Select
+                    name="event"
                     options={
                       data
                         ? Object.keys(data).map(event => ({
@@ -81,30 +111,14 @@ const Compass = () => {
                     label={<Label character="a">Event</Label>}
                   />
                   <Select
-                    name="event"
-                    options={
-                      data && props.values.event
-                        ? data[props.values.event as Event].map(circuit => ({
-                          name: circuit.name,
-                          value: circuit.id
-                        }))
-                        : []
-                    }
+                    name="circuit"
+                    options={formOptions.circuits}
                     handleChange={props.handleChange}
                     label={<Label character="b">Circuit</Label>}
                   />
                   <Select
-                    name="circuit"
-                    options={
-                      data && props.values.circuit
-                        ? data[props.values.event as Event]
-                          .filter(circuit => circuit.id === props.values.circuit)[0]
-                          .seasons.map(season => ({
-                            name: season.id.toString(),
-                            value: season.id
-                          }))
-                        : []
-                    }
+                    name="season"
+                    options={formOptions.seasons}
                     handleChange={props.handleChange}
                     label={<Label character="c">Season</Label>}
                   />
