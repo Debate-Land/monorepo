@@ -3,6 +3,7 @@ import { Table, Text } from '@shared/components'
 import { ColumnDef, createColumnHelper, SortingState } from '@tanstack/react-table'
 import { ExpandedJudgeRecord } from './JudgeRecordsTable';
 import { useRouter } from 'next/router';
+import omit from 'lodash/omit';
 
 export interface JudgeRecordTableProps {
   data: ExpandedJudgeRecord;
@@ -38,7 +39,7 @@ const JudgeRecordTable = ({ data }: JudgeRecordTableProps) => {
         }}
         onRowClick={(row) => router.push({
           pathname: `/teams/${row.result.team.id}`,
-          query
+          query: omit(query, ['id'])
         })}
       />
     </div>

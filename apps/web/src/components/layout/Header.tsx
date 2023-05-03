@@ -16,20 +16,23 @@ const Header = ({ router }: any) => {
 
 	return (
 		<header
-			className={clsx('h-[3.35rem] fixed w-full z-40 p-2 flex justify-between', {
+			className={clsx('h-[3.35rem] fixed w-full z-40 px-2 pt-3 pb-1 flex justify-between', {
 				'bg-white dark:bg-coal': router.pathname !== '/' && scrollY < 33,
 				'backdrop-blur-xl': scrollY > 33,
 			})}
 		>
 			{/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
 			<a
-				className="flex items-center space-x-2 min-w-[170px] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 px-2 py-1 rounded-lg"
+				className="flex items-center space-x-2 min-w-[170px] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 px-2 py-1 rounded-lg relative"
 				href="/"
 			>
 				<Image src={Logo32} draggable={false} alt="Debate Land" />
 				<Text className="mt-[1px] !text-white md:text-xl font-extrabold">
 					Debate Land
 				</Text>
+				<div className="absolute -top-2 -right-3 bg-gray-50/80 rounded-full ">
+					<Text className="px-1 lowercase bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 bg-clip-text text-transparent">Beta</Text>
+				</div>
 			</a>
 			<div className="flex items-center space-x-2">
 				{/* <Link primary external href="https://cutit.cards" text="Cut It" className={headerTextStyle} wrapperClassName={headerWrapperStyle} />

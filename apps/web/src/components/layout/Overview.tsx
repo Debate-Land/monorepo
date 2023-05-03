@@ -10,7 +10,8 @@ interface OverviewProps {
 
 const Overview = (props: OverviewProps) => {
   return (
-    <div className="w-full flex flex-col bg-luka-100 overflow-hidden">
+    <div className="w-full flex flex-col bg-luka-100 overflow-hidden relative">
+      <div className="absolute bg-grid bg-fixed inset-0" />
       <span className="md:h-[4rem]" />
       <div className="flex justify-center items-center w-full bg-luka-100 py-6">
         <div
