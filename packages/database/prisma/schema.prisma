@@ -264,6 +264,7 @@ model Alias {
 
   @@unique([code, teamId])
   @@index([teamId])
+  @@fulltext([code])
   @@map("aliases")
 }
 

@@ -22,7 +22,15 @@ interface FormOptions {
 const Compass = () => {
   const router = useRouter();
   const formik = useRef(null);
-  const { data } = trpc.feature.compass.useQuery();
+  const { data } = trpc.feature.compass.useQuery(
+    {},
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 60 * 24,
+    }
+  );
   const [formOptions, setFormOptions] = useState<FormOptions>({
     circuits: [],
     seasons: []
@@ -86,8 +94,9 @@ const Compass = () => {
           router.push({
             pathname: values.query ? '/search' : '/dataset',
             query: {
+              circuit: values.circuit,
               season: values.season,
-              circuit: values.circuit
+              ...(values.query && { query: values.query })
             }
           })
         }}
@@ -129,17 +138,16 @@ const Compass = () => {
                   <Input
                     name="query"
                     onChange={props.handleChange}
-                    label={<Label>Search individual entries</Label>}
                     placeholder='eg. "John Doe" or "Blake AB"'
                     className="w-full"
                   />
-                  <Button type="submit" icon={<FaSearch />} _type="primary" className="w-8 h-8 mt-6 !mx-0 !-ml-8" />
+                  <Button type="submit" icon={<FaSearch />} _type="primary" className="w-8 h-8 !mx-0 !-ml-8" />
                 </div>
-                <p className="px-1 text-gray-100/50 border-gray-100/50 border rounded-full">OR</p>
+                <p className="px-1 text-red-400 border-red-400 border rounded-full !mt-0">OR</p>
                 <Button
                   type="submit"
                   _type="primary"
-                  className="w-64 text-sm"
+                  className="w-64 text-sm !mt-0"
                   disabled={props.values.query !== ''}
                 >
                   View Dataset

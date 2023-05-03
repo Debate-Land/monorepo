@@ -63,7 +63,10 @@ const BidTable = ({ event }: BidTableProps) => {
           setPagination,
           totalPages: Math.ceil((data?.length || 0)/pagination.pageSize)
         }}
-        onRowClick={(row) => router.push(`/teams/${row.teamId}`)}
+        onRowClick={(row) => router.push({
+          pathname: `/teams/${row.teamId}`,
+          query
+        })}
         showPosition
         sortable
       />
