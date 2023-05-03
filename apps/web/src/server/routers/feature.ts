@@ -43,6 +43,8 @@ const featureRouter = router({
     .input(
       z.object({
         query: z.string().min(3).max(32),
+        season: z.number().optional(),
+        circuit: z.number().optional(),
       })
     )
     .query(async ({ input }) => {
@@ -51,6 +53,21 @@ const featureRouter = router({
           where: {
             code: {
               search: input.query
+            },
+            team: {
+              ...(input.season && {
+                seasons: {
+                  some: {
+                    id: input.season
+                  }
+                }
+              }),
+              ...(input.circuit && { circuits: {
+                some: {
+                  id: input.circuit
+                }
+              }
+            }),
             }
           },
           select: {
@@ -62,6 +79,24 @@ const featureRouter = router({
           where: {
             name: {
               search: input.query
+            },
+            teams: {
+              some: {
+                ...(input.season && {
+                  seasons: {
+                    some: {
+                      id: input.season
+                    }
+                  }
+                }),
+                ...(input.circuit && {
+                  circuits: {
+                    some: {
+                      id: input.circuit
+                    }
+                  }
+                })
+              }
             }
           },
           select: {
@@ -73,6 +108,24 @@ const featureRouter = router({
           where: {
             name: {
               search: input.query
+            },
+            results: {
+              some: {
+                tournament: {
+                  ...(input.season && {
+                    seasonId: input.season
+                  }),
+                  ...(input.circuit && {
+                    circuits: {
+                      some: {
+                        id: {
+                          equals: input.circuit
+                        }
+                      }
+                    }
+                  })
+                }
+              }
             }
           },
           select: {
@@ -84,7 +137,19 @@ const featureRouter = router({
           where: {
             name: {
               search: input.query
-            }
+            },
+            ...(input.season && {
+              seasonId: input.season
+            }),
+            ...(input.circuit && {
+              circuits: {
+                some: {
+                  id: {
+                    equals: input.circuit
+                  }
+                }
+              }
+            })
           },
           select: {
             name: true,

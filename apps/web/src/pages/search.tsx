@@ -9,10 +9,12 @@ import SearchResult from '@src/components/search-result';
 import omit from 'lodash/omit';
 
 const Search = () => {
-  const {query, isReady, asPath, ...router} = useRouter();
+  const { query, isReady, asPath, ...router } = useRouter();
   const { data } = trpc.feature.search.useQuery(
     {
-      query: query.query as string
+      query: query.query as string,
+      ...(query.season && { season: parseInt(query.season as string) }),
+      ...(query.circuit && { circuit: parseInt(query.circuit as string) }),
     },
     {
       enabled: isReady,
@@ -54,19 +56,19 @@ const Search = () => {
           heading={`Results for "${query.query as string}"`}
           subtitle="exclusively on Debate Land"
           underview={
-            <div className='py-3 uppercase' style={{letterSpacing: '0.1em'}}>
+            <div className='py-3 uppercase' style={{ letterSpacing: '0.1em' }}>
               <p className="bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 text-transparent bg-clip-text text-center">Searching Teams, Competitors, Judges, and Tournaments</p>
             </div>
           }
         />
         <Card
           title="Results"
-          icon={<FaSearch  className="text-xl md:text-2xl lg:text-3xl" />}
+          icon={<FaSearch className="text-xl md:text-2xl lg:text-3xl" />}
           className="min-w-full md:min-w-[300px] max-w-[700px] m-10 mx-auto p-2"
         >
           {
             data && data.length
-              ? data.map(({name, id, type}) => (
+              ? data.map(({ name, id, type }) => (
                 <SearchResult
                   name={name}
                   tag={type}

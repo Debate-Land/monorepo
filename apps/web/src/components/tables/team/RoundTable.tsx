@@ -4,6 +4,7 @@ import { ExpandedRound, ExpandedRoundJudgeRecord } from './TournamentHistoryTabl
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import RoundSpeakingResultTable from './RoundSpeakingResultTable'
 import { useRouter } from 'next/router'
+import omit from 'lodash/omit';
 
 export interface RoundTableProps {
   row: ExpandedRound
@@ -45,7 +46,7 @@ const RoundTable = ({ row: { records: judgeRecords, speaking, ...round } }: Roun
         }}
         onRowClick={(row) => router.push({
           pathname: `/judges/${row.judge.id}`,
-          query
+          query: omit(query, ['id'])
         })}
         sortable
       />
