@@ -32,7 +32,7 @@ const Radar = () => {
             placeholder='eg. "https://www.tabroom.com/index/tourn/fields.mhtml?tourn_id=20143&event_id=174061"'
             className="w-full"
           />
-          <Button onClick={executeQuery} icon={<FaSearch />} type="primary" className="w-8 h-8 mt-6 !mx-0 !ml-3" />
+          <Button onClick={executeQuery} icon={<FaSearch />} _type="primary" className="w-8 h-8 mt-6 !mx-0 !ml-3" />
         </div>
       </div>
       <Text className="text-[0.7rem]">

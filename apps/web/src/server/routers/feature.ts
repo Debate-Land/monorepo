@@ -11,7 +11,7 @@ type EventDetails = {
 interface Result {
   name: string;
   id: string | number;
-  type: "Team" | "Competitor";
+  type: "Team" | "Competitor" | "Judge" | "Tournament";
 }
 
 const featureRouter = router({
@@ -69,6 +69,28 @@ const featureRouter = router({
             id: true
           }
         }),
+        prisma.judge.findMany({
+          where: {
+            name: {
+              search: input.query
+            }
+          },
+          select: {
+            name: true,
+            id: true,
+          }
+        }),
+        prisma.tournament.findMany({
+          where: {
+            name: {
+              search: input.query
+            }
+          },
+          select: {
+            name: true,
+            id: true,
+          }
+        })
       ]);
 
       let results: Result[] = [];
@@ -83,6 +105,18 @@ const featureRouter = router({
         name: competitor.name,
         id: competitor.id,
         type: 'Competitor'
+      }));
+
+      data[2].forEach(judge => results.push({
+        name: judge.name,
+        id: judge.id,
+        type: 'Judge'
+      }));
+
+      data[3].forEach(tournament => results.push({
+        name: tournament.name,
+        id: tournament.id,
+        type: 'Tournament'
       }));
 
       return results;

@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Code from "react-code-ui";
 import "react-code-ui/dist/index.css";
 import { NextPage } from 'next'
@@ -9,7 +9,7 @@ import Image from 'next/image'
 import { useMediaQuery } from 'react-responsive'
 import { Compass, Telescope, Radar } from '@src/components/features'
 import { NextSeo } from 'next-seo'
-import { FaLock } from 'react-icons/fa';
+import { FaLock, FaSearch } from 'react-icons/fa';
 import MobileGraphicLeaderboard from '../../public/assets/img/mobile_graphic_leaderboard.png'
 import MobileGraphicTeamPage from '../../public/assets/img/mobile_graphic_team_page.png'
 import WebGraphicDark from '../../public/assets/img/web_graphic_dark.png'
@@ -22,6 +22,10 @@ import { useRouter } from 'next/router';
 import { ChevronRightIcon } from '@sanity/icons';
 // @ts-ignore
 import Fade from 'react-reveal/Fade';
+import { Input } from '@shared/components';
+import { Label } from '@shared/components';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 interface HomeSEOProps {
   title: string;
@@ -98,18 +102,53 @@ const Home: NextPage = () => {
             <h4 className="w-full text-center md:text-left mt-2 md:mt-0 text-indigo-400/80 dark:text-indigo-200 font-bold text-2xl md:text-3xl lg:text-4xl md:pl-1 xl:pl-2">
               Data for all things debate.
             </h4>
-            <Button
-              onClick={() => router.push('/dataset?circuit=38&season=2023')}
-              _type="primary"
-              className="mx-auto mt-2 md:ml-2 space-x-3 !normal-case w-[200px]"
-            >
-              view the demo
-              {/* @ts-ignore */ ''}
-              <ChevronRightIcon
-                className='hover:pl-1 transition-all'
-                fontSize={26}
-              />
-            </Button>
+            <div className="flex w-full justify-between max-w-[400px] my-4 md:ml-2">
+              <Formik
+                initialValues={{
+                  query: ''
+                }}
+                validationSchema={
+                  Yup.object().shape({
+                    query: Yup.string().required("A query is required.")
+                  })
+                }
+                onSubmit={(values) => {
+                  router.push({
+                    pathname: '/search',
+                    query: {
+                      query: values.query
+                    }
+                  })
+                }}
+              >
+                {
+                  (props) => (
+                    <div>
+                      <form className="flex w-[300px] mx-auto md:mx-0 rounded-md">
+                        <Input
+                          name="query"
+                          onChange={props.handleChange}
+                          placeholder="find anything . . ."
+                          className="w-full shadow"
+                        />
+                        <Button
+                          type="submit"
+                          onClick={props.handleSubmit}
+                          icon={<FaSearch />}
+                          _type="primary"
+                          className="w-8 h-8 !mx-0 !-ml-8"
+                        />
+                      </form>
+                      {
+                        props.touched.query
+                        && props.errors.query
+                        && <p className="ml-1 text-red-400">{props.errors.query}</p>
+                      }
+                    </div>
+                  )
+                }
+              </Formik>
+            </div>
           </div>
           <div id="hero-right" className="transition-all hover:shadow-halo rounded-lg overflow-hidden cursor-pointer" onClick={() => router.push('/teams/7f6e1f6807d8416c6f5ac659?season=2023&circuit=38')}>
             {isLarge && (
@@ -169,14 +208,6 @@ const Home: NextPage = () => {
         />
         <span className="absolute w-full h-[50%] -bottom-5 right-0 -skew-y-6 bg-sky-100 dark:bg-gray-900 -z-10" />
         <div className="flex flex-col justify-center w-full pb-32 relative">
-          {/* <div className='backdrop-blur w-full h-full absolute z-20 flex justify-center items-center'>
-            <h1 className="text-5xl text-center flex flex-col md:flex-row justify-center items-center">
-              <div className=' bg-gray-50/20 w-fit px-2 py-1 rounded-2xl md:mr-2'>
-                <span className='bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 bg-clip-text text-transparent'>beta</span>
-              </div>
-              Coming April 2023
-            </h1>
-          </div> */}
           <h2 className="text-5xl text-center">
             Meet your new{' '}
             <Fade top>
@@ -191,7 +222,7 @@ const Home: NextPage = () => {
               <h3 className="text-3xl">Search our datasets with ease</h3>
               <div className="text-xl text-gray-400 mt-3">
                 <p>
-                  <span className="text-indigo-400">Compass</span> lets you easily select a debate event, circuit, and
+                  <span className="text-sky-400">Compass</span> lets you easily select a debate event, circuit, and
                   year to query.
                 </p>
                 <p className="mt-2">
@@ -221,7 +252,10 @@ const Home: NextPage = () => {
               </div>
             </div>
             <Fade left distance="20px">
-              <div className="flex w-full">
+              <div className="flex w-full relative">
+                <div className="absolute backdrop-blur-sm w-full h-full z-40 grid place-items-center">
+                  <p className="text-xl text-indigo-400">Coming soon . . .</p>
+                </div>
                 <Radar />
               </div>
             </Fade>
@@ -232,7 +266,7 @@ const Home: NextPage = () => {
               <div className="text-xl text-gray-400 mt-3">
                 <p>
                   No matter what you're debating, knowing your audience is key to success. That's why{' '}
-                  <span className="text-indigo-400">Telescope</span> provides detailed information about your judges.
+                  <span className="text-red-400">Telescope</span> provides detailed information about your judges.
                 </p>
                 <p className="mt-2">
                   Just enter a judge's name and get bias, squirrel, and experience scores over any period of time.
@@ -241,7 +275,10 @@ const Home: NextPage = () => {
               </div>
             </div>
             <Fade left distance="20px">
-              <div className="flex w-full">
+              <div className="flex w-full relative">
+                <div className="absolute backdrop-blur-sm w-full h-full z-40 grid place-items-center">
+                  <p className="text-xl text-red-400">Coming soon . . .</p>
+                </div>
                 <Telescope />
               </div>
             </Fade>

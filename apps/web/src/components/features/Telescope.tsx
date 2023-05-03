@@ -32,7 +32,7 @@ const Telescope = () => {
             placeholder='eg. "Sonny Patel"'
             className="w-full"
           />
-          <Button onClick={executeQuery} icon={<FaSearch />} type="primary" className="w-8 h-8 mt-6 !mx-0 !ml-3" />
+          <Button onClick={executeQuery} icon={<FaSearch />} _type="primary" className="w-8 h-8 mt-6 !mx-0 !ml-3" />
         </div>
       </div>
     </Card>

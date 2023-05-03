@@ -65,7 +65,7 @@ const Search = () => {
           className="min-w-full md:min-w-[300px] max-w-[700px] m-10 mx-auto p-2"
         >
           {
-            data
+            data && data.length
               ? data.map(({name, id, type}) => (
                 <SearchResult
                   name={name}
@@ -88,7 +88,13 @@ const Search = () => {
                   }}
                 />
               ))
-              : null
+              : data
+                ? (
+                  <p className="w-full text-center text-red-400">
+                    Whoops! We searched far and wide, but came up short. Try again?
+                  </p>
+                )
+                : null
           }
         </Card>
       </div>
