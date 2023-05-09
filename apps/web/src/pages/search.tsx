@@ -90,13 +90,22 @@ const Search = () => {
                   }}
                 />
               ))
-              : data
+              : data === undefined
                 ? (
+                  <>
+                    <div className="bg-gray-300/40 dark:bg-gray-700/40 animate-pulse h-6 rounded w-full" />
+                    <div className="bg-gray-300/40 dark:bg-gray-700/40 animate-pulse h-6 rounded w-full"/>
+                    <div className="bg-gray-300/40 dark:bg-gray-700/40 animate-pulse h-6 rounded w-full"/>
+                    <div className="bg-gray-300/40 dark:bg-gray-700/40 animate-pulse h-6 rounded w-full"/>
+                    <div className="bg-gray-300/40 dark:bg-gray-700/40 animate-pulse h-6 rounded w-full"/>
+                    <div className="bg-gray-300/40 dark:bg-gray-700/40 animate-pulse h-6 rounded w-full"/>
+                  </>
+                )
+                : (
                   <p className="w-full text-center text-red-400">
                     Whoops! We searched far and wide, but came up short. Try again?
                   </p>
                 )
-                : null
           }
         </Card>
       </div>

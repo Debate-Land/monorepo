@@ -58,7 +58,7 @@ const JudgeRecordsTable = ({ data: { id } }: JudgeRecordsTableProps) => {
         lg: [
           column.accessor('wasSquirrel', {
             header: "Squirrel",
-            cell: props => props.cell.getValue() !== undefined
+            cell: props => props.cell.getValue() !== null
               ? props.cell.getValue()
                 ? 'Yes'
                 : 'No'
