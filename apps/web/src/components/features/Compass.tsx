@@ -70,7 +70,7 @@ const Compass = () => {
         innerRef={formik}
         initialValues={{
           event: 'PublicForum',
-          circuit: 37,
+          circuit: 40,
           season: 2023,
           query: ''
         }}

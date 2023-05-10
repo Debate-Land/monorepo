@@ -102,7 +102,7 @@ const Home: NextPage = () => {
             <h4 className="w-full text-center md:text-left mt-2 md:mt-0 text-indigo-400/80 dark:text-indigo-200 font-bold text-2xl md:text-3xl lg:text-4xl md:pl-1 xl:pl-2">
               Data for all things debate.
             </h4>
-            <div className="flex w-full justify-between max-w-[400px] my-4 md:ml-2">
+            <div className="flex w-full justify-between my-4 md:ml-2">
               <Formik
                 initialValues={{
                   query: ''
@@ -123,8 +123,8 @@ const Home: NextPage = () => {
               >
                 {
                   (props) => (
-                    <div>
-                      <form className="flex w-[300px] mx-auto md:mx-0 rounded-md">
+                    <div className="w-full">
+                      <form className="flex w-2/3 md:w-[400px] lg:w-[450px] mx-auto md:mx-0 rounded-md">
                         <Input
                           name="query"
                           onChange={props.handleChange}
@@ -220,7 +220,7 @@ const Home: NextPage = () => {
           <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col lg:flex-row items-center justify-between mt-12 xl:mt-8 2xl:max-w-[2000px]">
             <div className="lg:mr-10 lg:max-w-[40%] xl:ml-[10%] xl:max-w-[25%]">
               <h3 className="text-3xl">Search our datasets with ease</h3>
-              <div className="text-xl text-gray-400 mt-3">
+              <div className="text-xl text-gray-600 dark:text-gray-400 mt-3">
                 <p>
                   <span className="text-sky-400">Compass</span> lets you easily select a debate event, circuit, and
                   year to query.
@@ -240,7 +240,7 @@ const Home: NextPage = () => {
           <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col lg:flex-row-reverse items-center justify-between mt-16 2xl:max-w-[2000px]">
             <div className="xl:mr-[10%] lg:ml-10 lg:max-w-[40%] xl:max-w-[25%]">
               <h3 className="text-3xl">Tailored scouting reports</h3>
-              <div className="text-xl text-gray-400 mt-3">
+              <div className="text-xl text-gray-600 dark:text-gray-400 mt-3">
                 <p>
                   You can use <span className="text-indigo-400">Radar</span> to generate a scouting report for any
                   Tabroom tournament.
@@ -263,7 +263,7 @@ const Home: NextPage = () => {
           <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col xl:flex-row items-center justify-between mt-16 2xl:max-w-[2000px]">
             <div className="xl:ml-[10%] xl:mr-5 xl:max-w-[25%]">
               <h3 className="text-3xl">Detailed judge analytics</h3>
-              <div className="text-xl text-gray-400 mt-3">
+              <div className="text-xl text-gray-600 dark:text-gray-400 mt-3">
                 <p>
                   No matter what you're debating, knowing your audience is key to success. That's why{' '}
                   <span className="text-red-400">Telescope</span> provides detailed information about your judges.
@@ -304,7 +304,7 @@ const Home: NextPage = () => {
                 <h3 className="mr-2 text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   For debaters, by debaters.
                 </h3>
-                <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
+                <p className="text-cyan-100/70 mt-1 xl:px-5 xl:max-w-[500px]">
                   We built Debate Land because we were frustrated with the lack of centralized data for debate. Now,
                   over ten thousand people use it.
                 </p>
@@ -314,7 +314,7 @@ const Home: NextPage = () => {
                 <h3 className="mr-2 text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   Intuitive, as it should be.
                 </h3>
-                <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
+                <p className="text-cyan-100/70 mt-1 xl:px-5 xl:max-w-[500px]">
                   Debate Land is designed to be accessible. It's as easy as choosing a dataset and searching it for
                   anything you'd like to know, just how it should be.
                 </p>
@@ -325,7 +325,7 @@ const Home: NextPage = () => {
                 <h3 className="mr-2 text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   A history of success.
                 </h3>
-                <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
+                <p className="text-cyan-100/70 mt-1 xl:px-5 xl:max-w-[500px]">
                   Formerly Tournaments.Tech, Debate Land has been the go-to data source for debate since 2019.
                 </p>
               </div>
@@ -333,7 +333,7 @@ const Home: NextPage = () => {
                 <h3 className="mr-2 text-white text-2xl xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:py-0 border-red-400 z-10">
                   Transparent, always.
                 </h3>
-                <p className="text-gray-400 mt-1 xl:px-5 xl:max-w-[500px]">
+                <p className="text-cyan-100/70 mt-1 xl:px-5 xl:max-w-[500px]">
                   We've been open source since day one. Everything from our scrapers to our ranking methodology is
                   available on GitHub.
                 </p>
