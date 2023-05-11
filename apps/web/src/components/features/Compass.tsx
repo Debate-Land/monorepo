@@ -143,7 +143,9 @@ const Compass = () => {
                   />
                   <Button type="submit" icon={<FaSearch />} _type="primary" className="w-8 h-8 !mx-0 !-ml-8" />
                 </div>
-                <p className="px-1 text-red-400 border-red-400 border rounded-full !mt-0">OR</p>
+                <div className="!mb-2 sm:mb-0">
+                  <p className="px-1 text-red-400 border-red-400 border rounded-full !mt-0">OR</p>
+                </div>
                 <Button
                   type="submit"
                   _type="primary"

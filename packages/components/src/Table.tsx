@@ -291,6 +291,7 @@ const Table = <T,>({
             <button
               onClick={() => {table.setPageIndex(0)}}
               className={classNames.pagination.button}
+              title="Go to start"
             >
               <FiChevronsLeft/>
             </button>
@@ -298,6 +299,7 @@ const Table = <T,>({
               onClick={table.previousPage}
               disabled={currentPage == 0}
               className={classNames.pagination.button}
+              title="Go back a page"
             >
               <FiChevronLeft/>
             </button>
@@ -308,12 +310,14 @@ const Table = <T,>({
               onClick={table.nextPage}
               disabled={currentPage == table.getPageCount()}
               className={classNames.pagination.button}
+              title="Go forward a page"
             >
               <FiChevronRight/>
             </button>
             <button
               onClick={() => {table.setPageIndex(table.getPageCount())}}
               className={classNames.pagination.button}
+              title="Go to end"
             >
               <FiChevronsRight/>
             </button>

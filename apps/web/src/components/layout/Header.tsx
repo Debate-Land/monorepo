@@ -43,6 +43,7 @@ const Header = ({ router }: any) => {
 				<Button
 					icon={theme === 'dark' ? <FaSun /> : <FaMoon />}
 					className="!bg-indigo-300"
+					title="Toggle Theme"
 					onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
 				/>
 			</div>
