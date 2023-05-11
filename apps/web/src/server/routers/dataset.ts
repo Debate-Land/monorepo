@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { prisma } from '@shared/database';
 import { getAvg } from '@src/utils/get-statistics';
 import { sortBy } from 'lodash';
 
@@ -12,7 +11,8 @@ const datasetRouter = router({
         season: z.number(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const data = await Promise.all([
         // Circuit Name
         prisma.circuit.findUnique({
@@ -168,7 +168,8 @@ const datasetRouter = router({
         limit: z.number()
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const teams = await prisma.teamRanking.findMany({
         where: {
           seasonId: input.season,
@@ -259,7 +260,8 @@ const datasetRouter = router({
         limit: z.number()
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const result = await prisma.tournament.findMany({
         where: {
           circuits: {
@@ -298,7 +300,8 @@ const datasetRouter = router({
         limit: z.number()
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const result = await prisma.competitor.findMany({
         where: {
           teams: {
@@ -367,7 +370,8 @@ const datasetRouter = router({
         limit: z.number()
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const result = await prisma.judgeRanking.findMany({
         where: {
           circuit: {
@@ -436,7 +440,8 @@ const datasetRouter = router({
         limit: z.number()
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const result = await prisma.school.findMany({
         where: {
           results: {
@@ -535,7 +540,8 @@ const datasetRouter = router({
         season: z.number(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       let groups = await prisma.bid.groupBy({
         by: ['teamId', 'value'],
         where: {

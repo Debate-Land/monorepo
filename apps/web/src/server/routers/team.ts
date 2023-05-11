@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { Event, prisma } from '@shared/database';
 import sortRounds from '@src/utils/sort-rounds';
 import getStatistics from '@src/utils/get-statistics';
 
@@ -13,7 +12,8 @@ const teamRouter = router({
         circuit: z.number().optional(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       let team = await prisma.team.findUnique({
         where: {
           id: input.id,
@@ -105,7 +105,8 @@ const teamRouter = router({
         id: z.number()
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const rounds = await prisma.round.findMany({
         where: {
           resultId: input.id
