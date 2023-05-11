@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { Event, prisma } from '@shared/database';
 import sortRecords from '@src/utils/sort-records';
 
 const judgeRouter = router({
@@ -12,7 +11,8 @@ const judgeRouter = router({
         circuit: z.number().optional(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const [judge, ranking] = await Promise.all([
         prisma.judge.findUnique({
           where: {
@@ -108,7 +108,8 @@ const judgeRouter = router({
         id: z.number()
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const records = await prisma.judgeRecord.findMany({
         where: {
           resultId: input.id

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { Circuit, Event, Season, prisma } from '@shared/database';
+import { Circuit, Event, Season } from '@shared/database';
 
 type EventDetails = {
   [key in Event]: (Circuit & {
@@ -17,7 +17,8 @@ interface Result {
 const featureRouter = router({
   compass: procedure
     .input(z.object({}))
-    .query(async () => {
+    .query(async ({ ctx }) => {
+      const { prisma } = ctx;
       const events = (await prisma.circuit.groupBy({
         by: ["event"]
       })).map(e => e.event);
@@ -47,7 +48,9 @@ const featureRouter = router({
         circuit: z.number().optional(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
+
       const data = await Promise.all([
         prisma.alias.findMany({
           where: {

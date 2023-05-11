@@ -1,9 +1,8 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { Event, prisma } from '@shared/database';
-import sortRecords from '@src/utils/sort-records';
+import { Event } from '@shared/database';
 
-const judgeRouter = router({
+const schoolRouter = router({
   summary: procedure
     .input(
       z.object({
@@ -13,7 +12,8 @@ const judgeRouter = router({
         event: z.string().refine((data) => Object.values(Event).includes(data as Event)),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
       const school = await prisma.school.findUnique({
         where: {
           id: input.id
@@ -54,4 +54,4 @@ const judgeRouter = router({
     })
 });
 
-export default judgeRouter;
+export default schoolRouter;
