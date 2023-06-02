@@ -11,7 +11,7 @@ interface TeamChartsProps {
 
 const TeamCharts = ({ results }: TeamChartsProps) => {
   const [ready, setReady] = useState<boolean>(false);
-  const [mode, setMode] = useState<"Point" | "Cumulative">("Point");
+  const [mode, setMode] = useState<"Point" | "Cumulative">("Cumulative");
 
   useEffect(() => {
     setReady(true);
