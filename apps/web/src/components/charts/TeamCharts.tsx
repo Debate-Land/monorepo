@@ -120,11 +120,11 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
       return {
         date: getShortDate(r.tournament.start * 1000),
-        pct: (r.elimBallotsWon !== 0 || r.elimBallotsLost !== 0)
+        break: (r.elimBallotsWon !== 0 || r.elimBallotsLost !== 0)
           ? 1
           : 0
       }
-    }).filter(v => v !== null) as { date: string; pct: number}[];
+    }).filter(v => v !== null) as { date: string; break: number}[];
   }, [results]);
 
   const breakCum = useMemo(() => {
@@ -138,7 +138,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
       return {
         date: getShortDate(r.tournament.start * 1000),
-        pct: Math.round(numBreaks / previousResults.length * 100) / 100
+        pct: Math.round(numBreaks / previousResults.length * 100)
       }
     })
   }, [results]);
@@ -185,6 +185,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               data={mode === "Cumulative" ? pwpCum : pwpPoint}
               xKey="date"
               yKey="pwp"
+              range={[0, 100]}
               isPercentage
             />
             <Chart
@@ -192,12 +193,14 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               data={mode === "Cumulative" ? speaksCum : speaksPoint}
               xKey="date"
               yKey="speaks"
+              range={[20, 30]}
             />
             <Chart
               title="Prelim Pool Pctl."
               data={mode === "Cumulative" ? prelimPoolPctlCum : prelimPoolPctlPoint}
               xKey="date"
               yKey="pctl"
+              range={[0, 100]}
               isPercentage
             />
             <Chart
@@ -205,19 +208,23 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               data={mode === "Cumulative" ? otrCum : otrPoint}
               xKey="date"
               yKey="otr"
+              range={[0, 5]}
             />
             <Chart
               title={mode === "Cumulative" ? "Break Pct." : "Break (y/n)"}
               data={mode === "Cumulative" ? breakCum : breakPoint}
               xKey="date"
-              yKey="pct"
+              yKey={mode === "Cumulative" ? "pct" : "break"}
+              range={mode === "Cumulative" ? [0, 100] : [0, 1]}
               isPercentage={mode === "Cumulative"}
+              isBoolean
             />
             <Chart
               title="True Win Pct."
               data={mode === "Cumulative" ? twpCum : twpPoint}
               xKey="date"
               yKey="twp"
+              range={[0, 100]}
               isPercentage
             />
           </>
