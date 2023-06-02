@@ -11,6 +11,7 @@ import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 import { prisma } from '@shared/database';
+import TeamCharts from '@src/components/charts/TeamCharts';
 
 // TODO: National Rank at some point...
 const Team = () => {
@@ -162,7 +163,7 @@ const Team = () => {
           }
         />
         <TournamentHistoryTable data={data?.results} />
-        {/* TODO: Alias/School Tables & Charts */}
+        <TeamCharts results={data?.results.sort((a, b) => a.tournament.start - b.tournament.start) || []} />
       </div>
     </>
   )

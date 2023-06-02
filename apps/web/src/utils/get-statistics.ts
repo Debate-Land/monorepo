@@ -41,7 +41,7 @@ export function getAvg(arr: number[]) {
   return sum / arr.length;
 }
 
-function getDeflator(tourns: number) {
+export function getDeflator(tourns: number) {
   let N = 1;
   let Y0 = 0.15;
   let K = 1.3;

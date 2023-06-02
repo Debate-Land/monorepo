@@ -12,19 +12,21 @@ import Select from './Select'
 import Statistic from './Statistic'
 import Table from './Table'
 import Text from './Text'
+import Chart from './Chart';
 
 export {
-    Button,
-    Card,
-    Character,
-    GridLine,
-    Group,
-    Input,
-    Label,
-    Link,
-    Loader,
-    Select,
-    Statistic,
-    Table,
-    Text
+  Button,
+  Card,
+  Character,
+  GridLine,
+  Group,
+  Input,
+  Label,
+  Link,
+  Loader,
+  Select,
+  Statistic,
+  Table,
+  Text,
+  Chart
 }
