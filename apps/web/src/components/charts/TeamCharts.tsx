@@ -177,7 +177,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
   return (
     <Card icon={<AiOutlineLineChart />} title="Analytics" className="relative max-w-[800px] mx-auto my-16">
-      <div className="w-full grid md:grid-cols-2 gap-4 max-w-[620px] mx-auto">
+      <div className="grid sm:grid-cols-2 gap-4 max-w-[620px] mx-auto w-fit sm:ml-8 md:ml-12">
         {ready && (
           <>
             <Chart
