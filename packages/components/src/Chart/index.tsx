@@ -8,11 +8,12 @@ interface ChartProps<T> {
   xKey: string & keyof T;
   yKey: string & keyof T;
   range: number[];
+  yTicks: number[];
   isPercentage?: boolean;
   isBoolean?: boolean;
 }
 
-const Chart = <T,>({title, data, xKey, yKey, range, isPercentage, isBoolean}: ChartProps<T>) => {
+const Chart = <T,>({title, data, xKey, yKey, yTicks, range, isPercentage, isBoolean}: ChartProps<T>) => {
   return (
     <div className='w-fit flex flex-col items-center'>
       <h3 className='ml-12 mb-2 text-gray-600 dark:text-gray-500'>{title}</h3>
@@ -21,11 +22,11 @@ const Chart = <T,>({title, data, xKey, yKey, range, isPercentage, isBoolean}: Ch
         height={200}
         data={data}
         title={title}
-        margin={{ top: 5, right: 25, bottom: 5, left: 0 }}
+        margin={{ top: 10, right: 25, bottom: 5, left: 0 }}
       >
         <Line type="monotone" dataKey={yKey} stroke="#8884d8" />
         <XAxis dataKey={xKey} tickMargin={7}/>
-        <YAxis domain={range} tick={isPercentage ? PercentageTick : CustomTick} />
+        <YAxis domain={range} interval={0} ticks={yTicks} tick={isPercentage ? PercentageTick : CustomTick} />
         <Tooltip
           wrapperClassName="!bg-slate-200 dark:!bg-gray-800 rounded-lg"
           formatter={(value) => {

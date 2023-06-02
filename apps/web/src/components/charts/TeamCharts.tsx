@@ -186,6 +186,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               xKey="date"
               yKey="pwp"
               range={[0, 100]}
+              yTicks={[0, 25, 50, 75, 100]}
               isPercentage
             />
             <Chart
@@ -193,6 +194,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               data={mode === "Cumulative" ? speaksCum : speaksPoint}
               xKey="date"
               yKey="speaks"
+              yTicks={[20, 22, 24, 26, 28, 30]}
               range={[20, 30]}
             />
             <Chart
@@ -201,6 +203,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               xKey="date"
               yKey="pctl"
               range={[0, 100]}
+              yTicks={[0, 25, 50, 75, 100]}
               isPercentage
             />
             <Chart
@@ -208,6 +211,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               data={mode === "Cumulative" ? otrCum : otrPoint}
               xKey="date"
               yKey="otr"
+              yTicks={[1, 2, 3, 4, 5]}
               range={[0, 5]}
             />
             <Chart
@@ -216,6 +220,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               xKey="date"
               yKey={mode === "Cumulative" ? "pct" : "break"}
               range={mode === "Cumulative" ? [0, 100] : [0, 1]}
+              yTicks={mode === "Cumulative" ? [0, 25, 50, 75, 100] : [0, 1]}
               isPercentage={mode === "Cumulative"}
               isBoolean
             />
@@ -225,6 +230,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               xKey="date"
               yKey="twp"
               range={[0, 100]}
+              yTicks={[0, 25, 50, 75, 100]}
               isPercentage
             />
           </>
