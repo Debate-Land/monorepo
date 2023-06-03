@@ -5,6 +5,7 @@ interface OverviewProps {
   label: string | JSX.Element;
   heading?: string | JSX.Element;
   subtitle?: string | JSX.Element;
+  subheading?: string;
   underview: JSX.Element;
 }
 
@@ -28,6 +29,14 @@ const Overview = (props: OverviewProps) => {
             <Text className="text-xl !text-white sm:text-3xl lg:text-4xl min-w-[500px] mx-auto text-center md:text-left z-20">
                 {props.heading || <Loader height={8} width="full"/>}
             </Text>
+            {
+              props.subheading && (
+                <Text className="text-md !text-white sm:text-xl lg:text-2xl min-w-[500px] mx-auto text-center md:text-left z-20">
+                  {props.subheading}
+                </Text>
+              )
+            }
+
           </span>
           <Text className="!text-indigo-300 md:mt-4 text-xs md:text-md lg:text-lg z-20">
               {props.subtitle || <Loader height={4} width={64} />}

@@ -1,5 +1,6 @@
 import client, { getClient } from '@src/lib/sanity'
 import { DynamicPage, DynamicPageProps } from '@src/components/layout';
+import ErrorPage from 'next/error';
 
 export const getStaticPaths = async () => {
   const pages = await client.fetch <DynamicPageProps[]>(`*[_type=='page' && pageType == 'blog-post']`);
@@ -34,7 +35,7 @@ export const getStaticProps = async ({ params, preview = false }: StaticProps) =
 }
 
 const BlogPost = (props: DynamicPageProps) => (
-  <DynamicPage {...props} />
+  props._id ? <DynamicPage {...props} /> : <ErrorPage statusCode={404} />
 )
 
 export default BlogPost;

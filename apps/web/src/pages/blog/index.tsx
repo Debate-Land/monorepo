@@ -41,7 +41,7 @@ const Index = ({ pages }: Props) => {
       <div className="min-h-screen">
         <Overview
           label="Blog"
-          heading="The Forensics Files"
+          heading="The Forensic Files"
           subtitle="Case Studies | Research | Insights"
           underview={
             <div className='py-3 uppercase' style={{letterSpacing: '0.1em'}}>
@@ -60,7 +60,7 @@ const Index = ({ pages }: Props) => {
 }
 
 export const getStaticProps = async () => {
-  const pages = await getClient(false).fetch<DynamicPageProps[]>(`*[_type=='page' && pageType == 'blog-post'] {
+  const pages = await getClient(false).fetch<DynamicPageProps[]>(`*[_type=='page' && pageType == 'blog-post'] | order(_createdAt desc) {
     ...,
     author->
   }`);

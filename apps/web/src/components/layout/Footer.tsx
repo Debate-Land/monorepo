@@ -5,7 +5,7 @@ import { BsGithub, BsApple } from 'react-icons/bs'
 import { DiAndroid } from 'react-icons/di'
 import { RiScissors2Fill } from 'react-icons/ri'
 import { AiOutlineInfoCircle } from 'react-icons/ai'
-import Vercel from '../../../public/assets/img/vercel.svg'
+import Vercel from '../../../public/assets/img/vercel-sponsorship.svg'
 import { useRouter } from 'next/router'
 
 const Footer = () => {
@@ -132,6 +132,9 @@ const Footer = () => {
 											icon={<RiScissors2Fill />}
 											className="text-yellow-400"
 										/>
+									</li>
+									<li>
+										<Link href="/known-issues" text="Known Issues" />
 									</li>
 								</ul>
 							</div>
