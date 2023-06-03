@@ -145,11 +145,11 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
   const twpPoint = useMemo(() => {
     return results.map(r => {
-      const _twp = (r.prelimBallotsWon + r.prelimBallotsLost) / (r.prelimBallotsWon + r.prelimBallotsLost + (r.elimBallotsWon || 0) + (r.elimBallotsLost || 0)) + (r.elimBallotsWon || 0) / ((r.elimBallotsWon || 0) + (r.elimBallotsLost || 0)) * 0.1;
+      const _twp = (r.prelimBallotsWon + (r.elimBallotsWon || 0)) / (r.prelimBallotsWon + r.prelimBallotsLost + (r.elimBallotsWon || 0) + (r.elimBallotsLost || 0)) + (r.elimBallotsWon || 0) / ((r.elimBallotsWon || 0) + (r.elimBallotsLost || 0)) * 0.1;
 
       return {
         date: getShortDate(r.tournament.start * 1000),
-          twp: _twp < 1 ? Math.round(_twp * 100) : 1
+          twp: _twp < 1 ? Math.round(_twp * 100) : 100
       }
     })
   }, [results]);
@@ -158,7 +158,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
     return results.map((r, idx) => {
       const previousResults = results
         .slice(0, idx + 1)
-        .map(r => [[r.prelimBallotsWon, r.prelimBallotsLost], [r.elimBallotsWon || 0, r.elimBallotsLost || 0]]);
+        .map(r => [[r.prelimBallotsWon, r.prelimBallotsLost], [r.elimWins || 0, r.elimLosses || 0]]);
 
       const sumPrelimsWon = previousResults.reduce((p, c) => p + c[0][0], 0);
       const sumPrelimsLost = previousResults.reduce((p, c) => p + c[0][1], 0);
@@ -170,7 +170,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
       return {
         date: getShortDate(r.tournament.start * 1000),
-        twp: _twp < 1 ? Math.round(_twp * 100) : 1
+        twp: _twp < 1 ? Math.round(_twp * 100) : 100
       };
     })
   }, [results]);
