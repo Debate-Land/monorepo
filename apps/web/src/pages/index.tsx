@@ -109,7 +109,7 @@ const Home: NextPage = () => {
                 }}
                 validationSchema={
                   Yup.object().shape({
-                    query: Yup.string().required("A query is required.")
+                    query: Yup.string().required("Enter a team name, school, tournament, etc.")
                   })
                 }
                 onSubmit={(values) => {
@@ -285,7 +285,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </section>
-      <section className="pt-32 mb-32 relative h-[70rem] md:h-[50rem] flex flex-col justify-center" id="faq">
+      <section className="pt-32 mb-32 relative h-[80rem] md:h-[50rem] flex flex-col justify-center" id="faq">
         <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-luka-300" />
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
@@ -339,6 +339,24 @@ const Home: NextPage = () => {
                 </p>
               </div>
             </div>
+          </div>
+          <div className="flex w-full justify-center mt-8">
+            <p className="px-2 text-xl max-w-[500px] text-center">
+              Learn more about our journey{' '}
+              <span
+                className="text-purple-400 cursor-pointer hover:underline"
+                onClick={() => router.push('/about')}
+              >
+                here
+              </span>.{' '}
+              Follow what we've been up to at{' '}
+              <span
+                className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-red-400 tracking-wider uppercase cursor-pointer"
+                onClick={() => router.push('/blog')}
+              >
+                The Forensic Files
+              </span>.
+            </p>
           </div>
         </div>
       </section>

@@ -133,6 +133,9 @@ const Footer = () => {
 											className="text-yellow-400"
 										/>
 									</li>
+									<li>
+										<Link href="/known-issues" text="Known Issues" />
+									</li>
 								</ul>
 							</div>
 						</div>
