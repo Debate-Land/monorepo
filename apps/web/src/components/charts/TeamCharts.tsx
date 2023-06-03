@@ -242,10 +242,11 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
         <Button
           icon={<HiOutlineSwitchHorizontal className='mr-2' />}
           onClick={() => setMode(mode === "Cumulative" ? "Point" : "Cumulative")}
-          className='h-7 absolute top-0 md:top-5 right-5'
+          className='h-7 absolute top-0 md:top-5 right-5 !bg-transparent !text-black dark:!text-white hover:opacity-70 active:opacity-90 w-36'
           ghost
         >
-          {mode}
+          <p className='w-full text-start'>{mode}</p>
+          
         </Button>
       </div>
     </Card>
