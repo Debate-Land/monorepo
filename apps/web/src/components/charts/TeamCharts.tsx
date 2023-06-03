@@ -17,17 +17,17 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
     setReady(true);
   }, []);
 
-  const getShortDate = (_date: number) => {
-    const date = new Date(_date);
-    const year = new Intl.DateTimeFormat('en', { year: '2-digit' }).format(date);
-    const month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date);
+  const xTicks = useMemo(() => {
+    const start = results[0].tournament.start;
+    const end = results[results.length - 1].tournament.start;
+    const midpoint = (start + end) / 2;
 
-    return `${month}/${year}`;
-  }
+    return [start, end, midpoint];
+  }, [results]);
 
   const pwpPoint = useMemo(() => {
     return results.map(r => ({
-      date: getShortDate(r.tournament.start * 1000),
+      date: r.tournament.start * 1000,
       pwp: Math.floor(r.prelimBallotsWon / (r.prelimBallotsLost + r.prelimBallotsWon) * 100)
     }))
   }, [results]);
@@ -39,7 +39,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
       const pLossesSum = previousResults.reduce((p, c) => p + c[1], 0);
 
       return {
-        date: getShortDate(r.tournament.start * 1000),
+        date: r.tournament.start * 1000,
         pwp: Math.round(pWinsSum / (pWinsSum + pLossesSum) * 100)
       }
     })
@@ -50,10 +50,10 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
       const speaks = r.speaking.map(s => s.rawAvgPoints);
       if (!speaks.length) return null;
       return {
-        date: getShortDate(r.tournament.start * 1000),
+        date: r.tournament.start * 1000,
         speaks: Math.round(speaks.reduce((p, c) => p + c, 0) / speaks.length * 100)/100
       }
-    }).filter(r => r !== null) as {date: string, speaks: number}[];
+    }).filter(r => r !== null) as {date: number, speaks: number}[];
   }, [results]);
 
   const speaksCum = useMemo(() => {
@@ -66,7 +66,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
       const speaksSum = previousResults.reduce((p, c) => p + c, 0);
 
       return {
-        date: getShortDate(r.tournament.start * 1000),
+        date: r.tournament.start * 1000,
         speaks: Math.round(speaksSum / previousResults.length * 100) / 100
       }
     })
@@ -74,7 +74,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
   const prelimPoolPctlPoint = useMemo(() => {
     return results.map(r => ({
-      date: getShortDate(r.tournament.start * 1000),
+      date: r.tournament.start * 1000,
       pctl: 100 - Math.round(r.prelimPos / r.prelimPoolSize * 100)
     }))
   }, [results]);
@@ -88,7 +88,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
       const pctlSum = previousResults.reduce((p, c) => p + c, 0);
 
       return {
-        date: getShortDate(r.tournament.start * 1000),
+        date: r.tournament.start * 1000,
         pctl: Math.round(pctlSum / previousResults.length * 100) / 100
       }
     })
@@ -96,7 +96,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
   const otrPoint = useMemo(() => {
     return results.map(r => ({
-      date: getShortDate(r.tournament.start * 1000),
+      date: r.tournament.start * 1000,
       otr: Math.round(r.otrComp * 100) / 100
     }))
   }, [results]);
@@ -106,7 +106,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
       const previousResults = results.slice(0, idx + 1).map(r => r.otrComp);
       const otrSum = previousResults.reduce((p, c) => p + c, 0);
       return {
-        date: getShortDate(r.tournament.start * 1000),
+        date: r.tournament.start * 1000,
         otr: Math.round(getDeflator(previousResults.length) * otrSum / previousResults.length * 100) / 100
       }
     })
@@ -119,7 +119,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
       }
 
       return {
-        date: getShortDate(r.tournament.start * 1000),
+        date: r.tournament.start * 1000,
         break: (r.elimBallotsWon !== 0 || r.elimBallotsLost !== 0)
           ? 1
           : 0
@@ -137,7 +137,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
       const numBreaks = previousResults.reduce((p, c) => c ? p + 1 : p, 0);
 
       return {
-        date: getShortDate(r.tournament.start * 1000),
+        date: r.tournament.start * 1000,
         pct: Math.round(numBreaks / previousResults.length * 100)
       }
     })
@@ -148,7 +148,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
       const _twp = (r.prelimBallotsWon + (r.elimBallotsWon || 0)) / (r.prelimBallotsWon + r.prelimBallotsLost + (r.elimBallotsWon || 0) + (r.elimBallotsLost || 0)) + (r.elimBallotsWon || 0) / ((r.elimBallotsWon || 0) + (r.elimBallotsLost || 0)) * 0.1;
 
       return {
-        date: getShortDate(r.tournament.start * 1000),
+        date: r.tournament.start * 1000,
           twp: _twp < 1 ? Math.round(_twp * 100) : 100
       }
     })
@@ -169,7 +169,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
       const _twp = (sumPrelimsWon + sumElimsWon) / (sumPrelimsWon + sumPrelimsLost + sumElimsWon + sumElimsLost) + sumElimsWon / (sumElimsWon + sumElimsLost) * 0.1;
 
       return {
-        date: getShortDate(r.tournament.start * 1000),
+        date: r.tournament.start * 1000,
         twp: _twp < 1 ? Math.round(_twp * 100) : 100
       };
     })
@@ -186,6 +186,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               xKey="date"
               yKey="pwp"
               range={[0, 100]}
+              xTicks={xTicks}
               yTicks={[0, 25, 50, 75, 100]}
               isPercentage
             />
