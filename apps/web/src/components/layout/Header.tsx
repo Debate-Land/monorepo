@@ -31,7 +31,7 @@ const Header = ({ router }: any) => {
 					Debate Land
 				</Text>
 				<div className="absolute -top-2 -right-3 bg-gray-50/80 rounded-full ">
-					<Text className="px-1 lowercase bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 bg-clip-text text-transparent">Beta</Text>
+					<Text className="px-1 text-sm lowercase bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 bg-clip-text text-transparent">Beta 0.2</Text>
 				</div>
 			</a>
 			<div className="flex items-center space-x-2">

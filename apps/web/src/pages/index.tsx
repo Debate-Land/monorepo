@@ -19,13 +19,24 @@ import GooglePlayGraphic from '../../public/assets/img/google_play.svg'
 import code from '@src/const/api-demo-code';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/router';
-import { ChevronRightIcon } from '@sanity/icons';
+import CarletonLogo from '../../public/assets/img/carleton.jpeg';
+import NSDLightLogo from '../../public/assets/img/nsd-light.png';
+import NSDDarkLogo from '../../public/assets/img/nsd-dark.png';
+import CDSILightLogo from '../../public/assets/img/cdsi-light.png';
+import CDSIDarkLogo from '../../public/assets/img/cdsi-dark.png';
+import CutItDarkLogo from '../../public/assets/img/cut-it-dark.png';
+import CutItLightLogo from '../../public/assets/img/cut-it-light.png';
+import VercelDarkLogo from '../../public/assets/img/vercel-dark.png';
+import VercelLightLogo from '../../public/assets/img/vercel-light.png';
+
+
 // @ts-ignore
 import Fade from 'react-reveal/Fade';
 import { Input } from '@shared/components';
-import { Label } from '@shared/components';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { prisma } from '@shared/database';
+import Link from 'next/link';
 
 interface HomeSEOProps {
   title: string;
@@ -54,7 +65,14 @@ const HomeSEO = ({ title, description }: HomeSEOProps) => (
   />
 )
 
-const Home: NextPage = () => {
+interface HomeProps {
+  tournaments: number;
+  judges: number;
+  competitors: number;
+  rounds: number;
+}
+
+const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
   const [mounted, setMounted] = useState(false);
   const isLarge = useMediaQuery({
     query: '(min-width: 768px)',
@@ -183,22 +201,73 @@ const Home: NextPage = () => {
           className="w-full flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-0"
         >
           <div className="flex flex-col items-center xl:items-start xl:ml-[20%] xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
-            <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={950} end={1000} separator="," />
+            <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={0} end={tournaments} separator="," />
             <Text className="!text-gray-400">Tournaments</Text>
           </div>
           <div className="flex flex-col items-center xl:items-start xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
-            <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={9500} end={10000} separator="," />
+            <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={0} end={judges} separator="," />
+            <Text className="!text-gray-400 pb-4 sm:pb-0">Judges</Text>
+          </div>
+          <div className="flex flex-col items-center xl:items-start xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
+            <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={0} end={competitors} separator="," />
             <Text className="!text-gray-400 pb-4 sm:pb-0">Competitors</Text>
           </div>
           <div className="flex flex-col items-center xl:items-start xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
-            <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={95000} end={100000} separator="," />
+            <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={0} end={rounds} separator="," />
             <Text className="!text-gray-400 pb-4 sm:pb-0">Rounds</Text>
           </div>
-          <div className="flex flex-col items-center xl:items-start xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
-            <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={950000} end={1000000} separator="," />
-            <Text className="!text-gray-400 pb-4 sm:pb-0">Queries</Text>
+      </section>
+      <section className="flex flex-col mt-12">
+        <h3 className="max-w-96 text-xl mx-auto">Backed by the best</h3>
+        <div className="my-4 mx-auto flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
+          <div className="flex mx-auto space-x-4">
+            <Link href="https://www.nsdebatecamp.com/" className='my-auto'>
+              <Image
+                src={theme === "dark" ? NSDDarkLogo : NSDLightLogo}
+                alt="NSD"
+                height={48}
+                className="mt-2"
+              />
+            </Link>
+            <Link href="https://cutit.cards" className='my-auto'>
+              <Image
+                src={theme === "dark" ? CutItDarkLogo : CutItLightLogo}
+                alt="Cut It"
+                height={64}
+                className='-mx-2'
+              />
+            </Link>
+            <Link href="https://www.carleton.edu/student-activities/guide/academic/debate/">
+              <div className="bg-white rounded-full w-fit mr-2">
+                <Image
+                  src={CarletonLogo}
+                  alt="Carleton"
+                  height={64}
+                  className="mix-blend-multiply grayscale bg-white rounded-full"
+                />
+              </div>
+            </Link>
           </div>
-        </section>
+          <div className="flex mx-auto space-x-4">
+            <Link href="https://www.chicagodebates.org/" className='my-auto'>
+              <Image
+                src={theme === "dark" ? CDSIDarkLogo : CDSILightLogo}
+                alt="Chicago Debates"
+                height={64}
+                className="-ml-2"
+              />
+            </Link>
+            <Link href="https://vercel.com" className='rounded-full my-auto'>
+              <Image
+                src={theme === "dark" ? VercelDarkLogo : VercelLightLogo}
+                alt="Vercel"
+                height={40}
+                className="opacity-80"
+              />
+            </Link>
+          </div>
+        </div>
+      </section>
       <section className="pt-20 mt-20 relative" id="query-tools">
         <span
           className="absolute w-full h-[70%] top-0 right-0 -z-10 bg-gradient-to-t from-sky-100 via-sky-100/90 dark:from-gray-900 dark:via-gray-900 dark:to-white/0"
@@ -436,6 +505,20 @@ const Home: NextPage = () => {
 }
 
 // TODO: Use Sanity here?
-export const getStaticProps = () => ({props: {}}) ;
+export const getStaticProps = async () => {
+  const tournaments = await prisma.tournament.count();
+  const judges = await prisma.judge.count();
+  const competitors = await prisma.competitor.count();
+  const rounds = (await prisma.round.count()) / 2;
+
+  return {
+    props: {
+      tournaments,
+      judges,
+      competitors,
+      rounds
+    }
+  }
+} ;
 
 export default Home

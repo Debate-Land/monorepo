@@ -161,6 +161,7 @@ const Team = () => {
               ]}
             />
           }
+          subheading={data?.aliases[0]?.code}
         />
         <TournamentHistoryTable data={data?.results} />
         <TeamCharts results={data?.results.sort((a, b) => a.tournament.start - b.tournament.start) || []} />
