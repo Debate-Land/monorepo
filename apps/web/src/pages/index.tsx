@@ -198,7 +198,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
       </section>
       <section
           id="stats"
-          className="w-full flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-0"
+          className="w-full flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-8"
         >
           <div className="flex flex-col items-center xl:items-start xl:ml-[20%] xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
             <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={0} end={tournaments} separator="," />
