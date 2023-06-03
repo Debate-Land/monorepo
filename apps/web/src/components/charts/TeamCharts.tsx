@@ -51,7 +51,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
       if (!speaks.length) return null;
       return {
         date: r.tournament.start * 1000,
-        speaks: Math.round(speaks.reduce((p, c) => p + c, 0) / speaks.length * 100)/100
+        speaks: Math.round(speaks.reduce((p, c) => p + c, 0) / speaks.length * 10)/10
       }
     }).filter(r => r !== null) as {date: number, speaks: number}[];
   }, [results]);
@@ -67,7 +67,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
       return {
         date: r.tournament.start * 1000,
-        speaks: Math.round(speaksSum / previousResults.length * 100) / 100
+        speaks: Math.round(speaksSum / previousResults.length * 10) / 10
       }
     })
   }, [results]);
