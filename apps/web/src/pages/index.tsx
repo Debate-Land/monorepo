@@ -168,7 +168,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
               </Formik>
             </div>
           </div>
-          <div id="hero-right" className="transition-all hover:shadow-halo rounded-lg overflow-hidden cursor-pointer" onClick={() => router.push('/teams/7f6e1f6807d8416c6f5ac659?season=2023&circuit=38')}>
+          <div id="hero-right" className="transition-all hover:shadow-halo rounded-lg overflow-hidden cursor-pointer" onClick={() => router.push('/teams/36cbd6f9eec6f5f47abb80d5?circuit=40&season=2023')}>
             {isLarge && (
               <div className="w-[750px] xl:w-[1000px] 2xl:w-[1250px] h-auto flex flex-col overflow-hidden border border-gray-400/50 rounded-lg relative">
                 <div className="absolute w-full h-6 bg-white dark:bg-gray-800 flex justify-between items-center">
