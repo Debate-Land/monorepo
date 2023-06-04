@@ -44,18 +44,25 @@ const Footer = () => {
 										<Link external href="/methodology" text="Methodology" />
 									</li>
 									<li>
+										<Link href="/contact" text="Contact" />
+									</li>
+									<li>
 										<Link
-											href="/feedback"
-											text="Feedback"
-											icon={<AiOutlineInfoCircle />}
-											className="text-rose-300 bg-gray-50/10 rounded-2xl max-w-fit px-2"
+											external
+											href="#"
+											text="Android"
+											className="!text-emerald-300 hover:text-emerald-100"
+											icon={<DiAndroid />}
 										/>
 									</li>
 									<li>
-										<Link href="/blog" text="Blog" />
-									</li>
-									<li>
-										<Link href="/contact" text="Contact" />
+										<Link
+											external
+											href="#"
+											text="iOS"
+											className="!text-gray-300"
+											icon={<BsApple />}
+										/>
 									</li>
 								</ul>
 							</div>
@@ -85,29 +92,28 @@ const Footer = () => {
 								</ul>
 							</div>
 						</div>
-						<div className="md:grid md:grid-cols-2 md:gap-8">
+						<div className="md:grid md:grid-cols-2 md:gap-20">
 							<div>
 								<Text capitalize weight="bold" size="xl">
-									Mobile
+									Development
 								</Text>
 								<ul className="mt-2 space-y-2">
 									<li>
-										<Link
-											external
-											href="#"
-											text="Android"
-											className="!text-emerald-300 hover:text-emerald-100"
-											icon={<DiAndroid />}
-										/>
+										<Link href="/known-issues" text="Known Issues" />
 									</li>
 									<li>
 										<Link
-											external
-											href="#"
-											text="iOS"
-											className="!text-gray-300"
-											icon={<BsApple />}
+											href="/feedback"
+											text="Feedback"
+											icon={<AiOutlineInfoCircle />}
+											className="text-rose-300 bg-gray-50/10 rounded-2xl max-w-fit px-2"
 										/>
+									</li>
+									<li>
+										<Link href="/roadmap" text="Roadmap" />
+									</li>
+									<li>
+										<Link href="/blog" text="Blog" />
 									</li>
 								</ul>
 							</div>
@@ -116,9 +122,6 @@ const Footer = () => {
 									Misc.
 								</Text>
 								<ul className="mt-2 space-y-2">
-									<li>
-										<Link href="/roadmap" text="Roadmap" />
-									</li>
 									<li>
 										<Link external href="https://staging.debate.land" text="Staging" />
 									</li>
@@ -132,9 +135,6 @@ const Footer = () => {
 											icon={<RiScissors2Fill />}
 											className="text-yellow-400"
 										/>
-									</li>
-									<li>
-										<Link href="/known-issues" text="Known Issues" />
 									</li>
 								</ul>
 							</div>
