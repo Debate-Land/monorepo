@@ -487,9 +487,6 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
               entries. Using the API for research? Get in touch and we might be able to give you free access.
             </p>
             <div className="xl:pl-2 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 items-center max-w-[300px] w-full mx-auto sm:mx-0">
-              <div className="w-1/2 flex justify-center items-center border px-3 py-1 rounded-md border-sky-600 text-sky-600 hover:bg-sky-600 cursor-pointer hover:text-white backdrop-blur-3xl transition-all">
-                <a href="https://dashboard.debate.land">Dashboard</a>
-              </div>
               <div className="w-1/2 flex justify-center items-center border px-3 py-1 rounded-md border-indigo-600 text-indigo-600 hover:bg-indigo-600 cursor-pointer hover:text-white backdrop-blur-3xl transition-all">
                 <a href="https://docs.debate.land">Docs</a>
               </div>

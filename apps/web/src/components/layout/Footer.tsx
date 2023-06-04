@@ -74,9 +74,6 @@ const Footer = () => {
 										/>
 									</li>
 									<li>
-										<Link external href="https://dashboard.debate.land" text="Dashboard" />
-									</li>
-									<li>
 										<Link external href="https://docs.debate.land" text="Docs" />
 									</li>
 									<li>
