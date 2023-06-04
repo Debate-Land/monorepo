@@ -410,7 +410,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
             </div>
           </div>
           <div className="flex w-full justify-center mt-8">
-            <p className="px-2 text-xl max-w-[500px] text-center">
+            <p className="!text-white px-2 text-xl max-w-[500px] text-center">
               Learn more about our journey{' '}
               <span
                 className="text-purple-400 cursor-pointer hover:underline"
