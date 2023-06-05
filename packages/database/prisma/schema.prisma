@@ -373,6 +373,8 @@ model JudgeTournamentResult {
   id              Int           @id @default(autoincrement())
   judge           Judge         @relation(fields: [judgeId], references: [id])
   judgeId         String        @map("judge_id")
+  tabTournId      Int           @map("tab_tourn_id")
+  tabEventId      Int           @map("tab_event_id")
   tabJudgeId      Int           @unique @map("tab_judge_id")
   avgRawPoints    Float?        @map("avg_raw_points")
   avgAdjPoints    Float?        @map("avg_adj_points")
@@ -389,6 +391,7 @@ model JudgeTournamentResult {
   tournament      Tournament?   @relation(fields: [tournamentId], references: [id])
   tournamentId    Int?          @map("tournament_id")
 
+  @@unique([tabTournId, tabEventId, tabJudgeId])
   @@index([judgeId])
   @@index([tournamentId])
   @@map("judge_tournament_results")
