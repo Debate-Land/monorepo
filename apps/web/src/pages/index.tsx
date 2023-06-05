@@ -523,7 +523,8 @@ export const getStaticProps = async () => {
       judges,
       competitors,
       rounds
-    }
+    },
+    revalidate: 60 * 30 // Half hour
   }
 } ;
 
