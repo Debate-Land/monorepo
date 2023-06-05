@@ -14,12 +14,12 @@ const PostCard = ({ slug, title, author, publishedAt, router }: PostCardProps) =
 
   return (
     <div
-      className="flex flex-col p-1 rounded-lg bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 cursor-pointer"
+      className="flex group flex-col p-[2px] rounded-lg bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 cursor-pointer"
       onClick={() => router.push(`/blog/${slug.current}`)}
     >
-      <div className="bg-white dark:bg-coal hover:bg-transparent w-full h-full p-3 rounded-md flex flex-col justify-between">
-        <h1 className="text-xl">{title}</h1>
-        <div className='w-full border-t border-dashed border-gray-600 dark:border-gray-400 flex items-center space-x-2 pt-3 mt-3'>
+      <div className="bg-white dark:bg-coal hover:bg-transparent dark:hover:bg-transparent w-full h-full p-3 rounded-md flex flex-col justify-between">
+        <h1 className="text-xl group-hover:text-white">{title}</h1>
+        <div className='w-full border-t border-dashed border-gray-600 dark:border-gray-400 group-hover:border-0 flex items-center space-x-2 pt-3 mt-3'>
           <Image
               src={AuthorImageProps.src}
               // blurDataURL={AuthorImageProps.}
@@ -31,8 +31,8 @@ const PostCard = ({ slug, title, author, publishedAt, router }: PostCardProps) =
               className="rounded-full w-8 h-8"
           />
           <div>
-            <p className="text-red-400">{author.name}</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-red-400 group-hover:text-white">{author.name}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-200">
               { formatISO(publishedAt) }
             </p>
           </div>
