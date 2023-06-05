@@ -46,7 +46,8 @@ const Footer = () => {
 									<li>
 										<Link href="/contact" text="Contact" />
 									</li>
-									<li>
+									<li className="relative">
+										<div className="absolute w-24 h-full bg-gray-200/30 backdrop-blur-sm rounded" />
 										<Link
 											external
 											href="#"
@@ -55,7 +56,8 @@ const Footer = () => {
 											icon={<DiAndroid />}
 										/>
 									</li>
-									<li>
+									<li className="relative">
+										<div className="absolute w-16 h-full bg-gray-200/30 backdrop-blur-sm rounded" />
 										<Link
 											external
 											href="#"
@@ -80,7 +82,8 @@ const Footer = () => {
 											className="!text-white bg-black/70 rounded max-w-fit px-1"
 										/>
 									</li>
-									<li>
+									<li className="relative">
+										<div className="absolute w-24 h-full bg-gray-200/30 backdrop-blur-sm rounded" />
 										<Link external href="https://dashboard.debate.land" text="Dashboard" />
 									</li>
 									<li>
