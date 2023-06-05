@@ -28,7 +28,8 @@ import CutItDarkLogo from '../../public/assets/img/cut-it-dark.png';
 import CutItLightLogo from '../../public/assets/img/cut-it-light.png';
 import VercelDarkLogo from '../../public/assets/img/vercel-dark.png';
 import VercelLightLogo from '../../public/assets/img/vercel-light.png';
-
+import ResendLightLogo from '../../public/assets/img/resend-light.svg';
+import ResendDarkLogo from '../../public/assets/img/resend-dark.svg';
 
 // @ts-ignore
 import Fade from 'react-reveal/Fade';
@@ -226,7 +227,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
                 src={theme === "dark" ? NSDDarkLogo : NSDLightLogo}
                 alt="NSD"
                 height={48}
-                className="mt-2"
+                className="mt-2 opacity-80 dark:opacity-100"
               />
             </Link>
             <Link href="https://cutit.cards" className='my-auto'>
@@ -249,20 +250,30 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
             </Link>
           </div>
           <div className="flex mx-auto space-x-4">
-            <Link href="https://www.chicagodebates.org/" className='my-auto'>
-              <Image
-                src={theme === "dark" ? CDSIDarkLogo : CDSILightLogo}
-                alt="Chicago Debates"
-                height={64}
-                className="-ml-2"
-              />
-            </Link>
             <Link href="https://vercel.com" className='rounded-full my-auto'>
               <Image
                 src={theme === "dark" ? VercelDarkLogo : VercelLightLogo}
                 alt="Vercel"
                 height={40}
-                className="opacity-80"
+                className="opacity-80 dark:opacity-100"
+              />
+            </Link>
+            <Link href="https://www.chicagodebates.org/" className='my-auto'>
+              <Image
+                src={theme === "dark" ? CDSIDarkLogo : CDSILightLogo}
+                alt="Chicago Debates"
+                height={72}
+                className="-ml-2"
+              />
+            </Link>
+          </div>
+          <div className="flex mx-auto space-x-4">
+            <Link href="https://resend.com/" className='my-auto'>
+              <Image
+                src={theme === "dark" ? ResendDarkLogo : ResendLightLogo}
+                alt="NSD"
+                height={38}
+                className="opacity-80 dark:opacity-100"
               />
             </Link>
           </div>
