@@ -8,6 +8,14 @@ export const trpc = createTRPCNext<AppRouter>({
       links: [
         httpBatchLink({
           url: '/api/trpc/',
+          headers() {
+            if (!ctx?.req?.headers) {
+              return {};
+            }
+
+            const { connection: _connection, ...headers } = ctx.req.headers;
+            return headers;
+          },
         }),
       ],
     };
