@@ -432,8 +432,8 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
       <section className="mb-20 xl:mt-20 space-y-8 2xl:space-y-0 flex flex-col 2xl:flex-row" id="features">
         <div className="flex flex-col w-fit px-5 mx-auto xl:ml-[20%] xl:pl-3 2xl:w-[30%] 2xl:mr-0 2xl:pr-8 xl:space-y-8 items-center 2xl:items-start justify-around xl:justify-start">
           <div className="flex flex-col md:max-w-[600px] relative">
-            <div className="absolute backdrop-blur-sm bg-gray-200/80 rounded w-full h-full z-40 grid place-items-center">
-              <p className="text-xl z-30">Coming soon . . .</p>
+            <div className="absolute backdrop-blur-sm bg-gray-200/80 dark:bg-gray-400/80 rounded w-full h-full z-40 grid place-items-center">
+              <p className="text-xl z-30 !text-black">Coming soon . . .</p>
             </div>
             <h2
               className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-red-400 z-10"
@@ -472,8 +472,8 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
         </div>
         <div className="flex flex-col w-fit md:px-5 mx-auto xl:ml-[20%] 2xl:ml-0 2xl:max-w-[30%] xl:pl-3 xl:space-y-8 items-center justify-around xl:justify-start">
           <div className="flex relative flex-col items-center md:items-start md:max-w-[600px]">
-            <div className="absolute backdrop-blur-sm bg-gray-200/80 rounded w-full h-full z-40 grid place-items-center">
-              <p className="text-xl z-30">Coming soon . . .</p>
+            <div className="absolute backdrop-blur-sm bg-gray-200/80 dark:bg-gray-400/80 rounded w-full h-full z-40 grid place-items-center">
+              <p className="text-xl z-30 !text-black">Coming soon . . .</p>
             </div>
             <h2
               className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-red-400 z-10"
