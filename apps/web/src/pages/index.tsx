@@ -190,8 +190,8 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
                   alt="Team Sample Graphic"
                   role="presentation"
                   loading="eager"
-                  />
-                </div>
+                />
+              </div>
             )}
           </div>
         </div>
