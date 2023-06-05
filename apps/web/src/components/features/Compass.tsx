@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Text, Button, Input, Group, Card, Select, Label } from '@shared/components'
 import { FaRegCompass, FaSearch } from 'react-icons/fa'
 import { Event } from '@shared/database'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc'
-import { Formik } from 'formik'
+import { Formik, FormikProps } from 'formik'
 import * as Yup from 'yup'
 
 interface Option {
@@ -21,7 +21,12 @@ interface FormOptions {
 
 const Compass = () => {
   const router = useRouter();
-  const formik = useRef(null);
+  const formikRef = useRef<FormikProps<{
+    event: string,
+    circuit: number,
+    season: number,
+    query: string
+  }>>(null);
   const { data } = trpc.feature.compass.useQuery(
     {},
     {
@@ -36,28 +41,52 @@ const Compass = () => {
     seasons: []
   });
 
-  useEffect(() => {
+  interface RefreshOptions {
+    event?: Event;
+    circuit?: number
+  };
+
+  const refreshOptions = useCallback(({ event, circuit }: RefreshOptions) => {
+    if (!data || !formikRef.current) return;
+
+    const { setFieldValue, values } = formikRef.current;
+
     // @ts-ignore
-    let { event, circuit: selectedCircuit, season } = formik.current?.values;
-    if (formik.current && data && event) {
-      const circuits = data[event as Event].map(circuit => ({
-        name: circuit.name,
-        value: circuit.id
+    const { event: _event, circuit: _circuit } = values;
+
+    const eventData = data[event || _event as Event];
+
+    const circuits = eventData
+      .map(circuit => ({ name: circuit.name, value: circuit.id }));
+
+    const seasons = (
+      event === _event
+        ? eventData
+          .filter(({ id }) => id === (circuit || _circuit))[0]
+          .seasons
+        : eventData[0].seasons
+    )
+      .map(season => ({
+        name: season.id.toString(),
+        value: season.id
       }));
 
-      const seasons = data[event as Event]
-        .filter(circuit => circuit.id === selectedCircuit)[0].seasons
-        .map(season => ({
-          name: season.id.toString(),
-          value: season.id
-        }));
+    setFormOptions({
+      circuits,
+      seasons
+    });
 
-      setFormOptions({
-        circuits,
-        seasons
-      });
+    if (event && event !== _event) {
+      setFieldValue('circuit', circuits[0].value);
     }
-  }, [formik, data]);
+    if (circuit && circuit !== _circuit) {
+      setFieldValue('season', seasons[0].value);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    refreshOptions({});
+  }, [refreshOptions]);
 
   return (
     <Card
@@ -67,7 +96,7 @@ const Compass = () => {
       className="min-w-full md:min-w-[300px] max-w-[800px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-sky-400/70 dark:shadow-sky-400/50 p-2"
     >
       <Formik
-        innerRef={formik}
+        innerRef={formikRef}
         initialValues={{
           event: 'PublicForum',
           circuit: 40,
@@ -116,18 +145,27 @@ const Compass = () => {
                         }))
                         : []
                     }
-                    handleChange={props.handleChange}
+                    value={props.values.event}
+                    handleChange={(e: ChangeEvent<any>) => {
+                      props.handleChange(e);
+                      refreshOptions({ event: e.target.value });
+                    }}
                     label={<Label character="a">Event</Label>}
                   />
                   <Select
                     name="circuit"
                     options={formOptions.circuits}
-                    handleChange={props.handleChange}
+                    value={props.values.circuit}
+                    handleChange={(e: ChangeEvent<any>) => {
+                      props.handleChange(e);
+                      refreshOptions({ circuit: parseInt(e.target.value) });
+                    }}
                     label={<Label character="b">Circuit</Label>}
                   />
                   <Select
                     name="season"
                     options={formOptions.seasons}
+                    value={props.values.season}
                     handleChange={props.handleChange}
                     label={<Label character="c">Season</Label>}
                   />
