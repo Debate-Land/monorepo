@@ -198,7 +198,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
       </section>
       <section
           id="stats"
-          className="w-full flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-8"
+          className="w-full flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-0"
         >
           <div className="flex flex-col items-center xl:items-start xl:ml-[20%] xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
             <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={0} end={tournaments} separator="," />
@@ -217,7 +217,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
             <Text className="!text-gray-400 pb-4 sm:pb-0">Rounds</Text>
           </div>
       </section>
-      <section className="flex flex-col mt-12">
+      <section className="flex flex-col mt-12 2xl:mt-32">
         <h3 className="max-w-96 text-xl mx-auto">Backed by the best</h3>
         <div className="my-4 mx-auto flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
           <div className="flex mx-auto space-x-4">
@@ -355,7 +355,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
         </div>
       </section>
       <section className="pt-32 mb-32 relative h-[80rem] md:h-[50rem] flex flex-col justify-center" id="faq">
-        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-luka-300" />
+        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-blue-900" />
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
             The{' '}
