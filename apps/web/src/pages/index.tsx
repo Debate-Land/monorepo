@@ -238,12 +238,12 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
                 className='-mx-2'
               />
             </Link>
-            <Link href="https://www.carleton.edu/student-activities/guide/academic/debate/">
-              <div className="bg-white rounded-full w-fit mr-2">
+            <Link href="https://www.carleton.edu/student-activities/guide/academic/debate/" className='my-auto'>
+              <div className="dark:bg-white rounded-full w-fit mr-2">
                 <Image
                   src={CarletonLogo}
                   alt="Carleton"
-                  height={64}
+                  height={54}
                   className="mix-blend-multiply grayscale bg-white rounded-full"
                 />
               </div>
@@ -263,7 +263,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
                 src={theme === "dark" ? CDSIDarkLogo : CDSILightLogo}
                 alt="Chicago Debates"
                 height={72}
-                className="-ml-2"
+                className="mt-2"
               />
             </Link>
           </div>
