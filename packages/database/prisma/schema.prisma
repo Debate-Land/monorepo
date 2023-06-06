@@ -6,7 +6,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  previewFeatures = ["fullTextSearch", "fullTextIndex", "jsonProtocol"]
 }
 
 /// API Management Enums
@@ -375,7 +375,7 @@ model JudgeTournamentResult {
   judgeId         String        @map("judge_id")
   tabTournId      Int           @map("tab_tourn_id")
   tabEventId      Int           @map("tab_event_id")
-  tabJudgeId      Int           @unique @map("tab_judge_id")
+  tabJudgeId      Int           @map("tab_judge_id")
   avgRawPoints    Float?        @map("avg_raw_points")
   avgAdjPoints    Float?        @map("avg_adj_points")
   stdDevPoints    Float?        @map("std_dev_points")

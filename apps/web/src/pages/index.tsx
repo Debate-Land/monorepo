@@ -28,7 +28,8 @@ import CutItDarkLogo from '../../public/assets/img/cut-it-dark.png';
 import CutItLightLogo from '../../public/assets/img/cut-it-light.png';
 import VercelDarkLogo from '../../public/assets/img/vercel-dark.png';
 import VercelLightLogo from '../../public/assets/img/vercel-light.png';
-
+import ResendLightLogo from '../../public/assets/img/resend-light.svg';
+import ResendDarkLogo from '../../public/assets/img/resend-dark.svg';
 
 // @ts-ignore
 import Fade from 'react-reveal/Fade';
@@ -190,15 +191,15 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
                   alt="Team Sample Graphic"
                   role="presentation"
                   loading="eager"
-                  />
-                </div>
+                />
+              </div>
             )}
           </div>
         </div>
       </section>
       <section
           id="stats"
-          className="w-full flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-8"
+          className="w-full flex flex-col-reverse md:space-x-4 md:flex-row sm:justify-center xl:justify-start xl:space-x-0 mt-32 md:mt-0"
         >
           <div className="flex flex-col items-center xl:items-start xl:ml-[20%] xl:w-[15%] xl:border-l-[1px] xl:hover:border-l-4 transition-all pl-4 border-red-400 z-10 my-2 md:my-0">
             <CountUp className="text-6xl md:text-5xl lg:text-[3vw]" start={0} end={tournaments} separator="," />
@@ -217,7 +218,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
             <Text className="!text-gray-400 pb-4 sm:pb-0">Rounds</Text>
           </div>
       </section>
-      <section className="flex flex-col mt-12">
+      <section className="flex flex-col mt-12 2xl:mt-32">
         <h3 className="max-w-96 text-xl mx-auto">Backed by the best</h3>
         <div className="my-4 mx-auto flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
           <div className="flex mx-auto space-x-4">
@@ -226,7 +227,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
                 src={theme === "dark" ? NSDDarkLogo : NSDLightLogo}
                 alt="NSD"
                 height={48}
-                className="mt-2"
+                className="mt-2 opacity-80 dark:opacity-100"
               />
             </Link>
             <Link href="https://cutit.cards" className='my-auto'>
@@ -237,32 +238,42 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
                 className='-mx-2'
               />
             </Link>
-            <Link href="https://www.carleton.edu/student-activities/guide/academic/debate/">
-              <div className="bg-white rounded-full w-fit mr-2">
+            <Link href="https://www.carleton.edu/student-activities/guide/academic/debate/" className='my-auto'>
+              <div className="dark:bg-white rounded-full w-fit mr-2">
                 <Image
                   src={CarletonLogo}
                   alt="Carleton"
-                  height={64}
+                  height={54}
                   className="mix-blend-multiply grayscale bg-white rounded-full"
                 />
               </div>
             </Link>
           </div>
           <div className="flex mx-auto space-x-4">
-            <Link href="https://www.chicagodebates.org/" className='my-auto'>
-              <Image
-                src={theme === "dark" ? CDSIDarkLogo : CDSILightLogo}
-                alt="Chicago Debates"
-                height={64}
-                className="-ml-2"
-              />
-            </Link>
             <Link href="https://vercel.com" className='rounded-full my-auto'>
               <Image
                 src={theme === "dark" ? VercelDarkLogo : VercelLightLogo}
                 alt="Vercel"
                 height={40}
-                className="opacity-80"
+                className="opacity-80 dark:opacity-100"
+              />
+            </Link>
+            <Link href="https://www.chicagodebates.org/" className='my-auto'>
+              <Image
+                src={theme === "dark" ? CDSIDarkLogo : CDSILightLogo}
+                alt="Chicago Debates"
+                height={72}
+                className="mt-2"
+              />
+            </Link>
+          </div>
+          <div className="flex mx-auto space-x-4">
+            <Link href="https://resend.com/" className='my-auto'>
+              <Image
+                src={theme === "dark" ? ResendDarkLogo : ResendLightLogo}
+                alt="NSD"
+                height={38}
+                className="opacity-80 dark:opacity-100"
               />
             </Link>
           </div>
@@ -355,7 +366,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
         </div>
       </section>
       <section className="pt-32 mb-32 relative h-[80rem] md:h-[50rem] flex flex-col justify-center" id="faq">
-        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-luka-300" />
+        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-blue-900" />
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
             The{' '}
@@ -432,8 +443,8 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
       <section className="mb-20 xl:mt-20 space-y-8 2xl:space-y-0 flex flex-col 2xl:flex-row" id="features">
         <div className="flex flex-col w-fit px-5 mx-auto xl:ml-[20%] xl:pl-3 2xl:w-[30%] 2xl:mr-0 2xl:pr-8 xl:space-y-8 items-center 2xl:items-start justify-around xl:justify-start">
           <div className="flex flex-col md:max-w-[600px] relative">
-            <div className="absolute backdrop-blur-sm bg-gray-200/80 rounded w-full h-full z-40 grid place-items-center">
-              <p className="text-xl z-30">Coming soon . . .</p>
+            <div className="absolute backdrop-blur-sm bg-gray-200/80 dark:bg-gray-400/80 rounded w-full h-full z-40 grid place-items-center">
+              <p className="text-xl z-30 !text-black">Coming soon . . .</p>
             </div>
             <h2
               className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-red-400 z-10"
@@ -472,8 +483,8 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
         </div>
         <div className="flex flex-col w-fit md:px-5 mx-auto xl:ml-[20%] 2xl:ml-0 2xl:max-w-[30%] xl:pl-3 xl:space-y-8 items-center justify-around xl:justify-start">
           <div className="flex relative flex-col items-center md:items-start md:max-w-[600px]">
-            <div className="absolute backdrop-blur-sm bg-gray-200/80 rounded w-full h-full z-40 grid place-items-center">
-              <p className="text-xl z-30">Coming soon . . .</p>
+            <div className="absolute backdrop-blur-sm bg-gray-200/80 dark:bg-gray-400/80 rounded w-full h-full z-40 grid place-items-center">
+              <p className="text-xl z-30 !text-black">Coming soon . . .</p>
             </div>
             <h2
               className="mb-5 text-5xl text-center xl:text-left xl:border-l-[1px] xl:hover:border-l-4 transition-all xl:pl-4 xl:-ml-3 border-red-400 z-10"
@@ -523,7 +534,8 @@ export const getStaticProps = async () => {
       judges,
       competitors,
       rounds
-    }
+    },
+    revalidate: 60 * 30 // Half hour
   }
 } ;
 
