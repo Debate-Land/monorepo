@@ -189,6 +189,48 @@ const featureRouter = router({
 
       return results;
     }),
+  radarSearch: procedure
+    .input(
+      z.object({
+        search: z.string(),
+        event: z.string(),
+        season: z.number(),
+        circuit: z.number(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
+
+      const results = await prisma.alias.findMany({
+        where: {
+          code: {
+            search: input.search
+          },
+          team: {
+            results: {
+              some: {
+                tournament: {
+                  event: input.event as Event,
+                  seasonId: input.season,
+                  circuits: {
+                    some: {
+                      id: input.circuit
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        select: {
+          code: true,
+          teamId: true,
+        },
+        take: 10
+      });
+
+      return results;
+    })
 });
 
 export default featureRouter;
