@@ -46,6 +46,7 @@ enum Event {
   PublicForum
   LincolnDouglas
   Policy
+  Parlimentary
 }
 
 enum Side {
