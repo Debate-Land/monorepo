@@ -7,7 +7,7 @@ import CountUp from 'react-countup'
 import { Text, GridLine, Button } from '@shared/components'
 import Image from 'next/image'
 import { useMediaQuery } from 'react-responsive'
-import { Compass, Telescope, Radar } from '@src/components/features'
+import { Compass, Telescope, Radar2 } from '@src/components/features'
 import { NextSeo } from 'next-seo'
 import { FaLock, FaSearch } from 'react-icons/fa';
 import MobileGraphicLeaderboard from '../../public/assets/img/mobile_graphic_leaderboard.png'
@@ -333,10 +333,10 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
             </div>
             <Fade left distance="20px">
               <div className="flex w-full relative">
-                <div className="absolute backdrop-blur-sm w-full h-full z-40 grid place-items-center">
+                {/* <div className="absolute backdrop-blur-sm w-full h-full z-40 grid place-items-center">
                   <p className="text-xl text-indigo-400">Coming soon . . .</p>
-                </div>
-                <Radar />
+                </div> */}
+                <Radar2 />
               </div>
             </Fade>
           </div>

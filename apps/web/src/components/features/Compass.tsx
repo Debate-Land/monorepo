@@ -17,7 +17,10 @@ interface FormOptions {
   seasons: Option[];
 }
 
-
+interface RefreshOptions {
+  event?: Event;
+  circuit?: number
+};
 
 const Compass = () => {
   const router = useRouter();
@@ -40,11 +43,6 @@ const Compass = () => {
     circuits: [],
     seasons: []
   });
-
-  interface RefreshOptions {
-    event?: Event;
-    circuit?: number
-  };
 
   const refreshOptions = useCallback(({ event, circuit }: RefreshOptions) => {
     if (!data || !formikRef.current) return;
