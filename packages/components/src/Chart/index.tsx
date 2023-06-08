@@ -1,7 +1,6 @@
 import React from 'react'
 import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
 import { CustomTick, DateTick, PercentageTick } from './CustomTick';
-import { isNumber } from 'lodash';
 
 interface ChartProps<T> {
   title: string;
@@ -9,13 +8,12 @@ interface ChartProps<T> {
   xKey: string & keyof T;
   yKey: string & keyof T;
   range: number[];
-  xTicks: number[];
   yTicks: number[];
   isPercentage?: boolean;
   isBoolean?: boolean;
 }
 
-const Chart = <T,>({ title, data, xKey, yKey, xTicks, yTicks, range, isPercentage, isBoolean }: ChartProps<T>) => {
+const Chart = <T,>({ title, data, xKey, yKey, yTicks, range, isPercentage, isBoolean }: ChartProps<T>) => {
 
   return (
     <div className='w-fit flex flex-col items-center'>
@@ -70,4 +68,4 @@ const Chart = <T,>({ title, data, xKey, yKey, xTicks, yTicks, range, isPercentag
   )
 }
 
-export default Chart
+export { Chart, PercentageTick, CustomTick, DateTick };

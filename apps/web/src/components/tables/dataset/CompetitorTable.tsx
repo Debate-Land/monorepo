@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { Competitor } from '@shared/database';
 import { BsPerson } from 'react-icons/bs'
@@ -34,6 +34,7 @@ const CompetitorTable = ({count}: CompetitorTableProps) => {
       enabled: isReady
     }
   );
+  const totalPages = useMemo(() => Math.floor((data?.length || 0)/pagination.pageSize), [data?.length, pagination.pageSize]);
   const column = createColumnHelper<CompetitorTableRow>();
 
   return (
@@ -56,7 +57,7 @@ const CompetitorTable = ({count}: CompetitorTableProps) => {
         paginationConfig={{
           pagination,
           setPagination,
-          totalPages: Math.ceil(count/pagination.pageSize)
+          totalPages: totalPages >= 1 ? totalPages : 1
         }}
         // onRowClick={(row) => router.push(`/${query.event}/teams/${row.id}`)}
       />

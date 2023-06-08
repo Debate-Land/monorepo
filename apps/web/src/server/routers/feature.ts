@@ -302,7 +302,7 @@ const featureRouter = router({
               select: {
                 tournament: {
                   select: {
-                    start: true,
+                    name: true,
                     circuits: {
                       select: {
                         id: true
@@ -333,7 +333,7 @@ const featureRouter = router({
 
           return {
             opponent: round.opponent!.aliases[0],
-            date: round.result.tournament.start,
+            name: round.result.tournament.name,
             outcome: round.outcome,
             opponentOtr,
             otr
@@ -341,32 +341,30 @@ const featureRouter = router({
         })))
       );
 
-      const team1Rounds = (await getRounds(input.team1))
+      const team1Rounds = ((await getRounds(input.team1))
         .map(round => {
-          const roundDelta = team1Ranking.otr - round.opponentOtr;
-          if (roundDelta >= delta && delta > 0) {
-            // Favored to win by same margin or more
-            return round;
-          } else if (roundDelta <= delta && delta < 0) {
-            // Predicted to lose by the same margin or more
+          if (team1Ranking.otr > team2Ranking.otr && (round.otr - round.opponentOtr) > (team1Ranking.otr - team2Ranking.otr)) {
             return round;
           }
-          return null;
-        })
-        .filter(round => round !== null) as HeadToHeadRound[];
-      const team2Rounds = (await getRounds(input.team2))
-        .map(round => {
-          const roundDelta = team2Ranking.otr - round.opponentOtr;
-          if (roundDelta >= delta && delta > 0) {
-            // Favored to win by same margin or more
-            return round;
-          } else if (roundDelta <= delta && delta < 0) {
-            // Predicted to lose by the same margin or more
+          else if (team1Ranking.otr < team2Ranking.otr && (round.otr - round.opponentOtr) < (team1Ranking.otr - team2Ranking.otr)) {
             return round;
           }
-          return null;
+          else return null;
         })
-        .filter(round => round !== null) as HeadToHeadRound[];
+        .filter(round => round !== null) as HeadToHeadRound[])
+        .sort((a, b) => (a.otr - a.opponentOtr) - (b.otr - b.opponentOtr));
+      const team2Rounds = ((await getRounds(input.team2))
+        .map(round => {
+          if (team2Ranking.otr > team1Ranking.otr && (round.otr - round.opponentOtr) > (team2Ranking.otr - team1Ranking.otr)) {
+            return round;
+          }
+          else if (team2Ranking.otr < team1Ranking.otr && (round.otr - round.opponentOtr) < (team2Ranking.otr - team1Ranking.otr)) {
+            return round;
+          }
+          else return null;
+        })
+        .filter(round => round !== null) as HeadToHeadRound[])
+        .sort((a, b) => (a.otr - a.opponentOtr) - (b.otr - b.opponentOtr));
 
       return {
         team1: {

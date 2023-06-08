@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { School } from '@shared/database';
 import { MdOutlineSchool } from 'react-icons/md'
@@ -40,6 +40,7 @@ const SchoolTable = ({count}: SchoolTableProps) => {
       enabled: isReady
     }
   );
+  const totalPages = useMemo(() => Math.floor((data?.length || 0)/pagination.pageSize), [data?.length, pagination.pageSize]);
   const column = createColumnHelper<SchoolTableRow>();
 
   return (
@@ -72,7 +73,7 @@ const SchoolTable = ({count}: SchoolTableProps) => {
         paginationConfig={{
           pagination,
           setPagination,
-          totalPages: Math.ceil(count/pagination.pageSize)
+          totalPages: totalPages >= 1 ? totalPages : 1
         }}
         // onRowClick={(row) => router.push(`/${query.event}/teams/${row.id}`)}
       />

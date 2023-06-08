@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { Alias } from '@shared/database';
 import { BsTrophy } from 'react-icons/bs'
@@ -42,6 +42,7 @@ const LeaderboardTable = ({ count }: LeaderboardTableProps) => {
       enabled: isReady
     }
   );
+  const totalPages = useMemo(() => Math.floor((data?.length || 0)/pagination.pageSize), [data?.length, pagination.pageSize]);
   const column = createColumnHelper<LeaderboardRow>();
 
   return (
@@ -86,7 +87,7 @@ const LeaderboardTable = ({ count }: LeaderboardTableProps) => {
         paginationConfig={{
           pagination,
           setPagination,
-          totalPages: Math.ceil(count / pagination.pageSize)
+          totalPages: totalPages >= 1 ? totalPages : 1
         }}
         onRowClick={
           (row) => router.push({

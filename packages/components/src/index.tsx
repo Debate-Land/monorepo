@@ -12,7 +12,7 @@ import Select from './Select'
 import Statistic from './Statistic'
 import Table from './Table'
 import Text from './Text'
-import Chart from './Chart';
+import {Chart, PercentageTick, CustomTick, DateTick} from './Chart';
 
 export {
   Button,
@@ -28,5 +28,8 @@ export {
   Statistic,
   Table,
   Text,
-  Chart
+  Chart,
+  PercentageTick,
+  CustomTick,
+  DateTick
 }

@@ -17,14 +17,6 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
     setReady(true);
   }, []);
 
-  const xTicks = useMemo(() => {
-    const start = results[0].tournament.start;
-    const end = results[results.length - 1].tournament.start;
-    const midpoint = (start + end) / 2;
-
-    return [start, end, midpoint];
-  }, [results]);
-
   const pwpPoint = useMemo(() => {
     return results.map(r => ({
       date: r.tournament.start * 1000,
@@ -186,7 +178,6 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               xKey="date"
               yKey="pwp"
               range={[0, 100]}
-              xTicks={xTicks}
               yTicks={[0, 25, 50, 75, 100]}
               isPercentage
             />
@@ -215,16 +206,32 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
               yTicks={[1, 2, 3, 4, 5]}
               range={[0, 5]}
             />
-            <Chart
-              title={mode === "Cumulative" ? "Break Pct." : "Break (y/n)"}
-              data={mode === "Cumulative" ? breakCum : breakPoint}
-              xKey="date"
-              yKey={mode === "Cumulative" ? "pct" : "break"}
-              range={mode === "Cumulative" ? [0, 100] : [0, 1]}
-              yTicks={mode === "Cumulative" ? [0, 25, 50, 75, 100] : [0, 1]}
-              isPercentage={mode === "Cumulative"}
-              isBoolean
-            />
+            {
+              mode === "Cumulative"
+                ? (
+                  <Chart
+                  title={"Break Pct."}
+                  data={breakCum}
+                  xKey="date"
+                  yKey={"pct"}
+                  range={[0, 100]}
+                  yTicks={[0, 25, 50, 75, 100]}
+                  isPercentage
+                  isBoolean
+                />
+              )
+                : (
+                  <Chart
+                  title={"Break (y/n)"}
+                  data={breakPoint}
+                  xKey="date"
+                  yKey={"break"}
+                  range={[0, 1]}
+                  yTicks={[0, 1]}
+                  isBoolean
+                />
+              )
+            }
             <Chart
               title="True Win Pct."
               data={mode === "Cumulative" ? twpCum : twpPoint}
@@ -246,7 +253,6 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
           ghost
         >
           <p className='w-full text-start'>{mode}</p>
-          
         </Button>
       </div>
     </Card>
