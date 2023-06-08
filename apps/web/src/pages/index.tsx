@@ -340,7 +340,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
               </div>
             </Fade>
           </div>
-          <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col xl:flex-row items-center justify-between mt-16 2xl:max-w-[2000px]">
+          <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col lg:flex-row items-center justify-between mt-16 2xl:max-w-[2000px]">
             <div className="xl:ml-[10%] xl:mr-5 xl:max-w-[25%]">
               <h3 className="text-3xl">Detailed judge analytics</h3>
               <div className="text-xl text-gray-600 dark:text-gray-400 mt-3">

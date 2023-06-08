@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.15",
     "@linear/sdk": "^3.0.0",
     "@sanity/icons": "2",
     "@sanity/types": "3",
@@ -41,7 +42,7 @@
     "react-code-ui": "^0.0.4-beta-0",
     "react-countup": "^6.4.2",
     "react-dom": "18.2.0",
-    "react-icons": "^4.8.0",
+    "react-icons": "^4.9.0",
     "react-query": "3",
     "react-responsive": "^9.0.2",
     "react-reveal": "^1.2.2",

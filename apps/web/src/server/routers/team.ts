@@ -27,7 +27,12 @@ const teamRouter = router({
                   circuits: true
                 }
               },
-              bid: true,
+              bid: {
+                select: {
+                  value: true,
+                  isGhostBid: true
+                }
+              },
               alias: true,
               school: true,
               speaking: {
@@ -80,12 +85,18 @@ const teamRouter = router({
               }),
               ...(input.season && {
                 seasonId: {
-                  in: input.season
+                  equals: input.season
                 }
               }),
             }
           },
-          circuits: true,
+          circuits: {
+            select: {
+              name: true,
+              event: true,
+              id: true,
+            }
+          },
           seasons: true,
           _count: {
             select: {

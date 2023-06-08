@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc';
 import { TournamentHistoryTable } from '@src/components/tables/team'
@@ -35,7 +35,7 @@ const Team = () => {
     }
   );
 
-  const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
+  const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
   const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${getEventName(data?.circuits[0].event)}, exclusively on Debate Land.`;
 
   return (
@@ -86,7 +86,7 @@ const Team = () => {
           }
           subtitle={
             data
-              ? `${getEventName(data.circuits[0].event)} | ${data.circuits[0].name} | ${data.seasons[0].id}-${data.seasons[data.seasons.length - 1].id}`
+              ? `${getEventName(data.circuits[0].event)} | ${data.circuits[0].name} | ${data.seasons[0].id}`
               : undefined
           }
           underview={

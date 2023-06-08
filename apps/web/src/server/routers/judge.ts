@@ -33,7 +33,7 @@ const judgeRouter = router({
                   }),
                   ...(input.season && {
                     seasonId: {
-                      in: input.season
+                      equals: input.season
                     }
                   }),
                 }
@@ -55,7 +55,13 @@ const judgeRouter = router({
             rankings: {
               include: {
                 season: true,
-                circuit: true,
+                circuit: {
+                  select: {
+                    id: true,
+                    name: true,
+                    event: true
+                  }
+                },
               },
               where: {
                 ...(input.circuit && {
@@ -67,7 +73,7 @@ const judgeRouter = router({
                 }),
                 ...(input.season && {
                   seasonId: {
-                    in: input.season
+                    equals: input.season
                   }
                 }),
               }
