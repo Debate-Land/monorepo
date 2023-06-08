@@ -1,13 +1,16 @@
 import { CustomTick } from '@shared/components';
 import { PercentageTick } from '@shared/components';
 import { Button, Card } from '@shared/components';
-import { Event } from '@shared/database';
+import { Event, prisma } from '@shared/database';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import HeadToHeadRoundsTable from '@src/components/tables/head-to-head-rounds';
+import { appRouter } from '@src/server/routers/_app';
 import getEventName from '@src/utils/get-event-name';
 import getExpectedWP from '@src/utils/get-expected-wp';
 import { trpc } from '@src/utils/trpc';
+import { createProxySSGHelpers } from '@trpc/react-query/ssg';
+import { GetServerSideProps } from 'next';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
@@ -147,12 +150,38 @@ const HeadToHead = () => {
           </div>
         </Card>
         <Card icon={<GiAtomicSlashes />} title="Clutch Factor" className="max-w-[800px] mx-auto my-16">
-          <HeadToHeadRoundsTable data={data?.team1.rounds} isFavorite={isTeam1Favorite} />
-          <HeadToHeadRoundsTable data={data?.team2.rounds} isFavorite={!isTeam1Favorite} />
+          <HeadToHeadRoundsTable data={data?.team1.rounds} code={team1Code} isFavorite={isTeam1Favorite} />
+          <HeadToHeadRoundsTable data={data?.team2.rounds} code={team2Code} isFavorite={!isTeam1Favorite} />
         </Card>
       </div>
     </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: {
+      prisma
+    },
+  });
+
+  const { event, circuit, season, team1, team2 } = ctx.query as HeadToHeadParams;
+
+  await ssg.feature.headToHead.prefetch({
+    event: event as string,
+    circuit: parseInt(circuit as string),
+    season: parseInt(season as string),
+    team1: team1 as string,
+    team2: team2 as string,
+  });
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    }
+  }
 }
 
 export default HeadToHead

@@ -18,10 +18,11 @@ export interface HeadToHeadRound {
 
 export interface RoundSpeakingResultProps {
   data?: HeadToHeadRound[];
+  code?: string;
   isFavorite?: boolean;
 }
 
-const HeadToHeadRoundsTable = ({ data, isFavorite }: RoundSpeakingResultProps) => {
+const HeadToHeadRoundsTable = ({ data, code, isFavorite }: RoundSpeakingResultProps) => {
   const column = createColumnHelper<HeadToHeadRound>()
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -33,7 +34,8 @@ const HeadToHeadRoundsTable = ({ data, isFavorite }: RoundSpeakingResultProps) =
 
   return (
     <div className="flex flex-col w-full space-y-2">
-      <div className="w-full justify-end flex">
+      <div className="w-full justify-between flex">
+        <p>{code} ({isFavorite ? "Favorite" : "Underdog"})</p>
         <Button
           icon={<HiOutlineSwitchHorizontal className='mr-2' />}
           onClick={() => setTeamOutcome(teamOutcome === "Wins" ? "Losses" : "Wins")}
