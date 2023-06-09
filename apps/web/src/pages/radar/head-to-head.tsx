@@ -94,7 +94,7 @@ const HeadToHead = () => {
       label: team2Code?.split(' ')[0].slice(0, 10),
       pct: team2Wp
     }
-  ], [data, team1Code, team1Otr, team2Code, team2Otr]);
+  ], [data, team1Code, team1Otr, team2Code, team2Otr, team1Wp, team2Wp]);
   const team1ClutchFactor = useMemo(() => {
     return data
       ? getClutchFactorFromRoundHistory(data.team1.ranking.otr as number, data.team1.history)
