@@ -17,25 +17,33 @@ export interface HeadToHeadRound {
 }
 
 export interface RoundSpeakingResultProps {
+  teamNo: 1 | 2;
   data?: HeadToHeadRound[];
   code?: string;
   isFavorite?: boolean;
+  matchupWinPct?: number;
 }
 
-const HeadToHeadRoundsTable = ({ data, code, isFavorite }: RoundSpeakingResultProps) => {
+const HeadToHeadRoundsTable = ({ teamNo, data, code, isFavorite, matchupWinPct }: RoundSpeakingResultProps) => {
   const column = createColumnHelper<HeadToHeadRound>()
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
-  const [teamOutcome, setTeamOutcome] = useState<"Wins" | "Losses">(!isFavorite ? "Losses" : "Wins");
+  const [teamOutcome, setTeamOutcome] = useState<"Wins" | "Losses">(isFavorite ? "Losses" : "Wins");
   const outcome = useMemo(() => teamOutcome === "Wins" ? "Win" : "Loss", [teamOutcome]);
-  const totalPages = useMemo(() => Math.floor((data?.filter(r => r.outcome && outcome).length || 0)/pagination.pageSize), [data, outcome, pagination.pageSize]);
+  const filteredRounds = useMemo(() =>
+    data?.filter(r => r.outcome === outcome).slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
+  [outcome, data, pagination]);
+  const totalPages = useMemo(() => Math.floor((data?.filter(r => r.outcome && outcome).length || 0) / pagination.pageSize), [data, outcome, pagination.pageSize]);
 
   return (
     <div className="flex flex-col w-full space-y-2">
       <div className="w-full justify-between flex">
-        <p>{code} ({isFavorite ? "Favorite" : "Underdog"})</p>
+        <div className="">
+          <h3 className={clsx({'text-sky-400': teamNo === 1, 'text-violet-400': teamNo === 2})}>{code} ({isFavorite ? "Favorite" : "Underdog"})</h3>
+          <p className="text-sm">{teamOutcome === "Wins" ? "Winning" : "Losing"} rounds with {isFavorite ? `≥ ${matchupWinPct}%` : `≤ ${matchupWinPct}%`} expected win probability.</p>
+        </div>
         <Button
           icon={<HiOutlineSwitchHorizontal className='mr-2' />}
           onClick={() => setTeamOutcome(teamOutcome === "Wins" ? "Losses" : "Wins")}
@@ -45,43 +53,53 @@ const HeadToHeadRoundsTable = ({ data, code, isFavorite }: RoundSpeakingResultPr
           <p className='w-full text-start'>{teamOutcome}</p>
         </Button>
       </div>
-      <Table
-        data={data?.filter(r => r.outcome === outcome).slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize)}
-        columnConfig={{
-          core: [
-            column.accessor('name', {
-              header: "Tourn.",
-              cell: props => props.cell.getValue(),
-            }),
-            column.accessor('opponent.code', {
-              header: "Opp.",
-              cell: props => props.cell.getValue()
-            }),
-            column.display({
-              header: 'Win Prob.',
-              cell: props => {
-                const { otr, opponentOtr } = props.row.original;
-                let expHiWinProp = Math.floor(getExpectedWP(otr, opponentOtr) * 1000) / 10;
-                if (expHiWinProp >= 99) expHiWinProp = 99;
+      {
+        filteredRounds === undefined || filteredRounds.length
+          ? (
+            <Table
+              data={filteredRounds}
+              columnConfig={{
+                core: [
+                  column.accessor('name', {
+                    header: "Tourn.",
+                    cell: props => props.cell.getValue(),
+                  }),
+                  column.accessor('opponent.code', {
+                    header: "Opp.",
+                    cell: props => props.cell.getValue()
+                  }),
+                  column.display({
+                    header: 'Win Prob.',
+                    cell: props => {
+                      const { otr, opponentOtr } = props.row.original;
+                      let expHiWinProp = Math.floor(getExpectedWP(otr, opponentOtr) * 1000) / 10;
+                      if (expHiWinProp >= 99) expHiWinProp = 99;
 
-                return `${otr > opponentOtr ? expHiWinProp : Math.floor((100 - expHiWinProp) * 10) / 10}%`;
-              }
-            }),
-          ] as ColumnDef<HeadToHeadRound>[],
-          sm: [
-            column.accessor('outcome', {
-              header: "Result",
-              cell: props => props.cell.getValue()
-            }),
-          ] as ColumnDef<HeadToHeadRound>[]
-        }}
-        numLoadingRows={3}
-        paginationConfig={{
-          pagination,
-          setPagination,
-          totalPages: totalPages >= 1 ? totalPages : 1
-        }}
-      />
+                      return `${otr > opponentOtr ? expHiWinProp : Math.floor((100 - expHiWinProp) * 10) / 10}%`;
+                    }
+                  }),
+                ] as ColumnDef<HeadToHeadRound>[],
+                sm: [
+                  column.accessor('outcome', {
+                    header: "Result",
+                    cell: props => props.cell.getValue()
+                  }),
+                ] as ColumnDef<HeadToHeadRound>[]
+              }}
+              numLoadingRows={3}
+              paginationConfig={{
+                pagination,
+                setPagination,
+                totalPages: totalPages >= 1 ? totalPages : 1
+              }}
+            />
+          )
+          : (
+            <p className="text-sm text-red-400 text-center max-w-[500px] mx-auto">
+              {code} has had no rounds as a{isFavorite ? ' favorite' : 'n underdog'} (with an expected win probability of {isFavorite ? 'as much or higher' : 'as little or less'} than in this matchup) where they've {teamOutcome === "Wins" ? "won" : "lost"}.
+            </p>
+          )
+      }
     </div>
   )
 }

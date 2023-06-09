@@ -12,6 +12,7 @@ import { trpc } from '@src/utils/trpc';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
 import { NextSeo } from 'next-seo';
+import { useTheme } from 'next-themes';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import React, { useEffect, useMemo, useState } from 'react'
@@ -36,6 +37,7 @@ const boundWp = (wp: number) => {
 
 const HeadToHead = () => {
   const { query, isReady, asPath } = useRouter();
+  const { theme } = useTheme();
   const { data } = trpc.feature.headToHead.useQuery(
     {
       event: query.event as string,
@@ -67,25 +69,35 @@ const HeadToHead = () => {
   const team2Code = useMemo(() => data?.team2.ranking.team.aliases[0].code, [data]);
   const team1Otr = useMemo(() => data?.team1.ranking.otr, [data]);
   const team2Otr = useMemo(() => data?.team2.ranking.otr, [data]);
+  const team1Wp = useMemo(() =>
+    team1Otr && team2Otr
+      ? boundWp(team1Otr > team2Otr
+        ? 100 * getExpectedWP(team1Otr, team2Otr)
+        : 100 - 100 * getExpectedWP(team1Otr, team2Otr))
+      : undefined
+    , []);
+  const team2Wp = useMemo(() =>
+    team1Otr && team2Otr
+      ? boundWp(team1Otr > team2Otr
+        ? 100 - 100 * getExpectedWP(team1Otr, team2Otr)
+        : 100 * getExpectedWP(team1Otr, team2Otr))
+      : undefined
+      , []);
 
   const chartData = useMemo(() => data && team1Otr && team2Otr && [
     {
       label: team1Code?.split(' ')[0].slice(0, 10),
-      pct: boundWp(
-        team1Otr > team2Otr ? 100 * getExpectedWP(team1Otr, team2Otr) : 100 - 100 * getExpectedWP(team1Otr, team2Otr)
-      )
+      pct: team1Wp
     },
     {
       label: team2Code?.split(' ')[0].slice(0, 10),
-      pct: boundWp(
-        team1Otr > team2Otr ? 100 - 100 * getExpectedWP(team1Otr, team2Otr) : 100 * getExpectedWP(team1Otr, team2Otr)
-      )
+      pct: team2Wp
     }
   ], [data, team1Code, team1Otr, team2Code, team2Otr]);
 
   const SEO_TITLE = `Round Prediction: ${team1Code} vs ${team2Code}`;
   const SEO_DESCRIPTION = `Our prediction of the winning team in a round between ${team1Code} and ${team2Code}, exclusively on Debate Land.`;
-  data?.team1.rounds
+
   return (
     <>
       <NextSeo
@@ -128,14 +140,14 @@ const HeadToHead = () => {
             <BarChart width={300} height={200} data={chartData || []}>
               <XAxis dataKey="label" />
               <YAxis tick={PercentageTick} ticks={[0, 25, 50, 75, 100]} />
-              <Bar dataKey="pct" fill="#8884d8" radius={5}>
+              <Bar dataKey="pct" fill="#8884d8" opacity={theme === "dark" ? 1 : 0.75} radius={5}>
                 <LabelList
                   dataKey="pct"
                   formatter={(v: number) => Math.floor(v * 10) / 10 + '%'}
                   position="insideBottom"
                   angle={0}
                   offset={5}
-                  fill='white'
+                  fill={theme === "dark" ? 'white' : 'black'}
                   fontWeight="bold"
                 />
               </Bar>
@@ -150,8 +162,20 @@ const HeadToHead = () => {
           </div>
         </Card>
         <Card icon={<GiAtomicSlashes />} title="Clutch Factor" className="max-w-[800px] mx-auto my-16">
-          <HeadToHeadRoundsTable data={data?.team1.rounds} code={team1Code} isFavorite={isTeam1Favorite} />
-          <HeadToHeadRoundsTable data={data?.team2.rounds} code={team2Code} isFavorite={!isTeam1Favorite} />
+          <HeadToHeadRoundsTable
+            teamNo={1}
+            data={data?.team1.rounds}
+            code={team1Code}
+            isFavorite={isTeam1Favorite}
+            matchupWinPct={team1Wp}
+          />
+          <HeadToHeadRoundsTable
+            teamNo={2}
+            data={data?.team2.rounds}
+            code={team2Code}
+            isFavorite={!isTeam1Favorite}
+            matchupWinPct={team2Wp}
+          />
         </Card>
       </div>
     </>

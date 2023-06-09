@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { Circuit, Event, Season } from '@shared/database';
+import { Circuit, Event, RoundOutcome, Season, TeamRanking } from '@shared/database';
 import { HeadToHeadRound } from '@src/components/tables/head-to-head-rounds';
 
 type EventDetails = {
@@ -247,6 +247,31 @@ const featureRouter = router({
     .query(async ({ input, ctx }) => {
       const { prisma } = ctx;
 
+      const matchupHistoryPromise = prisma.round.findMany({
+        where: {
+          result: {
+            teamId: input.team1
+          },
+          opponentId: input.team2
+        },
+        select: {
+          result: {
+            select: {
+              tournament: {
+                select: {
+                  name: true,
+                  start: true
+                }
+              }
+            }
+          },
+          outcome: true,
+          nameStd: true,
+          ballotsWon: true,
+          ballotsLost: true
+        }
+      });
+
       const getRanking = (teamId: string) => (
         prisma.teamRanking.findUniqueOrThrow({
           where: {
@@ -273,8 +298,6 @@ const featureRouter = router({
 
       const team1Ranking = await getRanking(input.team1);
       const team2Ranking = await getRanking(input.team2);
-
-      const delta = team1Ranking.otr - team2Ranking.otr;
 
       const getRounds = (teamId: string) => (
         prisma.round.findMany({
@@ -315,7 +338,31 @@ const featureRouter = router({
             },
             outcome: true
           },
-        }).then(rounds => Promise.all(rounds.map(async round => {
+        })
+      );
+
+      const filterRounds = async (
+        teamId: string,
+        rounds: {
+          result: {
+              tournament: {
+                  name: string;
+                  circuits: {
+                      id: number;
+                  }[];
+                  seasonId: number;
+              };
+          };
+          opponent: {
+              rankings: TeamRanking[];
+              aliases: {
+                  code: string;
+              }[];
+          } | null;
+          outcome: RoundOutcome;
+        }[]
+      ) => (
+        Promise.all(rounds.map(async round => {
           const { otr: opponentOtr, circuitId, seasonId } = round.opponent!.rankings.find(r => (
             round.result.tournament.circuits.map(c => c.id).includes(r.circuitId)
             && round.result.tournament.seasonId === r.seasonId
@@ -338,10 +385,11 @@ const featureRouter = router({
             opponentOtr,
             otr
           }
-        })))
+        }))
       );
 
-      const team1Rounds = ((await getRounds(input.team1))
+      const team1History = await getRounds(input.team1);
+      const team1Rounds = ((await filterRounds(input.team1, team1History))
         .map(round => {
           if (team1Ranking.otr > team2Ranking.otr && (round.otr - round.opponentOtr) > (team1Ranking.otr - team2Ranking.otr)) {
             return round;
@@ -353,7 +401,9 @@ const featureRouter = router({
         })
         .filter(round => round !== null) as HeadToHeadRound[])
         .sort((a, b) => (a.otr - a.opponentOtr) - (b.otr - b.opponentOtr));
-      const team2Rounds = ((await getRounds(input.team2))
+
+      const team2History = await getRounds(input.team2);
+      const team2Rounds = ((await filterRounds(input.team2, team2History))
         .map(round => {
           if (team2Ranking.otr > team1Ranking.otr && (round.otr - round.opponentOtr) > (team2Ranking.otr - team1Ranking.otr)) {
             return round;
@@ -366,15 +416,20 @@ const featureRouter = router({
         .filter(round => round !== null) as HeadToHeadRound[])
         .sort((a, b) => (a.otr - a.opponentOtr) - (b.otr - b.opponentOtr));
 
+      const matchupHistory = await matchupHistoryPromise;
+
       return {
         team1: {
           rounds: team1Rounds,
+          history: team1History,
           ranking: team1Ranking
         },
         team2: {
           rounds: team2Rounds,
+          history: team2History,
           ranking: team2Ranking
         },
+        matchupHistory,
       };
     })
 });

@@ -42,7 +42,6 @@ const LeaderboardTable = ({ count }: LeaderboardTableProps) => {
       enabled: isReady
     }
   );
-  const totalPages = useMemo(() => Math.floor((data?.length || 0)/pagination.pageSize), [data?.length, pagination.pageSize]);
   const column = createColumnHelper<LeaderboardRow>();
 
   return (
@@ -87,7 +86,7 @@ const LeaderboardTable = ({ count }: LeaderboardTableProps) => {
         paginationConfig={{
           pagination,
           setPagination,
-          totalPages: totalPages >= 1 ? totalPages : 1
+          totalPages: Math.ceil(count / pagination.pageSize)
         }}
         onRowClick={
           (row) => router.push({
