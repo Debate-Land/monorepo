@@ -93,12 +93,12 @@ const Team = () => {
             <Statistics
               primary={[
                 {
-                  value: data ? Math.round(data.statistics.otr * 100) / 100 : undefined,
-                  description: "OTR Score"
+                  value: data ? '#' + data.ranking.circuitRank : undefined,
+                  description: "Team Rank"
                 },
                 {
-                  value: data ? data.statistics.inTop20Pct + 'x' : undefined,
-                  description: "Top 20% Seed"
+                  value: data ? Math.round(data.statistics.otr * 100) / 100 : undefined,
+                  description: "OTR Score"
                 },
                 {
                   value: data ? data.statistics.bids || '--' : undefined,
@@ -131,8 +131,8 @@ const Team = () => {
                   description: "Last Active"
                 },
                 {
-                  value: data ? `${data.statistics.pRecord[0]}-${data.statistics.pRecord[1]}` : undefined,
-                  description: "Prelim Rcd."
+                  value: data ? data.statistics.inTop20Pct + 'x' : undefined,
+                  description: "Top 20% Seed"
                 },
                 {
                   value: data?.statistics.avgOpWpM,

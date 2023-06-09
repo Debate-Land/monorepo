@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import sortRounds from '@src/utils/sort-rounds';
 import getStatistics from '@src/utils/get-statistics';
+import db from '@src/services/db.service';
+import { TeamRanking } from '@shared/database';
 
 const teamRouter = router({
   summary: procedure
@@ -14,7 +16,7 @@ const teamRouter = router({
     )
     .query(async ({ input, ctx }) => {
       const { prisma } = ctx;
-      let team = await prisma.team.findUnique({
+      let {rankings, ...team} = await prisma.team.findUniqueOrThrow({
         where: {
           id: input.id,
         },
@@ -106,7 +108,32 @@ const teamRouter = router({
         }
       });
       if (team) {
-        return { ...team, statistics: getStatistics(team) }
+        const circuitRankQuery = await (await db).query(`
+          SELECT * FROM (
+            SELECT
+              RANK() OVER (ORDER BY otr DESC) AS circuitRank,
+              team_id,
+              otr
+            FROM
+              team_rankings
+            WHERE
+              circuit_id = ? AND
+              season_id = ?
+          ) t
+          WHERE team_id = ?;
+        `, [input.circuit, input.season, team.id]) as unknown as [
+          (TeamRanking & { circuitRank: number })[],
+          object[],
+        ];
+        return {
+          ...team,
+          ranking: {
+            ...rankings[0],
+            circuitRank: circuitRankQuery[0][0].circuitRank
+          },
+          statistics: getStatistics({ rankings, ...team }
+          )
+        }
       }
       return null;
     }),
