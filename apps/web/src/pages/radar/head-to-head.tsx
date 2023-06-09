@@ -4,7 +4,8 @@ import { Button, Card } from '@shared/components';
 import { Event, prisma } from '@shared/database';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
-import HeadToHeadRoundsTable from '@src/components/tables/head-to-head-rounds';
+import HeadToHeadRoundsTable from '@src/components/tables/radar/head-to-head-rounds';
+import PreviousHistory from '@src/components/tables/radar/previous-history';
 import { appRouter } from '@src/server/routers/_app';
 import getEventName from '@src/utils/get-event-name';
 import getExpectedWP from '@src/utils/get-expected-wp';
@@ -15,11 +16,10 @@ import { NextSeo } from 'next-seo';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { BsLightbulb } from 'react-icons/bs';
 import { GiAtomicSlashes } from 'react-icons/gi';
-import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
-import { Bar, BarChart, LabelList, Tooltip, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, LabelList, XAxis, YAxis } from 'recharts';
 
 interface HeadToHeadParams extends ParsedUrlQuery {
   event: string;
@@ -32,7 +32,7 @@ interface HeadToHeadParams extends ParsedUrlQuery {
 const boundWp = (wp: number) => {
   if (wp > 99) return 99;
   else if (wp < 1) return 1;
-  return wp;
+  return Math.floor(wp * 10)/10;
 };
 
 const HeadToHead = () => {
@@ -54,6 +54,12 @@ const HeadToHead = () => {
       staleTime: 1000 * 60 * 60 * 24,
     }
   );
+  const { team1Code, team2Code, team1Otr, team2Otr } = useMemo(() => ({
+    team1Code: data?.team1.ranking.team.aliases[0].code,
+    team2Code: data?.team2.ranking.team.aliases[0].code,
+    team1Otr: data?.team1.ranking.otr,
+    team2Otr: data?.team2.ranking.otr
+  }), [data]);
   const isTeam1Favorite = useMemo(() => {
     if (data?.team1.ranking.otr && data?.team2.ranking.otr) {
       if (data.team1.ranking.otr > data.team2.ranking.otr) {
@@ -63,27 +69,21 @@ const HeadToHead = () => {
       }
     }
     return undefined;
-  }, [data])
-
-  const team1Code = useMemo(() => data?.team1.ranking.team.aliases[0].code, [data]);
-  const team2Code = useMemo(() => data?.team2.ranking.team.aliases[0].code, [data]);
-  const team1Otr = useMemo(() => data?.team1.ranking.otr, [data]);
-  const team2Otr = useMemo(() => data?.team2.ranking.otr, [data]);
+  }, [data]);
   const team1Wp = useMemo(() =>
     team1Otr && team2Otr
       ? boundWp(team1Otr > team2Otr
         ? 100 * getExpectedWP(team1Otr, team2Otr)
         : 100 - 100 * getExpectedWP(team1Otr, team2Otr))
       : undefined
-    , []);
+  , []);
   const team2Wp = useMemo(() =>
     team1Otr && team2Otr
       ? boundWp(team1Otr > team2Otr
         ? 100 - 100 * getExpectedWP(team1Otr, team2Otr)
         : 100 * getExpectedWP(team1Otr, team2Otr))
       : undefined
-      , []);
-
+  , []);
   const chartData = useMemo(() => data && team1Otr && team2Otr && [
     {
       label: team1Code?.split(' ')[0].slice(0, 10),
@@ -161,6 +161,8 @@ const HeadToHead = () => {
             </p>
           </div>
         </Card>
+        {/* @ts-ignore */}
+        <PreviousHistory data={data?.matchupHistory} team1Code={team1Code} team2Code={team2Code} />
         <Card icon={<GiAtomicSlashes />} title="Clutch Factor" className="max-w-[800px] mx-auto my-16">
           <HeadToHeadRoundsTable
             teamNo={1}

@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import { Circuit, Event, RoundOutcome, Season, TeamRanking } from '@shared/database';
-import { HeadToHeadRound } from '@src/components/tables/head-to-head-rounds';
+import { HeadToHeadRound } from '@src/components/tables/radar/head-to-head-rounds';
+import { PreviousHistoryRound } from '@src/components/tables/radar/previous-history';
 
 type EventDetails = {
   [key in Event]: (Circuit & {
@@ -331,36 +332,22 @@ const featureRouter = router({
                         id: true
                       }
                     },
-                    seasonId: true
+                    seasonId: true,
+                    start: true
                   },
                 }
               }
             },
-            outcome: true
+            outcome: true,
+            ballotsWon: true,
+            ballotsLost: true
           },
         })
       );
 
       const filterRounds = async (
         teamId: string,
-        rounds: {
-          result: {
-              tournament: {
-                  name: string;
-                  circuits: {
-                      id: number;
-                  }[];
-                  seasonId: number;
-              };
-          };
-          opponent: {
-              rankings: TeamRanking[];
-              aliases: {
-                  code: string;
-              }[];
-          } | null;
-          outcome: RoundOutcome;
-        }[]
+        rounds: PreviousHistoryRound[]
       ) => (
         Promise.all(rounds.map(async round => {
           const { otr: opponentOtr, circuitId, seasonId } = round.opponent!.rankings.find(r => (
