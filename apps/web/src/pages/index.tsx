@@ -7,7 +7,7 @@ import CountUp from 'react-countup'
 import { Text, GridLine, Button } from '@shared/components'
 import Image from 'next/image'
 import { useMediaQuery } from 'react-responsive'
-import { Compass, Telescope, Radar2 } from '@src/components/features'
+import { Compass, Telescope, Radar, XRay } from '@src/components/features'
 import { NextSeo } from 'next-seo'
 import { FaLock, FaSearch } from 'react-icons/fa';
 import MobileGraphicLeaderboard from '../../public/assets/img/mobile_graphic_leaderboard.png'
@@ -38,6 +38,8 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { prisma } from '@shared/database';
 import Link from 'next/link';
+import { appRouter } from '@src/server/routers/_app';
+import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 
 interface HomeSEOProps {
   title: string;
@@ -143,7 +145,10 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
                 {
                   (props) => (
                     <div className="w-full">
-                      <form className="flex w-2/3 md:w-[400px] lg:w-[450px] mx-auto md:mx-0 rounded-md">
+                      <form className="flex pointer-events-none select-none relative w-2/3 md:w-[400px] lg:w-[450px] mx-auto md:mx-0 rounded-md">
+                        <div className="absolute w-full h-full flex justify-center items-center bg-gray-200/10 rounded-md backdrop-blur-sm">
+                          <p className="text-center text-xs md:text-[1rem]">Global search coming soon — use Compass below!</p>
+                        </div>
                         <Input
                           name="query"
                           onChange={props.handleChange}
@@ -319,34 +324,31 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
           </div>
           <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col lg:flex-row-reverse items-center justify-between mt-16 2xl:max-w-[2000px]">
             <div className="xl:mr-[10%] lg:ml-10 lg:max-w-[40%] xl:max-w-[25%]">
-              <h3 className="text-3xl">Tailored scouting reports</h3>
+              <h3 className="text-3xl">Head to Head predictions</h3>
               <div className="text-xl text-gray-600 dark:text-gray-400 mt-3">
                 <p>
-                  You can use <span className="text-indigo-400">Radar</span> to generate a scouting report for any
-                  Tabroom tournament.
+                  Got a round coming up? Use <span className="text-blue-400">X-Ray</span> to generate a detailed prediction for
+                  the matchup.
                 </p>
                 <p className="mt-2">
-                  Simply enter the URL to the entries page and let us work our magic. In seconds, you'll be able to see
-                  the records of exactly who's competing, including a predictive leaderboard.
+                  After selecting a dataset, start typing in two team codes and select them from our autocomplete dropdown. Then, you'll
+                  be taken to a custom matchup page that'll include predicted win probabilities, clutch factors, and a previous matchup history.
                 </p>
               </div>
             </div>
             <Fade left distance="20px">
               <div className="flex w-full relative">
-                {/* <div className="absolute backdrop-blur-sm w-full h-full z-40 grid place-items-center">
-                  <p className="text-xl text-indigo-400">Coming soon . . .</p>
-                </div> */}
-                <Radar2 />
+                <XRay />
               </div>
             </Fade>
           </div>
-          <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col xl:flex-row items-center justify-between mt-16 2xl:max-w-[2000px]">
+          <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col lg:flex-row items-center justify-between mt-16 2xl:max-w-[2000px]">
             <div className="xl:ml-[10%] xl:mr-5 xl:max-w-[25%]">
               <h3 className="text-3xl">Detailed judge analytics</h3>
               <div className="text-xl text-gray-600 dark:text-gray-400 mt-3">
                 <p>
                   No matter what you're debating, knowing your audience is key to success. That's why{' '}
-                  <span className="text-red-400">Telescope</span> provides detailed information about your judges.
+                  <span className="text-violet-400">Telescope</span> provides detailed information about your judges.
                 </p>
                 <p className="mt-2">
                   Just enter a judge's name and get bias, squirrel, and experience scores over any period of time.
@@ -357,9 +359,32 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
             <Fade left distance="20px">
               <div className="flex w-full relative">
                 <div className="absolute backdrop-blur-sm w-full h-full z-40 grid place-items-center">
-                  <p className="text-xl text-red-400">Coming soon . . .</p>
+                  <p className="text-xl text-violet-400">Coming soon . . .</p>
                 </div>
                 <Telescope />
+              </div>
+            </Fade>
+          </div>
+          <div className="px-5 md:w-[80%] mx-auto xl:w-full flex flex-col lg:flex-row-reverse items-center justify-between mt-16 2xl:max-w-[2000px]">
+            <div className="xl:mr-[10%] lg:ml-10 lg:max-w-[40%] xl:max-w-[25%]">
+              <h3 className="text-3xl">Tailored scouting reports</h3>
+              <div className="text-xl text-gray-600 dark:text-gray-400 mt-3">
+                <p>
+                  You can use <span className="text-red-400">Radar</span> to generate a scouting report for any
+                  Tabroom tournament.
+                </p>
+                <p className="mt-2">
+                  Simply enter the URL to the entries page and let us work our magic. In seconds, you'll be able to see
+                  the records of exactly who's competing, including a predictive leaderboard.
+                </p>
+              </div>
+            </div>
+            <Fade left distance="20px">
+              <div className="flex w-full relative">
+                <div className="absolute backdrop-blur-sm w-full h-full z-40 grid place-items-center">
+                  <p className="text-xl text-red-400">Coming soon . . .</p>
+                </div>
+                <Radar />
               </div>
             </Fade>
           </div>
@@ -528,12 +553,22 @@ export const getStaticProps = async () => {
   const competitors = await prisma.competitor.count();
   const rounds = (await prisma.round.count()) / 2;
 
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: {
+      prisma
+    },
+  });
+
+  await ssg.feature.compass.prefetch({});
+
   return {
     props: {
       tournaments,
       judges,
       competitors,
-      rounds
+      rounds,
+      trpcState: ssg.dehydrate()
     },
     revalidate: 60 * 30 // Half hour
   }

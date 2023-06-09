@@ -6,7 +6,7 @@ export interface ButtonProps {
   icon?: ReactNode
   _type?: 'default' | 'secondary' | 'primary'
   className?: string
-  children?: string
+  children?: string | JSX.Element;
   size?: 'sm' | 'md' | 'lg' | 'xl'
   ghost?: boolean
   disabled?: boolean

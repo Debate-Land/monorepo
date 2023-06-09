@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { Tournament } from '@shared/database';
 import { useRouter } from 'next/router';
@@ -62,7 +62,7 @@ const TournamentTable = ({count}: TournamentTableProps) => {
         paginationConfig={{
           pagination,
           setPagination,
-          totalPages: Math.ceil(count/pagination.pageSize)
+          totalPages: Math.ceil(count / pagination.pageSize)
         }}
         // onRowClick={(row) => router.push(`/${query.event}/teams/${row.id}`)}
       />

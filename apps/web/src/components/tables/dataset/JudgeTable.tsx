@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { Judge, JudgeRanking } from '@shared/database';
 import { TbGavel } from 'react-icons/tb'

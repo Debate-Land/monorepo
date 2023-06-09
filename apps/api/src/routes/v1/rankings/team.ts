@@ -1,7 +1,7 @@
 import { prisma, TeamRanking } from "@shared/database";
 import restHandler, { PrismaModel } from "../../../utils/rest-handler";
 import status from 'http-status'
-// import pscale from '../../services/pscale.service'
+import db from '../../../services/db.service';
 
 const router = restHandler<TeamRanking>(
   prisma.teamRanking as PrismaModel<TeamRanking>,
@@ -13,26 +13,27 @@ type RankQueryResponse = [
   object[],
 ]
 
-// router.get('/:circuit/:team/rank', async (req, res, next) => {
-//   const { circuit, team } = req.params;
-//   const result = await (await pscale).query(`
-//     SELECT * FROM (
-//       SELECT
-//         RANK() OVER (ORDER BY otr DESC) AS circuitRank,
-//         teamId,
-//         otr
-//       FROM
-//         circuit_rankings
-//       WHERE
-//         circuitId = ?
-//     ) t
-//     WHERE teamId = ?;
-//   `, [circuit, team]) as unknown as RankQueryResponse;
+router.get('/:circuit/:season/:team/rank', async (req, res, next) => {
+  const { circuit, season, team } = req.params;
+  const result = await (await db).query(`
+    SELECT * FROM (
+      SELECT
+        RANK() OVER (ORDER BY otr DESC) AS circuitRank,
+        team_id,
+        otr
+      FROM
+        team_rankings
+      WHERE
+        circuit_id = ? AND
+        season_id = ?
+    ) t
+    WHERE team_id = ?;
+  `, [circuit, season, team]) as unknown as RankQueryResponse;
 
-//   result[0].length
-//     ? res.send(result[0][0])
-//     : res.status(status.NOT_FOUND).send(result[0]);
+  result[0].length
+    ? res.send(result[0][0])
+    : res.status(status.NOT_FOUND).send(result[0]);
 
-// })
+})
 
 export default router;

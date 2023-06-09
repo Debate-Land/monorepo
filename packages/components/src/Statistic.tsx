@@ -36,10 +36,12 @@ const Statistic = ({ value, description, primary, className, round, isPercentage
         <Text className={
           clsx(
             {
-              'text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-sky-400': primary && value !== undefined,
+              'font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-sky-400': primary && value !== undefined,
               'bg-gray-300/40 dark:bg-gray-700/40 animate-pulse rounded': value === undefined,
               'w-16 min-h-[2rem]': primary && value === undefined,
               'w-16 min-h-[1.5rem]': !primary && value === undefined,
+              'text-3xl md:text-4xl': primary && (value === undefined || value.toString().length < 5),
+              'text-2xl mt-1 md:my-1': primary && (value && value.toString().length > 4)
             },
             className?.value
           )

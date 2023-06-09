@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc';
 import { TournamentHistoryTable } from '@src/components/tables/team'
@@ -12,6 +12,7 @@ import { GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 import { prisma } from '@shared/database';
 import TeamCharts from '@src/components/charts/TeamCharts';
+import TeamInfoTable from '@src/components/tables/team/TeamInfoTable';
 
 // TODO: National Rank at some point...
 const Team = () => {
@@ -35,7 +36,7 @@ const Team = () => {
     }
   );
 
-  const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
+  const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
   const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${getEventName(data?.circuits[0].event)}, exclusively on Debate Land.`;
 
   return (
@@ -86,19 +87,19 @@ const Team = () => {
           }
           subtitle={
             data
-              ? `${getEventName(data.circuits[0].event)} | ${data.circuits[0].name} | ${data.seasons[0].id}-${data.seasons[data.seasons.length - 1].id}`
+              ? `${getEventName(data.circuits[0].event)} | ${data.circuits[0].name} | ${data.seasons[0].id}`
               : undefined
           }
           underview={
             <Statistics
               primary={[
                 {
-                  value: data ? Math.round(data.statistics.otr * 100) / 100 : undefined,
-                  description: "OTR Score"
+                  value: data ? '#' + data.ranking.circuitRank : undefined,
+                  description: "Team Rank"
                 },
                 {
-                  value: data ? data.statistics.inTop20Pct + 'x' : undefined,
-                  description: "Top 20% Seed"
+                  value: data ? Math.round(data.statistics.otr * 100) / 100 : undefined,
+                  description: "OTR Score"
                 },
                 {
                   value: data ? data.statistics.bids || '--' : undefined,
@@ -131,8 +132,8 @@ const Team = () => {
                   description: "Last Active"
                 },
                 {
-                  value: data ? `${data.statistics.pRecord[0]}-${data.statistics.pRecord[1]}` : undefined,
-                  description: "Prelim Rcd."
+                  value: data ? data.statistics.inTop20Pct + 'x' : undefined,
+                  description: "Top 20% Seed"
                 },
                 {
                   value: data?.statistics.avgOpWpM,
@@ -165,6 +166,7 @@ const Team = () => {
         />
         <TournamentHistoryTable data={data?.results} />
         <TeamCharts results={data?.results.sort((a, b) => a.tournament.start - b.tournament.start) || []} />
+        <TeamInfoTable aliases={data?.aliases} schools={data?.schools} />
       </div>
     </>
   )

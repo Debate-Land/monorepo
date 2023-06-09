@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { Alias } from '@shared/database';
 import { BsTrophy } from 'react-icons/bs'

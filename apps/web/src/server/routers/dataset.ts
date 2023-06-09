@@ -18,6 +18,10 @@ const datasetRouter = router({
         prisma.circuit.findUnique({
           where: {
             id: input.circuit
+          },
+          select: {
+            event: true,
+            name: true,
           }
         }),
         // # Teams

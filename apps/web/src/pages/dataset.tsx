@@ -68,19 +68,25 @@ const Dataset = () => {
             <Statistics
               primary={[
                 {
-                  value: data?.numTournaments,
+                  value: data ? data.numTournaments === 0 ? '--' : data.numTournaments : undefined,
                   description: "Tournaments"
                 },
                 {
-                  value: data?.numTeams,
+                  value: data ? data.numTeams === 0 ? 0 : data.numTeams : undefined,
                   description: "Teams"
                 },
                 {
-                  value: data?.numSchools,
+                  value: data ? data.numSchools === 0 ? 0 : data.numSchools : undefined,
                   description: "Schools"
                 },
                 {
-                  value: data?.numBids || undefined,
+                  value: data
+                    ? data.numBids === 0
+                      ? data.circuit?.event === "Parlimentary"
+                        ? '--'
+                        : 0
+                      : data.numBids
+                    : undefined,
                   description: "Bids"
                 }
               ]}

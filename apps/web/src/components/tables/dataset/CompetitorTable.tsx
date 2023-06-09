@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Card, Table } from '@shared/components'
 import { Competitor } from '@shared/database';
 import { BsPerson } from 'react-icons/bs'
@@ -56,7 +56,7 @@ const CompetitorTable = ({count}: CompetitorTableProps) => {
         paginationConfig={{
           pagination,
           setPagination,
-          totalPages: Math.ceil(count/pagination.pageSize)
+          totalPages: Math.ceil(count / pagination.pageSize)
         }}
         // onRowClick={(row) => router.push(`/${query.event}/teams/${row.id}`)}
       />

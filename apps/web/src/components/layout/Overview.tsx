@@ -1,5 +1,7 @@
 import React from 'react'
-import { Loader, Text } from '@shared/components'
+import { Button, Loader, Text } from '@shared/components'
+import { useRouter } from 'next/router';
+import { IoMdArrowBack } from 'react-icons/io';
 
 interface OverviewProps {
   label: string | JSX.Element;
@@ -9,9 +11,28 @@ interface OverviewProps {
   underview: JSX.Element;
 }
 
+const BACK_PATHS = [
+  "/teams/[id]",
+  "/judges/[id]"
+]
+
 const Overview = (props: OverviewProps) => {
+  const { query, pathname, push } = useRouter();
+
   return (
-    <div className="w-full flex flex-col bg-luka-100 overflow-hidden relative">
+    <div className="group w-full flex flex-col bg-luka-100 overflow-hidden relative">
+      {
+        BACK_PATHS.includes(pathname) && <div className="!cursor-pointer absolute top-5 left-5 z-20 pt-[5px] px-[5px] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded-full">
+          <button
+            onClick={() => push({
+              pathname: '/dataset',
+              query
+            })}
+          >
+            <IoMdArrowBack size={18} />
+          </button>
+        </div>
+      }
       <div className="absolute bg-grid bg-fixed inset-0" />
       <span className="md:h-[4rem]" />
       <div className="flex justify-center items-center w-full bg-luka-100 py-6">

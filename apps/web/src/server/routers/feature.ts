@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { Circuit, Event, Season } from '@shared/database';
+import { Circuit, Event, RoundOutcome, Season, TeamRanking } from '@shared/database';
+import { HeadToHeadRound } from '@src/components/tables/radar/head-to-head-rounds';
+import { PreviousHistoryRound } from '@src/components/tables/radar/previous-history';
 
 type EventDetails = {
   [key in Event]: (Circuit & {
@@ -65,12 +67,13 @@ const featureRouter = router({
                   }
                 }
               }),
-              ...(input.circuit && { circuits: {
-                some: {
-                  id: input.circuit
+              ...(input.circuit && {
+                circuits: {
+                  some: {
+                    id: input.circuit
+                  }
                 }
-              }
-            }),
+              }),
             }
           },
           select: {
@@ -189,7 +192,7 @@ const featureRouter = router({
 
       return results;
     }),
-  radarSearch: procedure
+  teamSearch: procedure
     .input(
       z.object({
         search: z.string(),
@@ -198,7 +201,7 @@ const featureRouter = router({
         circuit: z.number(),
       })
     )
-    .query(async ({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
       const { prisma } = ctx;
 
       const results = await prisma.alias.findMany({
@@ -224,12 +227,198 @@ const featureRouter = router({
         },
         select: {
           code: true,
+          id: true,
           teamId: true,
         },
         take: 10
       });
 
       return results;
+    }),
+  headToHead: procedure
+    .input(
+      z.object({
+        event: z.string(),
+        circuit: z.number(),
+        season: z.number(),
+        team1: z.string(),
+        team2: z.string(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { prisma } = ctx;
+
+      const matchupHistoryPromise = prisma.round.findMany({
+        where: {
+          result: {
+            teamId: input.team1
+          },
+          opponentId: input.team2
+        },
+        select: {
+          result: {
+            select: {
+              tournament: {
+                select: {
+                  name: true,
+                  start: true
+                }
+              }
+            }
+          },
+          outcome: true,
+          nameStd: true,
+          ballotsWon: true,
+          ballotsLost: true
+        }
+      });
+
+      const getRanking = (teamId: string) => (
+        prisma.teamRanking.findUniqueOrThrow({
+          where: {
+            teamId_circuitId_seasonId: {
+              teamId: teamId,
+              circuitId: input.circuit,
+              seasonId: input.season
+            }
+          },
+          include: {
+            team: {
+              select: {
+                aliases: {
+                  select: {
+                    code: true
+                  },
+                  take: 1
+                }
+              }
+            }
+          }
+        })
+      );
+
+      const team1Ranking = await getRanking(input.team1);
+      const team2Ranking = await getRanking(input.team2);
+
+      const getRounds = (teamId: string) => (
+        prisma.round.findMany({
+          where: {
+            result: {
+              teamId
+            },
+            opponent: {
+              isNot: null
+            }
+          },
+          select: {
+            opponent: {
+              select: {
+                rankings: true,
+                aliases: {
+                  select: {
+                    code: true
+                  },
+                  take: 1
+                }
+              }
+            },
+            result: {
+              select: {
+                tournament: {
+                  select: {
+                    name: true,
+                    circuits: {
+                      select: {
+                        id: true
+                      }
+                    },
+                    seasonId: true,
+                    start: true
+                  },
+                }
+              }
+            },
+            outcome: true,
+            ballotsWon: true,
+            ballotsLost: true,
+            nameStd: true
+          },
+        })
+      );
+
+      const filterRounds = async (
+        teamId: string,
+        rounds: PreviousHistoryRound[]
+      ) => (
+        Promise.all(rounds.map(async round => {
+          const { otr: opponentOtr, circuitId, seasonId } = round.opponent!.rankings.find(r => (
+            round.result.tournament.circuits.map(c => c.id).includes(r.circuitId)
+            && round.result.tournament.seasonId === r.seasonId
+          ))!;
+
+          const { otr } = await prisma.teamRanking.findUniqueOrThrow({
+            where: {
+              teamId_circuitId_seasonId: {
+                teamId,
+                circuitId,
+                seasonId
+              }
+            }
+          });
+
+          return {
+            opponent: round.opponent!.aliases[0],
+            name: round.result.tournament.name,
+            outcome: round.outcome,
+            opponentOtr,
+            otr
+          }
+        }))
+      );
+
+      const team1History = await getRounds(input.team1);
+      const team1Rounds = ((await filterRounds(input.team1, team1History))
+        .map(round => {
+          if (team1Ranking.otr >= team2Ranking.otr && (round.otr - round.opponentOtr) >= (team1Ranking.otr - team2Ranking.otr)) {
+            return round;
+          }
+          else if (team1Ranking.otr <= team2Ranking.otr && (round.otr - round.opponentOtr) <= (team1Ranking.otr - team2Ranking.otr)) {
+            return round;
+          }
+          else return null;
+        })
+        .filter(round => round !== null) as HeadToHeadRound[])
+        .sort((a, b) => (a.otr - a.opponentOtr) - (b.otr - b.opponentOtr));
+
+      const team2History = await getRounds(input.team2);
+      const team2Rounds = ((await filterRounds(input.team2, team2History))
+        .map(round => {
+          if (team2Ranking.otr >= team1Ranking.otr && (round.otr - round.opponentOtr) >= (team2Ranking.otr - team1Ranking.otr)) {
+            return round;
+          }
+          else if (team2Ranking.otr <= team1Ranking.otr && (round.otr - round.opponentOtr) <= (team2Ranking.otr - team1Ranking.otr)) {
+            return round;
+          }
+          else return null;
+        })
+        .filter(round => round !== null) as HeadToHeadRound[])
+        .sort((a, b) => (a.otr - a.opponentOtr) - (b.otr - b.opponentOtr));
+
+      const matchupHistory = await matchupHistoryPromise;
+
+      return {
+        team1: {
+          rounds: team1Rounds,
+          history: team1History,
+          ranking: team1Ranking
+        },
+        team2: {
+          rounds: team2Rounds,
+          history: team2History,
+          ranking: team2Ranking
+        },
+        matchupHistory,
+      };
     })
 });
 

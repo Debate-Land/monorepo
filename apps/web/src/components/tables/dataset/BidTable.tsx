@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Card, Table, Text } from '@shared/components'
 import { IoMedalOutline } from 'react-icons/io5'
 import { useRouter } from 'next/router';
@@ -33,6 +33,7 @@ const BidTable = ({ event }: BidTableProps) => {
       enabled: isReady
     }
   );
+  const totalPages = useMemo(() => Math.floor((data?.length || 0)/pagination.pageSize), [data?.length, pagination.pageSize]);
   const column = createColumnHelper<BidTableRow>();
 
   return (
@@ -61,7 +62,7 @@ const BidTable = ({ event }: BidTableProps) => {
         paginationConfig={{
           pagination,
           setPagination,
-          totalPages: Math.ceil((data?.length || 0)/pagination.pageSize)
+          totalPages: totalPages >= 1 ? totalPages : 1
         }}
         onRowClick={(row) => router.push({
           pathname: `/teams/${row.teamId}`,
