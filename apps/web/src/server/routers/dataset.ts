@@ -153,8 +153,6 @@ const datasetRouter = router({
         })
       ]);
 
-      console.log(data[0])
-
       return {
         circuit: data[0],
         numTeams: data[1],

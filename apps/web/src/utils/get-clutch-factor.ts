@@ -32,9 +32,7 @@ export function getClutchFactorFromRoundHistory(
     });
 
     const clutchFactor = getClutchFactor(numFavWins, numFavLosses, numUdWins, numUdLosses);
-    console.log(
-      numFavWins, numFavLosses, numUdWins, numUdLosses
-    )
+
     if (clutchFactor < 0) return 0;
     else if (clutchFactor > 10) return 10;
     return clutchFactor;
