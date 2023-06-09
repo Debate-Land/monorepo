@@ -15,6 +15,7 @@ import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
 import { NextSeo } from 'next-seo';
 import { useTheme } from 'next-themes';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import React, { useEffect, useMemo } from 'react'
@@ -37,7 +38,7 @@ const boundWp = (wp: number) => {
 };
 
 const HeadToHead = () => {
-  const { query, isReady, asPath } = useRouter();
+  const { query, isReady, asPath, push } = useRouter();
   const { theme } = useTheme();
   const { data } = trpc.feature.headToHead.useQuery(
     {
@@ -136,7 +137,33 @@ const HeadToHead = () => {
           label="Prediction"
           heading={
             data
-              ? `${team1Code} vs ${team2Code}`
+              ? <h1>
+                <button
+                  className="group-hover:underline group-hover:decoration-dotted"
+                  onClick={() => push({
+                    pathname: `/teams/${query.team1}`,
+                    query: {
+                      circuit: query.circuit,
+                      season: query.season
+                    }
+                  })}
+                >
+                  {team1Code}
+                </button>
+                {' vs '}
+                <button
+                  className="group-hover:underline group-hover:decoration-dotted"
+                  onClick={() => push({
+                    pathname: `/teams/${query.team2}`,
+                    query: {
+                      circuit: query.circuit,
+                      season: query.season
+                    }
+                  })}
+                >
+                  {team2Code}
+                </button>
+              </h1>
               : undefined
           }
           subtitle={

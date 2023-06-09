@@ -1,13 +1,12 @@
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Text, Button, Input, Group, Card, Select, Label } from '@shared/components'
-import { FaRegCompass, FaSearch } from 'react-icons/fa'
 import { Event } from '@shared/database'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc'
 import { Formik, FormikProps } from 'formik'
 import * as Yup from 'yup'
 import TeamCombobox, { TeamComboboxValue } from './TeamCombobox'
-import { BiRadar } from 'react-icons/bi'
+import { RiBodyScanLine } from 'react-icons/ri'
 
 interface Option {
   name: string;
@@ -24,7 +23,7 @@ interface RefreshOptions {
   circuit?: number
 };
 
-const Compass = () => {
+const XRay = () => {
   const router = useRouter();
   const formikRef = useRef<FormikProps<{
     event: string,
@@ -116,10 +115,10 @@ const Compass = () => {
 
   return (
     <Card
-    icon={<BiRadar />}
-      title="Radar"
-      theme="text-indigo-400"
-      className="min-w-full md:min-w-[300px] max-w-[800px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-sky-400/70 dark:shadow-sky-400/50 p-2"
+    icon={<RiBodyScanLine />}
+      title="X-Ray"
+      theme="text-blue-400"
+      className="min-w-full md:min-w-[300px] max-w-[800px] m-10 mx-auto bg-sky-100 dark:bg-black shadow-2xl shadow-sky-400/70 dark:shadow-blue-400/50 p-2"
     >
       <Formik
         innerRef={formikRef}
@@ -215,4 +214,4 @@ const Compass = () => {
   )
 }
 
-export default Compass
+export default XRay

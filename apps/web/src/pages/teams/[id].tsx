@@ -12,6 +12,7 @@ import { GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 import { prisma } from '@shared/database';
 import TeamCharts from '@src/components/charts/TeamCharts';
+import TeamInfoTable from '@src/components/tables/team/TeamInfoTable';
 
 // TODO: National Rank at some point...
 const Team = () => {
@@ -165,6 +166,7 @@ const Team = () => {
         />
         <TournamentHistoryTable data={data?.results} />
         <TeamCharts results={data?.results.sort((a, b) => a.tournament.start - b.tournament.start) || []} />
+        <TeamInfoTable aliases={data?.aliases} schools={data?.schools} />
       </div>
     </>
   )

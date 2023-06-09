@@ -67,11 +67,11 @@ const teamRouter = router({
             },
           },
           aliases: {
-            take: 1,
             select: {
               code: true,
             }
           },
+          schools: true,
           rankings: {
             include: {
               season: true,

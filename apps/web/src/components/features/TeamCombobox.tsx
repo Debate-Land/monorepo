@@ -86,9 +86,9 @@ export default function TeamCombobox({ event, circuit, season, selected, setSele
           afterLeave={() => setQuery('')}
         >
           <Combobox.Options className="absolute z-30 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white dark:bg-slate-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {filteredResults.length === 0 && query !== '' ? (
+            {filteredResults.length === 0 ? (
               <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
-                Nothing found.
+                {query === '' ? 'Start typing.' : 'Keep typing the code.'}
               </div>
             ) : (
               filteredResults.map((result) => (
