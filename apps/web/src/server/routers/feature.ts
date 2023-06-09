@@ -393,10 +393,10 @@ const featureRouter = router({
       const team2History = await getRounds(input.team2);
       const team2Rounds = ((await filterRounds(input.team2, team2History))
         .map(round => {
-          if (team2Ranking.otr > team1Ranking.otr && (round.otr - round.opponentOtr) > (team2Ranking.otr - team1Ranking.otr)) {
+          if (team2Ranking.otr >= team1Ranking.otr && (round.otr - round.opponentOtr) >= (team2Ranking.otr - team1Ranking.otr)) {
             return round;
           }
-          else if (team2Ranking.otr < team1Ranking.otr && (round.otr - round.opponentOtr) < (team2Ranking.otr - team1Ranking.otr)) {
+          else if (team2Ranking.otr <= team1Ranking.otr && (round.otr - round.opponentOtr) <= (team2Ranking.otr - team1Ranking.otr)) {
             return round;
           }
           else return null;

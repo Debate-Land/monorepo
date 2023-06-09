@@ -18,7 +18,7 @@ import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { BsLightbulb } from 'react-icons/bs';
 import { GiAtomicSlashes } from 'react-icons/gi';
 import { Bar, BarChart, LabelList, XAxis, YAxis } from 'recharts';
@@ -35,6 +35,18 @@ const boundWp = (wp: number) => {
   if (wp > 99) return 99;
   else if (wp < 1) return 1;
   return Math.floor(wp * 10)/10;
+};
+
+const truncateTeamCode = (code: string) => {
+  let truncated = '';
+  const nodes = code.split(' ');
+  for (let i = nodes.length - 1; i >= 0; i--) {
+    if ((truncated + nodes[i]).length < 10) {
+      truncated = nodes[i] + ' ' + truncated;
+    }
+    else return truncated.trim();
+  };
+  return truncated;
 };
 
 const HeadToHead = () => {
@@ -88,11 +100,11 @@ const HeadToHead = () => {
   , [team1Otr, team2Otr]);
   const chartData = useMemo(() => data && team1Otr && team2Otr && [
     {
-      label: team1Code?.split(' ')[0].slice(0, 10),
+      label: team1Code && truncateTeamCode(team1Code),
       pct: team1Wp
     },
     {
-      label: team2Code?.split(' ')[0].slice(0, 10),
+      label: team2Code && truncateTeamCode(team2Code),
       pct: team2Wp
     }
   ], [data, team1Code, team1Otr, team2Code, team2Otr, team1Wp, team2Wp]);
@@ -139,7 +151,7 @@ const HeadToHead = () => {
             data
               ? <h1>
                 <button
-                  className="group-hover:underline group-hover:decoration-dotted"
+                  className="hover:text-indigo-200 group-hover:underline group-hover:decoration-dotted"
                   onClick={() => push({
                     pathname: `/teams/${query.team1}`,
                     query: {
@@ -152,7 +164,7 @@ const HeadToHead = () => {
                 </button>
                 {' vs '}
                 <button
-                  className="group-hover:underline group-hover:decoration-dotted"
+                  className="hover:text-indigo-200 group-hover:underline group-hover:decoration-dotted"
                   onClick={() => push({
                     pathname: `/teams/${query.team2}`,
                     query: {

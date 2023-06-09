@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Text, Button, Input, Group, Card, Select, Label } from '@shared/components'
 import { Event } from '@shared/database'
 import { useRouter } from 'next/router'
@@ -88,6 +88,13 @@ const XRay = () => {
     refreshOptions({});
   }, [refreshOptions]);
 
+  const handleChange = (e: FormEvent) => {
+    if (!(e.nativeEvent instanceof InputEvent)) {
+      setTeam1Value(undefined);
+      setTeam2Value(undefined);
+    }
+  }
+
   const TeamSelection = useCallback(() => {
     const formik = formikRef.current;
     if (!formik) return <></>;
@@ -143,7 +150,7 @@ const XRay = () => {
         onSubmit={async (values) => {
           if (!team1Value || !team2Value) return;
           router.push({
-            pathname: '/radar/head-to-head',
+            pathname: '/x-ray/head-to-head',
             query: {
               ...values,
               team1: team1Value.teamId,
@@ -154,7 +161,7 @@ const XRay = () => {
       >
         {
           (props) => (
-            <form onSubmit={props.handleSubmit} className="space-y-2">
+            <form onSubmit={props.handleSubmit} className="space-y-2" onChange={handleChange}>
               <Group character="1" legend="Select a dataset" className="flex flex-col items-center space-y-3 w-full">
                 <div className="flex flex-col space-y-3 px-3 sm:flex-row sm:space-x-3 sm:space-y-0 sm:justify-around w-full">
                   <Select
@@ -193,7 +200,7 @@ const XRay = () => {
                   />
                 </div>
               </Group>
-              <Group character="2" legend="Choose Teams" className="grid sm:grid-cols-2 gap-2 sm:gap-4 mx-auto">
+              <Group character="2" legend="Choose Teams" className="grid sm:grid-cols-2 gap-2 sm:gap-4 w-full md:w-fit px-4 md:px-0 sm:mx-auto">
                 <TeamSelection />
               </Group>
               <Group character="3" legend="Get your results" className="flex justify-center w-full">
@@ -201,7 +208,7 @@ const XRay = () => {
                   type="submit"
                   _type="primary"
                   className="w-64 text-sm !mt-0"
-                  disabled={!team1Value || !team2Value}
+                  disabled={!team1Value || !team2Value || team1Value.teamId === team2Value.teamId}
                 >
                   View prediction
                 </Button>

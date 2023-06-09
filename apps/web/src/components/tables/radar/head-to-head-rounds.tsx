@@ -37,7 +37,7 @@ const HeadToHeadRoundsTable = ({ teamNo, data, code, isFavorite, matchupWinPct, 
   const filteredRounds = useMemo(() =>
     data?.filter(r => r.outcome === outcome).slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
   [outcome, data, pagination]);
-  const totalPages = useMemo(() => Math.floor((data?.filter(r => r.outcome && teamOutcome).length || 0) / pagination.pageSize), [data, teamOutcome, pagination.pageSize]);
+  const totalPages = useMemo(() => Math.floor((data?.filter(r => r.outcome === outcome).length || 0) / pagination.pageSize), [data, outcome, pagination.pageSize]);
 
   return (
     <div className="flex flex-col w-full space-y-2">
