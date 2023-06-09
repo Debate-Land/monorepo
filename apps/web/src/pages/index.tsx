@@ -38,6 +38,8 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { prisma } from '@shared/database';
 import Link from 'next/link';
+import { appRouter } from '@src/server/routers/_app';
+import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 
 interface HomeSEOProps {
   title: string;
@@ -528,12 +530,22 @@ export const getStaticProps = async () => {
   const competitors = await prisma.competitor.count();
   const rounds = (await prisma.round.count()) / 2;
 
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: {
+      prisma
+    },
+  });
+
+  await ssg.feature.compass.prefetch({});
+
   return {
     props: {
       tournaments,
       judges,
       competitors,
-      rounds
+      rounds,
+      trpcState: ssg.dehydrate()
     },
     revalidate: 60 * 30 // Half hour
   }

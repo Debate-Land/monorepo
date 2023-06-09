@@ -120,7 +120,7 @@ const judgeRouter = router({
         where: {
           resultId: input.id
         },
-        include: {
+        select: {
           rounds: {
             include: {
               speaking: {
@@ -137,13 +137,15 @@ const judgeRouter = router({
                           code: true
                         },
                         take: 1
-                      }
+                      },
                     }
                   }
                 }
-              }
+              },
             }
-          }
+          },
+          decision: true,
+          avgSpeakerPoints: true
         },
       });
 

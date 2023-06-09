@@ -77,14 +77,14 @@ const HeadToHead = () => {
         ? 100 * getExpectedWP(team1Otr, team2Otr)
         : 100 - 100 * getExpectedWP(team1Otr, team2Otr))
       : undefined
-  , []);
+  , [team1Otr, team2Otr]);
   const team2Wp = useMemo(() =>
     team1Otr && team2Otr
       ? boundWp(team1Otr > team2Otr
         ? 100 - 100 * getExpectedWP(team1Otr, team2Otr)
         : 100 * getExpectedWP(team1Otr, team2Otr))
       : undefined
-  , []);
+  , [team1Otr, team2Otr]);
   const chartData = useMemo(() => data && team1Otr && team2Otr && [
     {
       label: team1Code?.split(' ')[0].slice(0, 10),

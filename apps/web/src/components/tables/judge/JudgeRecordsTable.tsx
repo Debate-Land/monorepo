@@ -39,6 +39,7 @@ const JudgeRecordsTable = ({ data: { id } }: JudgeRecordsTableProps) => {
     }
   );
   const column = createColumnHelper<ExpandedJudgeRecord>();
+  console.log(data)
 
   return (
     <Table

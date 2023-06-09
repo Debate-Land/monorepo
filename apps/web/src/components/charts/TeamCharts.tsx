@@ -141,7 +141,11 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
       return {
         date: r.tournament.start * 1000,
-          twp: _twp < 1 ? Math.round(_twp * 100) : 100
+        twp: isNaN(_twp)
+          ? 0
+          : _twp < 1
+            ? Math.round(_twp * 100)
+            : 100
       }
     })
   }, [results]);
@@ -162,7 +166,11 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
       return {
         date: r.tournament.start * 1000,
-        twp: _twp < 1 ? Math.round(_twp * 100) : 100
+        twp: isNaN(_twp)
+          ? 0
+          : _twp < 1
+            ? Math.round(_twp * 100)
+            : 100
       };
     })
   }, [results]);
