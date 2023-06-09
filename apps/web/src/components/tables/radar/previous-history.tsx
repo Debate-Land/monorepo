@@ -95,7 +95,7 @@ const PreviousHistory = ({ data, team1Code, team2Code}: PreviousHistoryProps) =>
           )
           : (
             <p className="text-sm text-red-400 text-center max-w-[500px] mx-auto">
-              {team1Code} and {team2Code} have never face each other.
+              {team1Code} and {team2Code} have never faced each other.
             </p>
           )
       }

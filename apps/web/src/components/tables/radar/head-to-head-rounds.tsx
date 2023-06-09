@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Button, Table, Text } from '@shared/components'
 import { ColumnDef, PaginationState, createColumnHelper } from '@tanstack/react-table'
 import { RoundOutcome } from '@shared/database';
@@ -22,9 +22,11 @@ export interface RoundSpeakingResultProps {
   code?: string;
   isFavorite?: boolean;
   matchupWinPct?: number;
+  clutchFactor?: number | '--';
+  numRounds?: number;
 }
 
-const HeadToHeadRoundsTable = ({ teamNo, data, code, isFavorite, matchupWinPct }: RoundSpeakingResultProps) => {
+const HeadToHeadRoundsTable = ({ teamNo, data, code, isFavorite, matchupWinPct, clutchFactor, numRounds }: RoundSpeakingResultProps) => {
   const column = createColumnHelper<HeadToHeadRound>()
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -35,15 +37,22 @@ const HeadToHeadRoundsTable = ({ teamNo, data, code, isFavorite, matchupWinPct }
   const filteredRounds = useMemo(() =>
     data?.filter(r => r.outcome === outcome).slice(pagination.pageIndex * pagination.pageSize, (pagination.pageIndex + 1) * pagination.pageSize),
   [outcome, data, pagination]);
-  const totalPages = useMemo(() => Math.floor((data?.filter(r => r.outcome && outcome).length || 0) / pagination.pageSize), [data, outcome, pagination.pageSize]);
+  const totalPages = useMemo(() => Math.floor((data?.filter(r => r.outcome && teamOutcome).length || 0) / pagination.pageSize), [data, teamOutcome, pagination.pageSize]);
 
   return (
     <div className="flex flex-col w-full space-y-2">
+      <div className="border-b border-dashed border-gray-400 dark:border-gray-200/40 pb-4 mb-2">
+        <h3 className={clsx('text-lg', { 'text-sky-400': teamNo === 1, 'text-violet-400': teamNo === 2 })}>{code} ({isFavorite ? "Favorite" : "Underdog"})</h3>
+        <p className="text-sm">Based on {numRounds || '--'} rounds, {code} has a clutch factor of {
+          clutchFactor !== undefined
+            ? clutchFactor === "--"
+              ? clutchFactor
+              : Math.round(clutchFactor * 10) / 10
+            : '--'
+        }.</p>
+      </div>
       <div className="w-full justify-between flex">
-        <div className="">
-          <h3 className={clsx({'text-sky-400': teamNo === 1, 'text-violet-400': teamNo === 2})}>{code} ({isFavorite ? "Favorite" : "Underdog"})</h3>
-          <p className="text-sm">{teamOutcome === "Wins" ? "Winning" : "Losing"} rounds with {isFavorite ? `≥ ${matchupWinPct}%` : `≤ ${matchupWinPct}%`} expected win probability.</p>
-        </div>
+        <p className="text-sm">{teamOutcome === "Wins" ? "Winning" : "Losing"} rounds with {isFavorite ? `≥ ${matchupWinPct}%` : `≤ ${matchupWinPct}%`} expected win probability.</p>
         <Button
           icon={<HiOutlineSwitchHorizontal className='mr-2' />}
           onClick={() => setTeamOutcome(teamOutcome === "Wins" ? "Losses" : "Wins")}

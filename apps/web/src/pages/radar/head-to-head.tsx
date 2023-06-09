@@ -7,6 +7,7 @@ import Statistics from '@src/components/layout/Statistics';
 import HeadToHeadRoundsTable from '@src/components/tables/radar/head-to-head-rounds';
 import PreviousHistory from '@src/components/tables/radar/previous-history';
 import { appRouter } from '@src/server/routers/_app';
+import getClutchFactor, { getClutchFactorFromRoundHistory } from '@src/utils/get-clutch-factor';
 import getEventName from '@src/utils/get-event-name';
 import getExpectedWP from '@src/utils/get-expected-wp';
 import { trpc } from '@src/utils/trpc';
@@ -16,7 +17,7 @@ import { NextSeo } from 'next-seo';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { BsLightbulb } from 'react-icons/bs';
 import { GiAtomicSlashes } from 'react-icons/gi';
 import { Bar, BarChart, LabelList, XAxis, YAxis } from 'recharts';
@@ -58,7 +59,7 @@ const HeadToHead = () => {
     team1Code: data?.team1.ranking.team.aliases[0].code,
     team2Code: data?.team2.ranking.team.aliases[0].code,
     team1Otr: data?.team1.ranking.otr,
-    team2Otr: data?.team2.ranking.otr
+    team2Otr: data?.team2.ranking.otr,
   }), [data]);
   const isTeam1Favorite = useMemo(() => {
     if (data?.team1.ranking.otr && data?.team2.ranking.otr) {
@@ -94,6 +95,16 @@ const HeadToHead = () => {
       pct: team2Wp
     }
   ], [data, team1Code, team1Otr, team2Code, team2Otr]);
+  const team1ClutchFactor = useMemo(() => {
+    return data
+      ? getClutchFactorFromRoundHistory(data.team1.ranking.otr as number, data.team1.history)
+      : '--'
+  }, [data]);
+  const team2ClutchFactor = useMemo(() => {
+    return data
+      ? getClutchFactorFromRoundHistory(data.team2.ranking.otr as number, data.team2.history)
+      : '--'
+  }, [data]);
 
   const SEO_TITLE = `Round Prediction: ${team1Code} vs ${team2Code}`;
   const SEO_DESCRIPTION = `Our prediction of the winning team in a round between ${team1Code} and ${team2Code}, exclusively on Debate Land.`;
@@ -169,14 +180,18 @@ const HeadToHead = () => {
             data={data?.team1.rounds}
             code={team1Code}
             isFavorite={isTeam1Favorite}
+            clutchFactor={team1ClutchFactor}
             matchupWinPct={team1Wp}
+            numRounds={data?.team1.history.length}
           />
           <HeadToHeadRoundsTable
             teamNo={2}
             data={data?.team2.rounds}
             code={team2Code}
             isFavorite={!isTeam1Favorite}
+            clutchFactor={team2ClutchFactor}
             matchupWinPct={team2Wp}
+            numRounds={data?.team2.history.length}
           />
         </Card>
       </div>
