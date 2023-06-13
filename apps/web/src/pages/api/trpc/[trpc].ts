@@ -8,17 +8,11 @@ export default trpcNext.createNextApiHandler({
   router: appRouter,
   createContext: createTRPCContext,
   responseMeta({ ctx, paths, errors, type }) {
-    const allOk = errors.length == 0;
-    const isQuery = type == 'query';
-
-    if (allOk && isQuery) {
-      const ONE_DAY_IN_SECONDS = 60 * 60 * 24;
-      return {
-        headers: {
-          'Cache-Control': `max-age=0, s-maxage=${ONE_DAY_IN_SECONDS}`,
-        }
-      };
-    }
-    return {};
+    const ONE_DAY_IN_SECONDS = 60 * 60 * 24;
+    return {
+      headers: {
+        'Cache-Control': `max-age=0, s-maxage=${ONE_DAY_IN_SECONDS}`,
+      }
+    };
   }
 });
