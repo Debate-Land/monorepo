@@ -72,9 +72,9 @@ const BidTable = ({ event }: BidTableProps) => {
         sortable
       />
       <Text className='mx-auto text-center'>
-        {data?.filter(r => r['fullBids'] >= 2).length} {event == 'PublicForum' ? 'gold' : ''} {event && 'qualifying teams'}.
+        {data && data?.filter(r => r['fullBids'] >= 2).length} {data && event == 'PublicForum' ? 'gold' : ''} {data && event && 'qualifying teams'}.
         {
-          event == 'PublicForum' &&
+          event == 'PublicForum' && data &&
             ` ${data?.filter(r => r['fullBids'] < 2 && (r['fullBids'] == 1 || r['partialBids'] == 2)).length} silver qualifying teams.`
         }
       </Text>

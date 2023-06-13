@@ -280,7 +280,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
           ready && results.length < 2 && (
             <div className="flex text-center space-x-1 text-gray-600 dark:text-gray-400">
               <BiErrorCircle size={32} />
-              <p className="mt-[2px] text-lg">Not enough history</p>
+              <p className="mt-[2px] text-xl">Not enough history</p>
             </div>
           )
         }

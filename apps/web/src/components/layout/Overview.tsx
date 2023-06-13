@@ -22,14 +22,15 @@ const Overview = (props: OverviewProps) => {
   return (
     <div className="group w-full flex flex-col bg-luka-100 overflow-hidden relative">
       {
-        BACK_PATHS.includes(pathname) && <div className="!cursor-pointer absolute top-5 left-5 z-20 pt-[5px] px-[5px] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded-full">
+        BACK_PATHS.includes(pathname) &&
+        <div className="!cursor-pointer absolute top-5 left-5 z-20 w-6 h-6 flex justify-center items-center bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded-full">
           <button
             onClick={() => push({
               pathname: '/dataset',
               query
             })}
           >
-            <IoMdArrowBack size={18} />
+            <IoMdArrowBack size={18} className="text-white" />
           </button>
         </div>
       }
