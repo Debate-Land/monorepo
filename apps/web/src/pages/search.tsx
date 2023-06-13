@@ -74,15 +74,7 @@ const Search = () => {
                   tag={type}
                   key={id}
                   onClick={() => {
-                    let pathname;
-                    switch (type) {
-                      case 'Team':
-                        pathname = `/teams/${id}`;
-                        break;
-                      case 'Competitor':
-                        pathname = `/competitors/${id}`
-                        break;
-                    }
+                    let pathname = `/${type[0].toLowerCase()}${type.substring(1)}s/${id}`;
                     router.push({
                       pathname,
                       query: omit(query, ['query', 'event'])
