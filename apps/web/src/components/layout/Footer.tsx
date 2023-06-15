@@ -46,6 +46,9 @@ const Footer = () => {
 									<li>
 										<Link href="/contact" text="Contact" />
 									</li>
+        <li>
+										<Link href="/ods" text="Open Data Set" />
+									</li>
 									<li className="relative">
 										<div className="absolute w-24 h-full bg-gray-200/30 backdrop-blur-sm rounded" />
 										<Link
