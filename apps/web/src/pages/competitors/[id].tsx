@@ -5,13 +5,13 @@ import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import _ from 'lodash';
-import { JudgingHistoryTable } from '@src/components/tables/judge';
-import getEventName from '@src/utils/get-event-name';
 import { ParsedUrlQuery } from 'querystring';
 import { prisma } from '@shared/database';
 import { appRouter } from '@src/server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
+import CompetitorHistoryTable from '@src/components/tables/competitor/CompetitorHistoryTable';
+import getEventName from '@src/utils/get-event-name';
 
 
 const Competitor = () => {
@@ -78,7 +78,7 @@ const Competitor = () => {
           }
           subtitle={
             data
-              ? undefined //`${getEventName(data.teams[0].circuits[0].event)} | ${data.rankings[0].circuit.name} | ${query.season || "All Seasons"}`
+              ? `${getEventName(data.teams[0].circuits[0].event)} | ${data.teams[0].circuits[0].name} | ${query.season}`
               : undefined
           }
           underview={
@@ -106,7 +106,7 @@ const Competitor = () => {
             />
           }
         />
-        {/* <JudgingHistoryTable data={data?.results} /> */}
+        <CompetitorHistoryTable data={data?.teams} />
       </div>
     </>
   )

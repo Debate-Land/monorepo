@@ -1,7 +1,4 @@
-import Text from './Text';
 import { FaSort, FaSortUp, FaSortDown, FaChevronUp, FaChevronDown } from 'react-icons/fa';
-import { BsChevronRight } from 'react-icons/bs';
-import { FiChevronRight, FiChevronsRight, FiChevronLeft, FiChevronsLeft } from 'react-icons/fi';
 import { ColumnDef, flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, PaginationState, Row, SortingState, useReactTable } from '@tanstack/react-table';
 import React, { Fragment, Dispatch, SetStateAction, useEffect, useState } from 'react';
 import clsx from 'clsx';
@@ -63,7 +60,7 @@ const classNames = {
     th: "py-3 px-2 text-left",
     tr: "dark:text-gray-300 text-gray-700 border-b dark:border-gray-200/20",
   },
-  tr: "dark:text-gray-300 text-gray-700",
+  tr: "dark:text-gray-300 text-gray-700 border-t dark:border-gray-200/20",
 };
 
 interface TableProps<T> {
