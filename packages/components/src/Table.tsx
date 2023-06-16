@@ -291,14 +291,14 @@ const Table = <T,>({
                 onClick={() => {table.setPageIndex(0)}}
                 title="Go to start"
               >
-                <p className="text-luka-200/70 dark:text-luka-100 text-sm mr-1">{table.getState().pagination.pageIndex + 1}</p>
+                <p className="text-luka-200/70 dark:text-blue-500 text-sm mr-1">{table.getState().pagination.pageIndex + 1}</p>
               </button>
               <p className="text-sm mr-1 text-gray-600 dark:text-gray-400">of</p>
               <button
                 onClick={() => {table.setPageIndex(table.getPageCount())}}
                 title="Go to end"
               >
-                <p className="text-luka-200/70 dark:text-luka-100 text-sm">{table.getPageCount()}</p>
+                <p className="text-luka-200/70 dark:text-blue-500 text-sm">{table.getPageCount()}</p>
               </button>
               <p className="text-sm text-gray-600 dark:text-gray-400">.</p>
             </div>

@@ -118,7 +118,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
           ? 1
           : 0
       }
-    }).filter(v => v !== null) as { date: string; break: number}[];
+    }).filter(v => v !== null) as { date: number; break: number}[];
   }, [results]);
 
   const breakCum = useMemo(() => {

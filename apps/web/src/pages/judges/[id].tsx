@@ -12,6 +12,7 @@ import { prisma } from '@shared/database';
 import { appRouter } from '@src/server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
+import JudgeCharts from '@src/components/charts/JudgeCharts';
 
 
 const Judge = () => {
@@ -113,6 +114,7 @@ const Judge = () => {
           }
         />
         <JudgingHistoryTable data={data?.results} />
+        <JudgeCharts results={data?.results} />
       </div>
     </>
   )

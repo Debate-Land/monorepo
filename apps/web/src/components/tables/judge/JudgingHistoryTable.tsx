@@ -10,7 +10,7 @@ export type ExpandedJudgeTournamentResult = JudgeTournamentResult & {
   tournament: {
     name: string;
     start: number;
-  } | null
+  }
 };
 
 export interface JudgingHistoryTableProps {

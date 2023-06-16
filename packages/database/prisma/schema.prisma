@@ -73,6 +73,14 @@ enum BidType {
   Partial
 }
 
+enum TopicType {
+  Economy
+  Technology
+  ForeignAffairs
+  Environmental
+  Civics
+}
+
 /// API Management Models
 
 model User {
@@ -178,6 +186,23 @@ model JudgeRanking {
   @@map("judge_rankings")
 }
 
+model TopicTag {
+  id     Int       @id @default(autoincrement())
+  tag    TopicType
+  topics Topic[]
+
+  @@map("topic_tags")
+}
+
+model Topic {
+  id         Int          @id @default(autoincrement())
+  resolution String
+  tags       TopicTag[]
+  tournament Tournament[]
+
+  @@map("topics")
+}
+
 model Tournament {
   id             Int                     @id @default(autoincrement())
   name           String
@@ -187,6 +212,7 @@ model Tournament {
   tabEventId     Int                     @map("tab_event_id")
   tabTournId     Int                     @map("tab_tourn_id")
   location       String
+  topic          Topic                   @relation(fields: [topicId], references: [id])
   isTocQualifier Boolean                 @map("is_toc_qualifier")
   bidLevel       ElimRoundName?          @map("bid_level")
   hasElimRounds  Boolean                 @map("has_elim_rounds")
@@ -198,9 +224,11 @@ model Tournament {
   records        JudgeRecord[]
   schools        School[]
   seasonId       Int                     @default(2023) @map("season_id")
+  topicId        Int
 
   @@unique([tabTournId, tabEventId])
   @@index([seasonId])
+  @@index([topicId])
   @@fulltext([name])
   @@map("tournaments")
 }
