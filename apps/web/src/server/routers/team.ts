@@ -26,7 +26,12 @@ const teamRouter = router({
             include: {
               tournament: {
                 include: {
-                  circuits: true
+                  circuits: true,
+                  topic: {
+                    include: {
+                      tags: true
+                    }
+                  },
                 }
               },
               bid: {

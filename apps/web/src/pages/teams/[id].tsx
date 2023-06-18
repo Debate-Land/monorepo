@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc';
 import { TournamentHistoryTable } from '@src/components/tables/team'
@@ -10,13 +10,18 @@ import { appRouter } from '../../server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
-import { prisma } from '@shared/database';
+import { Topic, TopicTag, prisma } from '@shared/database';
+import { omit } from 'lodash';
 import TeamCharts from '@src/components/charts/TeamCharts';
 import TeamInfoTable from '@src/components/tables/team/TeamInfoTable';
+import { BsFilter } from 'react-icons/bs';
+import { FaExchangeAlt } from 'react-icons/fa';
+import { AiOutlineSwap } from 'react-icons/ai';
+import FilterModal from '@src/components/features/FilterModal';
 
 // TODO: National Rank at some point...
 const Team = () => {
-  const { query, isReady, asPath } = useRouter();
+  const { query, isReady, asPath, ...router } = useRouter();
   const { data } = trpc.team.summary.useQuery(
     {
       id: query.id as string,
@@ -35,6 +40,7 @@ const Team = () => {
       staleTime: 1000 * 60 * 60 * 24,
     }
   );
+  const [filterModalIsOpen, setFilterModalIsOpen] = useState<boolean>(false);
 
   const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
   const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${getEventName(data?.circuits[0].event)}, exclusively on Debate Land.`;
@@ -61,6 +67,17 @@ const Team = () => {
         ]}
         noindex
       />
+      <FilterModal
+        isOpen={filterModalIsOpen}
+        setIsOpen={setFilterModalIsOpen}
+        topics={
+          data
+            ? data.results
+              .map(r => r.tournament.topic)
+              .filter(t => t !== null) as (Topic & { tags: TopicTag[] })[]
+            : []
+        }
+      />
       <div className="min-h-screen">
         <Overview
           label="Team"
@@ -68,16 +85,22 @@ const Team = () => {
             data
               ? (
                 <>
-                  <a href={`/competitors/${data.competitors[0].id}`}>
+                  <button onClick={() => router.push({
+                    pathname: `/competitors/${data.competitors[0].id}`,
+                    query: omit(query, 'id')
+                  })}>
                     {data.competitors[0].name}
-                  </a>
+                  </button>
                   {
                     data.competitors.length > 1 && (
                       <span>
                         {' & '}
-                        <a href={`/competitors/${data.competitors[1].id}`}>
+                        <button onClick={() => router.push({
+                          pathname: `/competitors/${data.competitors[1].id}`,
+                          query: omit(query, 'id')
+                        })}>
                           {data.competitors[1].name}
-                        </a>
+                        </button>
                       </span>
                     )
                   }
@@ -87,7 +110,17 @@ const Team = () => {
           }
           subtitle={
             data
-              ? `${getEventName(data.circuits[0].event)} | ${data.circuits[0].name} | ${data.seasons[0].id}`
+              ? (
+                <div className="flex items-center space-x-1 lg:space-x-2">
+                  <p>{getEventName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id}</p>
+                  <button
+                    className="p-px bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded group-hover:shadow-halo group-hover:scale-110 transition-all"
+                    onClick={() => setFilterModalIsOpen(true)}
+                  >
+                    <AiOutlineSwap className="text-white text-sm lg:text-xl" />
+                  </button>
+                </div>
+              )
               : undefined
           }
           underview={
