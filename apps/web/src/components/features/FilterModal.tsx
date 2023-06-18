@@ -38,9 +38,9 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
       })
     });
     return newTags;
-  }, []);
-  const [selectedTopics, setSelectedTopics] = useState(uniqueTopics);
-  const [selectedTags, setSelectedTags] = useState(tags);
+  }, [uniqueTopics]);
+  const [selectedTopics, setSelectedTopics] = useState<(Topic & { tags: TopicTag[] })[]>([]);
+  const [selectedTags, setSelectedTags] = useState<TopicTag[]>([]);
   const [query, setQuery] = useState('');
   const [tabIndex, setTabIndex] = useState(0);
   const filteredTopics = useMemo(() =>
@@ -70,6 +70,25 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
     });
     setIsOpen(false);
   }, [tabIndex, selectedTopics, selectedTags]);
+
+  useEffect(() => {
+    setSelectedTopics(
+      router.query.topics
+        ? (router.query.topics as string)
+          .split(',')
+          .map(t => parseInt(t))
+          .map(id => uniqueTopics.find(t => t.id === id)) as (Topic & { tags: TopicTag[] })[]
+        : uniqueTopics
+    );
+    setSelectedTags(
+      router.query.topicTags
+        ? (router.query.topicTags as string)
+          .split(',')
+          .map(t => parseInt(t))
+          .map(id => tags.find(t => t.id === id)) as TopicTag[]
+        : tags
+    );
+  }, []);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -113,10 +132,10 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
                               key={category}
                               className={({ selected }) =>
                                 clsx(
-                                  'w-fit pr-2 py-1 border-b text-md text-start leading-5',
+                                  'w-fit pr-2 py-1 border-b text-sm text-start leading-5',
                                   selected
                                     ? 'border-luka-200 dark:border-blue-600'
-                                    : 'border-gray-600 dark:border-gray-400'
+                                    : 'border-gray-300 dark:border-gray-400'
                                 )
                               }
                             >
@@ -175,13 +194,13 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
                                         {({ selected, active }) => (
                                           <>
                                             <span
-                                              className={`block truncate ${
+                                              className={`block truncate text-xs ${
                                                 selected ? 'font-medium' : 'font-normal'
                                               }`}
                                             >
-                                              {topic.resolution}
+                                              {query === '' ? topic.resolution : topic.resolution.substring(topic.resolution.toLowerCase().indexOf(query.toLowerCase()))}
                                             </span>
-                                            {selected ? (
+                                            {selected || selectedTopics.find(t => t.id === topic.id) ? (
                                               <span
                                                 className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                                                   active ? 'text-teal-600 dark:text-teal-300' : 'text-teal-600'
@@ -239,7 +258,7 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
                                           >
                                             {getEnumName(t.tag)}
                                           </span>
-                                          {selected ? (
+                                          {selected || selectedTags.find(_t => _t.id == t.id) ? (
                                             <span
                                               className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                                                 active ? 'text-teal-600 dark:text-teal-300' : 'text-teal-600'

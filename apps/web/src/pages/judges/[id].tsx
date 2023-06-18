@@ -122,8 +122,10 @@ const Judge = () => {
 
 interface JudgeParams extends ParsedUrlQuery {
   id: string;
-  circuit: string;
-  season: string;
+  circuit?: string;
+  season?: string;
+  topics?: string;
+  topicTags?: string;
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -135,12 +137,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
   });
 
-  const { id, circuit, season } = ctx.query as JudgeParams;
+  const { id, circuit, season, topics, topicTags } = ctx.query as JudgeParams;
 
   await ssg.judge.summary.prefetch({
     id,
-    circuit: parseInt(circuit),
-    season: parseInt(season)
+    ...(circuit && { circuit: parseInt(circuit) }),
+    ...(season && { season: parseInt(season) }),
+    ...(topics && { topics: topics?.split(',').map(t => parseInt(t)) }),
+    ...(topicTags && { topicTags: topicTags?.split(',').map(t => parseInt(t)) })
   });
 
   return {

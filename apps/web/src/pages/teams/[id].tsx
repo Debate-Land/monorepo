@@ -18,6 +18,7 @@ import { BsFilter } from 'react-icons/bs';
 import { FaExchangeAlt } from 'react-icons/fa';
 import { AiOutlineSwap } from 'react-icons/ai';
 import FilterModal from '@src/components/features/FilterModal';
+import { VscArrowSwap } from 'react-icons/vsc';
 
 // TODO: National Rank at some point...
 const Team = () => {
@@ -30,6 +31,12 @@ const Team = () => {
       }),
       ...(query.season && {
         season: parseInt(query.season as unknown as string)
+      }),
+      ...(query.topics && {
+        topics: (query.topics as string).split(',').map(t => parseInt(t))
+      }),
+      ...(query.topicTags && {
+        topicTags: (query.topicTags as string).split(',').map(t => parseInt(t))
       })
     },
     {
@@ -43,7 +50,7 @@ const Team = () => {
   const [filterModalIsOpen, setFilterModalIsOpen] = useState<boolean>(false);
 
   const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
-  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${getEnumName(data?.circuits[0].event)}, exclusively on Debate Land.`;
+  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${data ? getEnumName(data.circuits[0].event) : '--'}, exclusively on Debate Land.`;
 
   return (
     <>
@@ -70,13 +77,7 @@ const Team = () => {
       <FilterModal
         isOpen={filterModalIsOpen}
         setIsOpen={setFilterModalIsOpen}
-        topics={
-          data
-            ? data.results
-              .map(r => r.tournament.topic)
-              .filter(t => t !== null) as (Topic & { tags: TopicTag[] })[]
-            : []
-        }
+        topics={ data ? data.filterData : [] }
       />
       <div className="min-h-screen">
         <Overview
@@ -114,10 +115,10 @@ const Team = () => {
                 <div className="flex items-center space-x-1 lg:space-x-2">
                   <p>{getEnumName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id}</p>
                   <button
-                    className="p-px bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded group-hover:shadow-halo group-hover:scale-110 transition-all"
+                    className="p-[2px] lg:p-1 bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded group-hover:shadow-halo group-hover:scale-110 transition-all"
                     onClick={() => setFilterModalIsOpen(true)}
                   >
-                    <AiOutlineSwap className="text-white text-sm lg:text-xl" />
+                    <VscArrowSwap className="text-white" />
                   </button>
                 </div>
               )
@@ -207,8 +208,10 @@ const Team = () => {
 
 interface TeamParams extends ParsedUrlQuery {
   id: string;
-  circuit: string;
-  season: string;
+  circuit?: string;
+  season?: string;
+  topics?: string;
+  topicTags?: string;
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -220,12 +223,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
   });
 
-  const { id, circuit, season } = ctx.query as TeamParams;
+  const { id, circuit, season, topics, topicTags } = ctx.query as TeamParams;
 
   await ssg.team.summary.prefetch({
     id,
-    circuit: parseInt(circuit),
-    season: parseInt(season)
+    ...(circuit && { circuit: parseInt(circuit) }),
+    ...(season && { season: parseInt(season) }),
+    ...(topics && { topics: topics?.split(',').map(t => parseInt(t)) }),
+    ...(topicTags && { topicTags: topicTags?.split(',').map(t => parseInt(t)) })
   });
 
   return {

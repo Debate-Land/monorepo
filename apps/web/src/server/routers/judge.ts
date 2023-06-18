@@ -9,6 +9,8 @@ const judgeRouter = router({
         id: z.string(),
         season: z.number().optional(),
         circuit: z.number().optional(),
+        topics: z.array(z.number()).optional(),
+        topicTags: z.array(z.number()).optional()
       })
     )
     .query(async ({ input, ctx }) => {
@@ -36,6 +38,24 @@ const judgeRouter = router({
                       equals: input.season
                     }
                   }),
+                  ...(input.topics && {
+                    topic: {
+                      id: {
+                        in: input.topics
+                      }
+                    }
+                  }),
+                  ...(input.topicTags && {
+                    topic: {
+                      tags: {
+                        some: {
+                          id: {
+                            in: input.topicTags
+                          }
+                        }
+                      }
+                    }
+                  })
                 }
               },
               include: {
