@@ -11,7 +11,7 @@ import { appRouter } from '@src/server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
 import CompetitorHistoryTable from '@src/components/tables/competitor/CompetitorHistoryTable';
-import getEventName from '@src/utils/get-event-name';
+import getEnumName from '@src/utils/get-enum-name';
 
 
 const Competitor = () => {
@@ -78,7 +78,7 @@ const Competitor = () => {
           }
           subtitle={
             data
-              ? `${getEventName(data.teams[0].circuits[0].event)} | ${data.teams[0].circuits[0].name} | ${query.season}`
+              ? `${getEnumName(data.teams[0].circuits[0].event)} | ${data.teams[0].circuits[0].name} | ${query.season}`
               : undefined
           }
           underview={

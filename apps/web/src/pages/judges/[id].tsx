@@ -6,7 +6,7 @@ import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import _ from 'lodash';
 import { JudgingHistoryTable } from '@src/components/tables/judge';
-import getEventName from '@src/utils/get-event-name';
+import getEnumName from '@src/utils/get-enum-name';
 import { ParsedUrlQuery } from 'querystring';
 import { prisma } from '@shared/database';
 import { appRouter } from '@src/server/routers/_app';
@@ -53,7 +53,7 @@ const Judge = () => {
     : NaN) as number;
 
   const SEO_TITLE = `${data?.name || '--'}'s Profile — Debate Land`;
-  const SEO_DESCRIPTION = `${data?.name || '--'}'s judge statistics for ${getEventName(data?.rankings[0].circuit.event)}, exclusively on Debate Land.`;
+  const SEO_DESCRIPTION = `${data?.name || '--'}'s judge statistics for ${getEnumName(data?.rankings[0].circuit.event)}, exclusively on Debate Land.`;
 
   return (
     <>
@@ -87,7 +87,7 @@ const Judge = () => {
           }
           subtitle={
             data
-              ? `${getEventName(data.rankings[0].circuit.event)} | ${data.rankings[0].circuit.name} | ${query.season || "All Seasons"}`
+              ? `${getEnumName(data.rankings[0].circuit.event)} | ${data.rankings[0].circuit.name} | ${query.season || "All Seasons"}`
               : undefined
           }
           underview={

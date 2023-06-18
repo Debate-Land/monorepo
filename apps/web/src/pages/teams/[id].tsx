@@ -5,7 +5,7 @@ import { TournamentHistoryTable } from '@src/components/tables/team'
 import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
-import getEventName from '@src/utils/get-event-name';
+import getEnumName from '@src/utils/get-enum-name';
 import { appRouter } from '../../server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
@@ -43,7 +43,7 @@ const Team = () => {
   const [filterModalIsOpen, setFilterModalIsOpen] = useState<boolean>(false);
 
   const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
-  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${getEventName(data?.circuits[0].event)}, exclusively on Debate Land.`;
+  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${getEnumName(data?.circuits[0].event)}, exclusively on Debate Land.`;
 
   return (
     <>
@@ -112,7 +112,7 @@ const Team = () => {
             data
               ? (
                 <div className="flex items-center space-x-1 lg:space-x-2">
-                  <p>{getEventName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id}</p>
+                  <p>{getEnumName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id}</p>
                   <button
                     className="p-px bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded group-hover:shadow-halo group-hover:scale-110 transition-all"
                     onClick={() => setFilterModalIsOpen(true)}

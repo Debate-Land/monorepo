@@ -62,9 +62,9 @@ export default function TeamCombobox({ event, circuit, season, selected, setSele
   return (
     <Combobox value={selected} onChange={setSelected}>
       <div className="relative mt-1">
-        <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+        <div className="relative w-full cursor-default overflow-hidden rounded-lg text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
           <Combobox.Input
-            className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 dark:bg-slate-800 focus:ring-0"
+            className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 dark:bg-slate-800 focus:ring-0 focus:outline-none"
             displayValue={({ name }: any) => name}
             onChange={(event) => {
               setQuery(event.target.value);

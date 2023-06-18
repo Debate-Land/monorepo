@@ -8,7 +8,7 @@ import HeadToHeadRoundsTable from '@src/components/tables/radar/head-to-head-rou
 import PreviousHistory from '@src/components/tables/radar/previous-history';
 import { appRouter } from '@src/server/routers/_app';
 import getClutchFactor, { getClutchFactorFromRoundHistory } from '@src/utils/get-clutch-factor';
-import getEventName from '@src/utils/get-event-name';
+import getEnumName from '@src/utils/get-enum-name';
 import getExpectedWP from '@src/utils/get-expected-wp';
 import { trpc } from '@src/utils/trpc';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
@@ -180,7 +180,7 @@ const HeadToHead = () => {
           }
           subtitle={
             isReady
-              ? `${query.season} ${getEventName(query.event as Event)}`
+              ? `${query.season} ${getEnumName(query.event as Event)}`
               : undefined
           }
           underview={<></>}

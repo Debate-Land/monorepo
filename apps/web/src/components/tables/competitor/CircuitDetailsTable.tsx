@@ -2,7 +2,7 @@ import React from 'react'
 import { Table } from '@shared/components'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import { Circuit, Season } from '@shared/database';
-import getEventName from '@src/utils/get-event-name';
+import getEnumName from '@src/utils/get-enum-name';
 
 type ExpandedCircuit = Circuit & {
   seasons: Season[];
@@ -27,7 +27,7 @@ const CircuitDetailsTable = ({ data }: CircuitDetailsTableProps) => {
           }),
           column.accessor('event', {
             header: "Event",
-            cell: props => getEventName(props.cell.getValue())
+            cell: props => getEnumName(props.cell.getValue())
           }),
         ] as ColumnDef<ExpandedCircuit>[],
         lg: [
