@@ -39,7 +39,7 @@ const JudgeRecordTable = ({ data }: JudgeRecordTableProps) => {
         }}
         onRowClick={(row) => router.push({
           pathname: `/teams/${row.result.team.id}`,
-          query: omit(query, ['id'])
+          query: omit(query, ['id', 'topics', 'topicTags'])
         })}
       />
     </div>

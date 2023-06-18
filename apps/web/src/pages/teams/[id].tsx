@@ -19,8 +19,8 @@ import { FaExchangeAlt } from 'react-icons/fa';
 import { AiOutlineSwap } from 'react-icons/ai';
 import FilterModal from '@src/components/features/FilterModal';
 import { VscArrowSwap } from 'react-icons/vsc';
+import FilterButton from '@src/components/features/FilterButton';
 
-// TODO: National Rank at some point...
 const Team = () => {
   const { query, isReady, asPath, ...router } = useRouter();
   const { data } = trpc.team.summary.useQuery(
@@ -112,15 +112,9 @@ const Team = () => {
           subtitle={
             data
               ? (
-                <div className="flex items-center space-x-1 lg:space-x-2">
-                  <p>{getEnumName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id}</p>
-                  <button
-                    className="p-[2px] lg:p-1 bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded group-hover:shadow-halo group-hover:scale-110 transition-all"
-                    onClick={() => setFilterModalIsOpen(true)}
-                  >
-                    <VscArrowSwap className="text-white" />
-                  </button>
-                </div>
+                <FilterButton setIsOpen={setFilterModalIsOpen}>
+                  {getEnumName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id.toString()}
+                </FilterButton>
               )
               : undefined
           }

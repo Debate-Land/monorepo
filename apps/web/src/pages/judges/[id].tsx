@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc';
 import { NextSeo } from 'next-seo';
@@ -13,6 +13,8 @@ import { appRouter } from '@src/server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
 import JudgeCharts from '@src/components/charts/JudgeCharts';
+import FilterButton from '@src/components/features/FilterButton';
+import FilterModal from '@src/components/features/FilterModal';
 
 
 const Judge = () => {
@@ -35,6 +37,7 @@ const Judge = () => {
       staleTime: 1000 * 60 * 60 * 24,
     }
   );
+  const [filterModalIsOpen, setFilterModalIsOpen] = useState<boolean>(false);
 
   const avgSpeaks = (data
     ? (_.mean(
@@ -77,6 +80,11 @@ const Judge = () => {
         ]}
         noindex
       />
+      <FilterModal
+        isOpen={filterModalIsOpen}
+        setIsOpen={setFilterModalIsOpen}
+        topics={ data ? data.filterData : [] }
+      />
       <div className="min-h-screen">
         <Overview
           label="Judge"
@@ -87,7 +95,11 @@ const Judge = () => {
           }
           subtitle={
             data
-              ? `${getEnumName(data.rankings[0].circuit.event)} | ${data.rankings[0].circuit.name} | ${query.season || "All Seasons"}`
+              ? (
+                <FilterButton setIsOpen={setFilterModalIsOpen}>
+                  {getEnumName(data.rankings[0].circuit.event)} | {data.rankings[0].circuit.name} | {query.season || "All Seasons"}
+                </FilterButton>
+              )
               : undefined
           }
           underview={

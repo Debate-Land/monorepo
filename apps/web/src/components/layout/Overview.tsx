@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Loader, Text } from '@shared/components'
 import { useRouter } from 'next/router';
 import { IoMdArrowBack } from 'react-icons/io';
+import { omit } from 'lodash';
 
 interface OverviewProps {
   label: string | JSX.Element;
@@ -27,7 +28,7 @@ const Overview = (props: OverviewProps) => {
           <button
             onClick={() => push({
               pathname: '/dataset',
-              query
+              query: omit(query, ['id', 'topics', 'topicTags'])
             })}
           >
             <IoMdArrowBack size={18} className="text-white" />
