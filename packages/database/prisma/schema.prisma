@@ -154,7 +154,7 @@ model Tournament {
   tabEventId     Int                     @map("tab_event_id")
   tabTournId     Int                     @map("tab_tourn_id")
   location       String
-  topic          Topic                   @relation(fields: [topicId], references: [id])
+  topic          Topic?                  @relation(fields: [topicId], references: [id])
   isTocQualifier Boolean                 @map("is_toc_qualifier")
   bidLevel       ElimRoundName?          @map("bid_level")
   hasElimRounds  Boolean                 @map("has_elim_rounds")
@@ -166,7 +166,7 @@ model Tournament {
   records        JudgeRecord[]
   schools        School[]
   seasonId       Int                     @default(2023) @map("season_id")
-  topicId        Int
+  topicId        Int?
 
   @@unique([tabTournId, tabEventId])
   @@index([seasonId])
