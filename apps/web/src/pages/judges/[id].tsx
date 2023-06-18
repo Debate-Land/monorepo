@@ -27,6 +27,12 @@ const Judge = () => {
       }),
       ...(query.season && {
         season: parseInt(query.season as unknown as string)
+      }),
+      ...(query.topics && {
+        topics: (query.topics as string).split(',').map(t => parseInt(t))
+      }),
+      ...(query.topicTags && {
+        topicTags: (query.topicTags as string).split(',').map(t => parseInt(t))
       })
     },
     {

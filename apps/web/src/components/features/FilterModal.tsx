@@ -88,7 +88,7 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
           .map(id => tags.find(t => t.id === id)) as TopicTag[]
         : tags
     );
-  }, []);
+  }, [isOpen]);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -118,7 +118,7 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
               <Dialog.Panel className="w-full max-w-md h-96 transform overflow-hidden rounded-lg bg-white dark:bg-coal p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-xl leading-6 text-luka-200 dark:text-blue-600"
+                  className="text-xl leading-6 text-violet-300"
                 >
                   Filter results
                 </Dialog.Title>
@@ -200,7 +200,7 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
                                             >
                                               {query === '' ? topic.resolution : topic.resolution.substring(topic.resolution.toLowerCase().indexOf(query.toLowerCase()))}
                                             </span>
-                                            {selected || selectedTopics.find(t => t.id === topic.id) ? (
+                                            {selected ? (
                                               <span
                                                 className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                                                   active ? 'text-teal-600 dark:text-teal-300' : 'text-teal-600'
@@ -258,7 +258,7 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
                                           >
                                             {getEnumName(t.tag)}
                                           </span>
-                                          {selected || selectedTags.find(_t => _t.id == t.id) ? (
+                                          {selected ? (
                                             <span
                                               className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                                                 active ? 'text-teal-600 dark:text-teal-300' : 'text-teal-600'
