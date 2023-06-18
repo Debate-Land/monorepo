@@ -110,8 +110,8 @@ const Judge = () => {
                   description: "Judge Index"
                 },
                 {
-                  value: data ? data.results?.length : undefined,
-                  description: "Tournaments"
+                  value: data ? data.results?.map(r => (r.numAff || 0) + (r.numNeg || 0) + (r.numPro || 0) + (r.numCon || 0)).reduce((a, b) => a + b, 0) : undefined,
+                  description: "Rounds"
                 },
                 {
                   value: !isNaN(avgSpeaks) ? avgSpeaks : '--',
