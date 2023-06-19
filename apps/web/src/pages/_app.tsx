@@ -60,7 +60,7 @@ const App = ({ Component, router, pageProps }: AppProps) => {
         `}
       </Script>
     </ThemeProvider>
-  )
-}
+  );
+};
 
 export default trpc.withTRPC(App);

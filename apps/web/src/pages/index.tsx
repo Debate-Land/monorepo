@@ -40,6 +40,9 @@ import { prisma } from '@shared/database';
 import Link from 'next/link';
 import { appRouter } from '@src/server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
+import { getClient } from '@src/lib/sanity';
+import { types } from '@shared/cms';
+import FeatureModal from '@src/components/features/FeatureModal';
 
 interface HomeSEOProps {
   title: string;
@@ -73,9 +76,10 @@ interface HomeProps {
   judges: number;
   competitors: number;
   rounds: number;
+  changelog: types.ChangelogPopup;
 }
 
-const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
+const Home = ({ tournaments, judges, competitors, rounds, changelog }: HomeProps) => {
   const [mounted, setMounted] = useState(false);
   const isLarge = useMediaQuery({
     query: '(min-width: 768px)',
@@ -100,12 +104,13 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
         title={SEO_TITLE}
         description={SEO_DESCRIPTION}
       />
+      <FeatureModal changelog={changelog} />
       <GridLine position={20} outer />
       <GridLine position={35} />
       <GridLine position={50} />
       <GridLine position={65} />
       <GridLine position={80} outer />
-      <div id="dark-background" className="absolute inset-0 dark:coal fixed -z-40" />
+      <div id="dark-background" className="absolute inset-0 dark:coal -z-40" />
       <div
         id="slanted-hero-top"
         className="absolute -z-10 -top-[30%] w-full h-[60%] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 -skew-y-12 2xl:-skew-y-6"
@@ -546,12 +551,12 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
   )
 }
 
-// TODO: Use Sanity here?
-export const getStaticProps = async () => {
+export const getStaticProps = async ({ preview = false }) => {
   const tournaments = await prisma.tournament.count();
   const judges = await prisma.judge.count();
   const competitors = await prisma.competitor.count();
   const rounds = (await prisma.round.count()) / 2;
+  const changelog = (await getClient(preview).fetch<types.ChangelogPopup>(`*[_type=='changelogPopup' ] | order(publishedAt desc)`))[0];
 
   const ssg = createProxySSGHelpers({
     router: appRouter,
@@ -568,7 +573,8 @@ export const getStaticProps = async () => {
       judges,
       competitors,
       rounds,
-      trpcState: ssg.dehydrate()
+      trpcState: ssg.dehydrate(),
+      changelog
     },
     revalidate: 60 * 30 // Half hour
   }

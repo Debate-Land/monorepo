@@ -29,12 +29,11 @@ const ImageComponent = ({ value }) => {
   return (
     <Image
       {...GetImage(value)}
-      blurDataURL={GetImage(value).blurDataURL}
       objectFit="cover"
       sizes="(max-width: 800px) 100vw, 800px"
       alt={value.alt || " "}
-      placeholder="blur"
       loading="lazy"
+      draggable={false}
     />
   );
 };
