@@ -1,12 +1,16 @@
 import '@src/styles/globals.css'
-import React, { useState, useEffect } from 'react'
+import '@src/styles/nprogress.css'
+import React, { useEffect } from 'react'
 import { trpc } from '@src/utils/trpc'
 import { ThemeProvider } from 'next-themes'
 import Script from 'next/script'
 import type { AppProps } from 'next/app'
 // import { Poppins } from 'next/font/google'
 import clsx from 'clsx'
-import {Header, Footer} from '@src/components/layout'
+import NProgress from 'nprogress'
+import { Header, Footer } from '@src/components/layout'
+
+NProgress.configure({ showSpinner: false })
 
 // const poppins = Poppins({
 //   style: ['italic', 'normal'],
@@ -16,6 +20,13 @@ import {Header, Footer} from '@src/components/layout'
 // })
 
 const App = ({ Component, router, pageProps }: AppProps) => {
+
+  useEffect(() => {
+    router.events.on('routeChangeStart', () => NProgress.start());
+    router.events.on('routeChangeComplete', () => NProgress.done());
+    router.events.on('routeChangeError', () => NProgress.done());
+  }, []);
+
   return (
     <ThemeProvider attribute='class' defaultTheme='dark'>
       <div
