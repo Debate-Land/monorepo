@@ -1,6 +1,6 @@
 import '@src/styles/globals.css'
 import '@src/styles/nprogress.css'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { trpc } from '@src/utils/trpc'
 import { ThemeProvider } from 'next-themes'
 import Script from 'next/script'
@@ -9,6 +9,7 @@ import type { AppProps } from 'next/app'
 import clsx from 'clsx'
 import NProgress from 'nprogress'
 import { Header, Footer } from '@src/components/layout'
+import LoadingAnimation from '@src/components/loading-animation'
 
 NProgress.configure({ showSpinner: false })
 
@@ -20,11 +21,20 @@ NProgress.configure({ showSpinner: false })
 // })
 
 const App = ({ Component, router, pageProps }: AppProps) => {
-
+  const [loadingAnimationIsVisibile, setLoadingAnimationIsVisible] = useState(false);
   useEffect(() => {
-    router.events.on('routeChangeStart', () => NProgress.start());
-    router.events.on('routeChangeComplete', () => NProgress.done());
-    router.events.on('routeChangeError', () => NProgress.done());
+    router.events.on('routeChangeStart', () => {
+      NProgress.start();
+      setLoadingAnimationIsVisible(true);
+    });
+    router.events.on('routeChangeComplete', () => {
+      NProgress.done();
+      setLoadingAnimationIsVisible(false);
+    });
+    router.events.on('routeChangeError', () => {
+      NProgress.done();
+      setLoadingAnimationIsVisible(false);
+    });
   }, []);
 
   return (
@@ -35,7 +45,8 @@ const App = ({ Component, router, pageProps }: AppProps) => {
         })}
       >
         <Header />
-        <div className="mt-[3rem]"/>
+        <LoadingAnimation visible={loadingAnimationIsVisibile} />
+        <div className="mt-[3rem]" />
         <Component {...pageProps} />
         <Footer />
       </div>

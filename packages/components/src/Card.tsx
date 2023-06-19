@@ -13,7 +13,7 @@ export interface CardProps {
 
 const Card = ({ title, icon, children, className, theme, ...props }: CardProps) => {
   return (
-    <div className={clsx(className, 'rounded-md md:border border-gray-400/50 backdrop-blur-3xl mx-2')} {...props}>
+    <div className={clsx(className, 'rounded-md md:border border-gray-400/50 backdrop-blur-3xl mx-4 md:mx-auto')} {...props}>
       <div className="p-1 md:p-5">
         <Text as="h3" className={clsx(theme || 'text-luka-200 dark:text-blue-600', 'bold -mb-2 md:mb-2 flex items-center text-2xl sm:text-3xl lg:text-4xl')}>
           {icon}

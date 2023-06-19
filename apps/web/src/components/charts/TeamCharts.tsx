@@ -181,9 +181,9 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
     <Card icon={<AiOutlineLineChart />} title="Analytics" className="relative max-w-[800px] mx-auto my-16">
       <div
         className={clsx(
-          "max-w-[620px] mx-auto w-fit grid",
+          "w-full mx-auto grid",
           {
-            "sm:grid-cols-2 gap-4 sm:ml-8 md:ml-12 ": !ready || results.length > 1,
+            "sm:grid-cols-2 gap-4 ": !ready || results.length > 1,
             "grid place-items-center h-32 md:h-96 w-full": ready && results.length < 2,
           }
         )}
