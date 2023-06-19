@@ -15,6 +15,7 @@ import { GetServerSideProps } from 'next';
 import JudgeCharts from '@src/components/charts/JudgeCharts';
 import FilterButton from '@src/components/features/FilterButton';
 import FilterModal from '@src/components/features/FilterModal';
+import Paradigm from '@src/components/features/Paradigm';
 
 
 const Judge = () => {
@@ -133,6 +134,7 @@ const Judge = () => {
         />
         <JudgingHistoryTable data={data?.results} />
         <JudgeCharts results={data?.results} />
+        <Paradigm data={data?.paradigms || []} />
       </div>
     </>
   )

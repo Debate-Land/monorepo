@@ -118,7 +118,7 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
               <Dialog.Panel className="w-full max-w-md h-96 transform overflow-hidden rounded-lg bg-white dark:bg-coal p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-xl leading-6 text-violet-300"
+                  className="text-xl leading-6 text-violet-400 dark:text-violet-300"
                 >
                   Filter results
                 </Dialog.Title>
@@ -176,7 +176,7 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
                                   {
                                     filteredTopics.length === 0 && (
                                       <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
-                                        No topic history for '{query}'.
+                                        No topic history for "{query}".
                                       </div>
                                     )
                                   }

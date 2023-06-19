@@ -99,6 +99,7 @@ const judgeRouter = router({
                 }),
               }
             },
+            paradigms: true,
             _count: {
               select: {
                 records: true

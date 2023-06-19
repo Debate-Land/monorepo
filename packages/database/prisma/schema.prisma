@@ -342,25 +342,27 @@ model Team {
 }
 
 model Judge {
-  id       String                  @id
-  name     String
-  results  JudgeTournamentResult[]
-  records  JudgeRecord[]
-  speaking RoundSpeakerResult[]
-  rankings JudgeRanking[]
+  id        String                  @id
+  name      String
+  results   JudgeTournamentResult[]
+  records   JudgeRecord[]
+  speaking  RoundSpeakerResult[]
+  rankings  JudgeRanking[]
+  paradigms Paradigm[]
 
   @@fulltext([name])
   @@map("judges")
 }
 
 model Paradigm {
-  id        Int                   @id @default(autoincrement())
-  scrapedAt Int                   @map("scraped_at")
-  text      String
-  html      String
-  result    JudgeTournamentResult @relation(fields: [resultId], references: [id])
-  resultId  Int                   @unique
+  id        Int    @id @default(autoincrement())
+  scrapedAt Int    @map("scraped_at")
+  text      String @db.Text
+  html      String @db.Text
+  judge     Judge  @relation(fields: [judgeId], references: [id])
+  judgeId   String
 
+  @@index([judgeId])
   @@fulltext([text])
   @@map("paradigms")
 }
@@ -386,7 +388,6 @@ model JudgeTournamentResult {
   records         JudgeRecord[]
   tournament      Tournament?   @relation(fields: [tournamentId], references: [id])
   tournamentId    Int?          @map("tournament_id")
-  paradigm        Paradigm?
 
   @@unique([tabTournId, tabEventId, tabJudgeId])
   @@index([judgeId])
