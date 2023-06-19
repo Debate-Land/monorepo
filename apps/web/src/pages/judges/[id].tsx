@@ -16,6 +16,7 @@ import JudgeCharts from '@src/components/charts/JudgeCharts';
 import FilterButton from '@src/components/features/FilterButton';
 import FilterModal from '@src/components/features/FilterModal';
 import Paradigm from '@src/components/features/Paradigm';
+import JudgeDifferentialTable from '@src/components/tables/judge/JudgeDifferentialTable';
 
 
 const Judge = () => {
@@ -134,6 +135,7 @@ const Judge = () => {
         />
         <JudgingHistoryTable data={data?.results} />
         <JudgeCharts results={data?.results} />
+        <JudgeDifferentialTable data={data?.results || []} />
         <Paradigm data={data?.paradigms || []} />
       </div>
     </>

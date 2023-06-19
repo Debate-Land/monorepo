@@ -64,6 +64,11 @@ const judgeRouter = router({
                   select: {
                     name: true,
                     start: true,
+                    topic: {
+                      include: {
+                        tags: true
+                      }
+                    }
                   }
                 }
               },
@@ -154,7 +159,8 @@ const judgeRouter = router({
               }
             }
           }
-        }).then(d => d
+        })
+          .then(d => d
           .map(({ tournament }) => tournament!.topic)
           .filter(t => t !== null) as (Topic & { tags: TopicTag[] })[]
         )

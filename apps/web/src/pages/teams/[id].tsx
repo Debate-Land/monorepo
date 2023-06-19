@@ -20,6 +20,7 @@ import { AiOutlineSwap } from 'react-icons/ai';
 import FilterModal from '@src/components/features/FilterModal';
 import { VscArrowSwap } from 'react-icons/vsc';
 import FilterButton from '@src/components/features/FilterButton';
+import TeamDifferentialTable from '@src/components/tables/team/TeamDifferentialTable';
 
 const Team = () => {
   const { query, isReady, asPath, ...router } = useRouter();
@@ -194,6 +195,7 @@ const Team = () => {
         />
         <TournamentHistoryTable data={data?.results} />
         <TeamCharts results={data?.results.sort((a, b) => a.tournament.start - b.tournament.start) || []} />
+        <TeamDifferentialTable data={data?.results || []} />
         <TeamInfoTable aliases={data?.aliases} schools={data?.schools} />
       </div>
     </>

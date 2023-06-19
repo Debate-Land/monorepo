@@ -2,7 +2,7 @@ import React from 'react'
 import { Table } from '@shared/components'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import { ExpandedJudgeTournamentResult } from './JudgingHistoryTable';
-import { JudgeRecord, Round, RoundSpeakerResult, Competitor, Team } from '@shared/database';
+import { JudgeRecord, Round, RoundSpeakerResult, Competitor, Team, } from '@shared/database';
 import { trpc } from '@src/utils/trpc';
 import JudgeRecordTable from './JudgeRecordTable';
 import JudgeSpeakingTable from './JudgeSpeakingTable';

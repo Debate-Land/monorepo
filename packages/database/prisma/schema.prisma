@@ -128,7 +128,7 @@ model TopicTag {
 
 model Topic {
   id         Int          @id @default(autoincrement())
-  resolution String
+  resolution String       @db.Text
   event      Event
   tags       TopicTag[]
   tournament Tournament[]
