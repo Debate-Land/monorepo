@@ -183,7 +183,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
         className={clsx(
           "w-full mx-auto grid",
           {
-            "sm:grid-cols-2 gap-4 ": !ready || results.length > 1,
+            "sm:grid-cols-2 gap-4": !ready || results.length > 1,
             "grid place-items-center h-32 md:h-96 w-full": ready && results.length < 2,
           }
         )}

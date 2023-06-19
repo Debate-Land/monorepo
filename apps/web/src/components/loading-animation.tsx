@@ -1,5 +1,6 @@
 import { Transition } from '@headlessui/react';
-import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/router';
+import React, { useEffect, useMemo, useState } from 'react'
 import TextTransition, { presets } from 'react-text-transition'
 
 const PHRASES = [
@@ -18,12 +19,33 @@ const transitionClasses = {
   leaveTo: 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95',
 };
 
+const PATHNAMES = [
+  "blog",
+  "about",
+  "methodology",
+  "contact",
+  "ods",
+  "known-issues",
+  "roadmap",
+  "feedback"
+];
+
 interface LoadingAnimationProps {
   visible: boolean;
 }
 
 const LoadingAnimation = ({ visible }: LoadingAnimationProps) => {
   const [index, setIndex] = useState(0);
+  const { pathname } = useRouter();
+  const isAnimateablePath = useMemo(() => {
+    const fragments = pathname.split('/');
+    for (let i = 0; i < fragments.length; i++) {
+      if (PATHNAMES.includes(fragments[i])) {
+        return false;
+      }
+    }
+    return true;
+  }, [pathname]);
 
   useEffect(() => {
     const intervalId = setInterval(
@@ -35,7 +57,7 @@ const LoadingAnimation = ({ visible }: LoadingAnimationProps) => {
 
   return (
     <Transition
-      show={visible}
+      show={isAnimateablePath && visible}
       className="z-50 w-full h-full fixed grid place-items-center place-content-center"
       {...transitionClasses}
     >
