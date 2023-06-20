@@ -20,9 +20,8 @@ import EmailModal from '@src/components/email/email-modal';
 import { Button } from '@shared/components';
 import { VscArrowSwap } from 'react-icons/vsc';
 import { AiOutlineMail } from 'react-icons/ai'
+import CommandBar from '@src/components/features/CommandBar';
 
-
-type ActiveModal = "Email" | "Filter" | null;
 
 const Team = () => {
   const { query, isReady, asPath, ...router } = useRouter();
@@ -50,7 +49,6 @@ const Team = () => {
       staleTime: 1000 * 60 * 60 * 24,
     }
   );
-  const [activeModal, setActiveModal] = useState<ActiveModal>(null);
 
   const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
   const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${data ? getEnumName(data.circuits[0].event) : '--'}, exclusively on Debate Land.`;
@@ -76,17 +74,6 @@ const Team = () => {
           },
         ]}
         noindex
-      />
-      <FilterModal
-        isOpen={activeModal == "Filter"}
-        setIsOpen={(val) => setActiveModal(val ? "Filter" : null)}
-        topics={ data ? data.filterData : [] }
-      />
-      <EmailModal
-        isOpen={activeModal == "Email"}
-        setIsOpen={(val) => setActiveModal(val ? "Filter" : null)}
-        teamId={data?.id}
-        subscriptionName={data?.aliases[0].code}
       />
       <div className="min-h-screen">
         <Overview
@@ -121,24 +108,15 @@ const Team = () => {
           subtitle={
             data
               ? (
-
-                <div className="flex flex-col w-full items-center space-y-1">
-                  <p>{getEnumName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id.toString()}</p>
-                  <div className="flex w-fit">
-                  <Button
-                    onClick={() => setActiveModal("Filter")}
-                    icon={<VscArrowSwap className="text-white" />}
-                    _type="primary"
-                    className="w-6 h-6 !mx-1 !p-0 !rounded"
-                  />
-                  <Button
-                    onClick={() => setActiveModal("Email")}
-                    icon={<AiOutlineMail className="text-white" />}
-                    _type="primary"
-                    className="w-6 h-6 !mx-1 !p-0 !rounded"
-                    />
-                  </div>
-                </div>
+                <CommandBar
+                  topics={ data ? data.filterData : [] }
+                  subscriptionName={data?.aliases[0].code || ''}
+                  emailProps={{
+                    teamId: data?.id
+                  }}
+                >
+                  {getEnumName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id.toString()}
+                </CommandBar>
               )
               : undefined
           }

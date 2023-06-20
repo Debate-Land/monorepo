@@ -6,7 +6,8 @@ import { AiOutlineArrowRight, AiOutlineMail } from 'react-icons/ai'
 import * as Yup from 'yup';
 
 export interface EmailInputProps {
-  teamId?: string
+  teamId?: string;
+  judgeId?: string;
 }
 
 const EmailInput = (props: EmailInputProps) => {

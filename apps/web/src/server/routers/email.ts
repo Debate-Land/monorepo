@@ -80,18 +80,45 @@ const emailRouter = router({
   unsubscribe: procedure
     .input(z.object({
       email: z.string(),
-      teamId: z.string().optional()
+      teamId: z.string().optional(),
+      judgeId: z.string().optional()
     }))
     .mutation(async ({ input, ctx }) => {
       const { prisma } = ctx;
 
+      let type: "judge" | "team" | "mailing list";
+      let targetId: string | undefined;
+
       if (input.teamId) {
+        type = "team";
+        targetId = input.teamId
+      } else if (input.judgeId) {
+        type = "judge";
+        targetId = input.judgeId;
+      } else {
+        type = "mailing list";
+      }
+
+      if (type === "team") {
         return prisma.emailSubscriber.update({
           where: {
             email: input.email
           },
           data: {
             teams: {
+              disconnect: {
+                id: input.teamId
+              }
+            }
+          }
+        });
+      } else if (type === "judge") {
+        return prisma.emailSubscriber.update({
+          where: {
+            email: input.email
+          },
+          data: {
+            judges: {
               disconnect: {
                 id: input.teamId
               }

@@ -17,6 +17,7 @@ import FilterButton from '@src/components/features/FilterButton';
 import FilterModal from '@src/components/features/FilterModal';
 import Paradigm from '@src/components/features/Paradigm';
 import JudgeDifferentialTable from '@src/components/tables/judge/JudgeDifferentialTable';
+import CommandBar from '@src/components/features/CommandBar';
 
 
 const Judge = () => {
@@ -88,11 +89,6 @@ const Judge = () => {
         ]}
         noindex
       />
-      <FilterModal
-        isOpen={filterModalIsOpen}
-        setIsOpen={setFilterModalIsOpen}
-        topics={ data ? data.filterData : [] }
-      />
       <div className="min-h-screen">
         <Overview
           label="Judge"
@@ -104,9 +100,15 @@ const Judge = () => {
           subtitle={
             data
               ? (
-                <FilterButton setIsOpen={setFilterModalIsOpen}>
+                <CommandBar
+                  topics={ data ? data.filterData : [] }
+                  subscriptionName={data?.name}
+                  emailProps={{
+                    judgeId: data?.id
+                  }}
+                >
                   {getEnumName(data.rankings[0].circuit.event)} | {data.rankings[0].circuit.name} | {query.season || "All Seasons"}
-                </FilterButton>
+                </CommandBar>
               )
               : undefined
           }

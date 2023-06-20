@@ -10,7 +10,7 @@ import { LuChevronsUpDown } from 'react-icons/lu';
 import { omit } from 'lodash';
 import { CloseIcon } from '@sanity/icons';
 
-interface FilterModalProps {
+export interface FilterModalProps {
   isOpen: boolean;
   setIsOpen(isOpen: boolean): void;
   topics: (Topic & {

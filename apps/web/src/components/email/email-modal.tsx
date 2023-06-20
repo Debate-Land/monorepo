@@ -5,7 +5,7 @@ import { Transition } from '@headlessui/react';
 import { Dialog } from '@headlessui/react';
 import { CloseIcon } from '@sanity/icons';
 
-interface EmailModalProps extends EmailInputProps {
+export interface EmailModalProps extends EmailInputProps {
   isOpen: boolean;
   setIsOpen(isOpen: boolean): void;
   subscriptionName: string

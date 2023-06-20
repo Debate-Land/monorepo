@@ -59,9 +59,10 @@ enum TopicType {
 }
 
 model EmailSubscriber {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  teams Team[]
+  id     Int     @id @default(autoincrement())
+  email  String  @unique
+  teams  Team[]
+  judges Judge[]
 
   @@map("email_subscribers")
 }
@@ -351,13 +352,14 @@ model Team {
 }
 
 model Judge {
-  id        String                  @id
-  name      String
-  results   JudgeTournamentResult[]
-  records   JudgeRecord[]
-  speaking  RoundSpeakerResult[]
-  rankings  JudgeRanking[]
-  paradigms Paradigm[]
+  id          String                  @id
+  name        String
+  results     JudgeTournamentResult[]
+  records     JudgeRecord[]
+  speaking    RoundSpeakerResult[]
+  rankings    JudgeRanking[]
+  paradigms   Paradigm[]
+  subscribers EmailSubscriber[]
 
   @@fulltext([name])
   @@map("judges")
