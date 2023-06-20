@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc';
 import { TournamentHistoryTable } from '@src/components/tables/team'
@@ -10,17 +10,19 @@ import { appRouter } from '../../server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
-import { Topic, TopicTag, prisma } from '@shared/database';
+import { prisma } from '@shared/database';
 import { omit } from 'lodash';
 import TeamCharts from '@src/components/charts/TeamCharts';
 import TeamInfoTable from '@src/components/tables/team/TeamInfoTable';
-import { BsFilter } from 'react-icons/bs';
-import { FaExchangeAlt } from 'react-icons/fa';
-import { AiOutlineSwap } from 'react-icons/ai';
 import FilterModal from '@src/components/features/FilterModal';
-import { VscArrowSwap } from 'react-icons/vsc';
-import FilterButton from '@src/components/features/FilterButton';
 import TeamDifferentialTable from '@src/components/tables/team/TeamDifferentialTable';
+import EmailModal from '@src/components/email/email-modal';
+import { Button } from '@shared/components';
+import { VscArrowSwap } from 'react-icons/vsc';
+import { AiOutlineMail } from 'react-icons/ai'
+
+
+type ActiveModal = "Email" | "Filter" | null;
 
 const Team = () => {
   const { query, isReady, asPath, ...router } = useRouter();
@@ -48,7 +50,7 @@ const Team = () => {
       staleTime: 1000 * 60 * 60 * 24,
     }
   );
-  const [filterModalIsOpen, setFilterModalIsOpen] = useState<boolean>(false);
+  const [activeModal, setActiveModal] = useState<ActiveModal>(null);
 
   const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
   const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${data ? getEnumName(data.circuits[0].event) : '--'}, exclusively on Debate Land.`;
@@ -76,9 +78,15 @@ const Team = () => {
         noindex
       />
       <FilterModal
-        isOpen={filterModalIsOpen}
-        setIsOpen={setFilterModalIsOpen}
+        isOpen={activeModal == "Filter"}
+        setIsOpen={(val) => setActiveModal(val ? "Filter" : null)}
         topics={ data ? data.filterData : [] }
+      />
+      <EmailModal
+        isOpen={activeModal == "Email"}
+        setIsOpen={(val) => setActiveModal(val ? "Filter" : null)}
+        teamId={data?.id}
+        subscriptionName={data?.aliases[0].code}
       />
       <div className="min-h-screen">
         <Overview
@@ -113,9 +121,24 @@ const Team = () => {
           subtitle={
             data
               ? (
-                <FilterButton setIsOpen={setFilterModalIsOpen}>
-                  {getEnumName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id.toString()}
-                </FilterButton>
+
+                <div className="flex flex-col w-full items-center space-y-1">
+                  <p>{getEnumName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id.toString()}</p>
+                  <div className="flex w-fit">
+                  <Button
+                    onClick={() => setActiveModal("Filter")}
+                    icon={<VscArrowSwap className="text-white" />}
+                    _type="primary"
+                    className="w-6 h-6 !mx-1 !p-0 !rounded"
+                  />
+                  <Button
+                    onClick={() => setActiveModal("Email")}
+                    icon={<AiOutlineMail className="text-white" />}
+                    _type="primary"
+                    className="w-6 h-6 !mx-1 !p-0 !rounded"
+                    />
+                  </div>
+                </div>
               )
               : undefined
           }

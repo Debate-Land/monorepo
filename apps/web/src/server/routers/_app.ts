@@ -5,6 +5,7 @@ import judgeRouter from './judge';
 import featureRouter from './feature';
 import feedbackRouter from './feedbackRouter';
 import competitorRouter from './competitor';
+import emailRouter from './email';
 
 export const appRouter = router({
   dataset: datasetRouter,
@@ -12,7 +13,8 @@ export const appRouter = router({
   judge: judgeRouter,
   feature: featureRouter,
   feedback: feedbackRouter,
-  competitor: competitorRouter
+  competitor: competitorRouter,
+  email: emailRouter
 });
 
 // export type definition of API

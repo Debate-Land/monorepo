@@ -24,17 +24,14 @@ const Team = async (id: string) => {
   });
   const code = team.aliases[0].code;
 
-  console.log(code)
-
   team.subscribers.forEach(async ({ email }) => {
     await resend.sendEmail({
-      from: 'mail@updates.debate.land',
+      from: 'Debate Land Updates <mail@updates.debate.land>',
       to: email,
       subject: `Update for ${code} on Debate Land.`,
       reply_to: 'support@debate.land',
       react: <TransactionalUpdateEmail
-        title="You've got mail from Debate Land!"
-        message={`We just logged an update for ${code}. Click below to see what changed!`}
+        updateTarget={code}
         actionUrl={`https://debate.land/teams/${id}`}
         unsubscribeUrl={`https://debate.land/emails/unsubscribe?type=team&id=${id}&email=${email}`}
       />

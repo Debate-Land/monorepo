@@ -27,7 +27,9 @@ const PATHNAMES = [
   "ods",
   "known-issues",
   "roadmap",
-  "feedback"
+  "feedback",
+  "terms-of-service",
+  "privacy-policy"
 ];
 
 interface LoadingAnimationProps {

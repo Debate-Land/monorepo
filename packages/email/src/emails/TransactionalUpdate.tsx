@@ -14,8 +14,7 @@ import {
 import * as React from 'react';
 
 interface TransactionalUpdateEmailProps {
-  title: string;
-  message: string;
+  updateTarget: string;
   actionUrl: string;
   unsubscribeUrl: string;
 }
@@ -23,45 +22,35 @@ interface TransactionalUpdateEmailProps {
 const baseUrl = 'https://debate.land';
 
 export const TransactionalUpdateEmail = ({
-  title,
-  message,
+  updateTarget,
   actionUrl,
   unsubscribeUrl,
 }: TransactionalUpdateEmailProps) => (
   <Html>
     <Head />
-    <Preview>{title}</Preview>
+    <Preview>{"You've"} got an update from Debate Land!</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={logoContainer}>
           <Img
             src={`${baseUrl}/assets/img/wordmark.png`}
-            width="32"
-            height="85"
+            width="212"
+            height="80"
             alt="Debate Land"
           />
         </Section>
-        <Heading style={h1}>{title}</Heading>
+        <Heading style={h1}>{"You've"} got an update from Debate Land!</Heading>
 
         <Section style={section}>
           <Text style={heroText}>
-            {message}
+            We just logged an update for {updateTarget}. Click below to see what changed!
           </Text>
           <Link href={actionUrl} style={confirmationCodeText}>View Update</Link>
         </Section>
 
         <Text style={text}>
-          If you didn't request this email or want to unsubscribe, <Link href={unsubscribeUrl}>click here</Link>.
+          If you {"didn't"} request this email or want to unsubscribe, <Link href={unsubscribeUrl}>click here</Link>.
         </Text>
-
-        <Section style={logoContainer}>
-          <Img
-            src={`${baseUrl}/assets/img/wordmark.png`}
-            width="32"
-            height="85"
-            alt="Debate Land"
-          />
-        </Section>
 
         <Section>
           <Link
