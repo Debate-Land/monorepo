@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { Handlers, Resend } from '@shared/email';
+import { Handlers } from '@shared/email';
 import { EmailSubscriber } from '@shared/database';
 
 const emailRouter = router({
