@@ -24,7 +24,7 @@ const Team = async (id: string) => {
   });
   const code = team.aliases[0].code;
 
-  await Promise.all(team.subscribers.map(({ email }) => (
+  team.subscribers.forEach(({ email }) => {
     resend.sendEmail({
       from: 'Debate Land Updates <mail@updates.debate.land>',
       to: email,
@@ -40,7 +40,7 @@ const Team = async (id: string) => {
         }}
       />
     })
-  )));
+  });
 };
 
 export default Team;

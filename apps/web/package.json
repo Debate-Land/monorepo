@@ -16,6 +16,7 @@
     "@sanity/ui": "1",
     "@sanity/webhook": "^2.0.0",
     "@shared/cms": "*",
+    "@shared/email": "*",
     "@shared/components": "*",
     "@shared/database": "*",
     "@tanstack/react-query": "^4.28.0",

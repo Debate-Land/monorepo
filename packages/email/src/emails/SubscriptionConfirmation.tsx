@@ -12,23 +12,23 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
-interface TransactionalUpdateEmailProps {
-  updateTarget: string;
-  actionUrl: string;
+interface SubscriptionConfirmationEmailProps {
+  updateTarget?: string;
+  action: "subscribed" | "unsubscribed";
   unsubscribe: {
     type: string;
-    id: string;
+    id?: string;
     email: string;
   };
 }
 
 const baseUrl = 'https://debate.land';
 
-export const TransactionalUpdateEmail = ({
+export const SubscriptionConfirmationEmail = ({
   updateTarget,
-  actionUrl,
+  action,
   unsubscribe,
-}: TransactionalUpdateEmailProps) => (
+}: SubscriptionConfirmationEmailProps) => (
   <Html>
     <Head />
     <Preview>{"You've"} got an update from Debate Land!</Preview>
@@ -46,13 +46,24 @@ export const TransactionalUpdateEmail = ({
 
         <Section style={section}>
           <Text style={heroText}>
-            We just logged an update for {updateTarget}. Click below to see what changed!
+            {
+              unsubscribe.type === "mailing list" || updateTarget === undefined
+                ? (
+                  <>
+                    {"You're"} on our mailing list! From now on, {"you'll"} recieve periodic updates for Debate Land.
+                  </>
+                )
+                : (
+                  <>
+                    {"We\'ve"} just processed your {action === "subscribed" ? "subscription" : "unsubscription"} request for {updateTarget} successfully. {"You'll"} now recieve emails any time new data is added for them!
+                  </>
+                )
+            }
           </Text>
-          <Link href={actionUrl} style={confirmationCodeText}>View Update</Link>
         </Section>
 
         <Text style={text}>
-          If you {"didn't"} request this email or want to unsubscribe, <Link href={`https://debate.land/emails/unsubscribe?type=${unsubscribe.type}&id=${unsubscribe.id}&email=${unsubscribe.email}`}>click here</Link>.
+          If you {"didn't"} request this email or want to unsubscribe, <Link href={`https://debate.land/emails/unsubscribe?type=${unsubscribe.type}${unsubscribe.id ? `&id=${unsubscribe.id}` : ''}&email=${unsubscribe.email}`}>click here</Link>.
         </Text>
 
         <Section>
@@ -105,7 +116,7 @@ export const TransactionalUpdateEmail = ({
   </Html>
 );
 
-export default TransactionalUpdateEmail;
+export default SubscriptionConfirmationEmail;
 
 const section = {
   padding: '24px',
