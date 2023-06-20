@@ -13,7 +13,7 @@ const emailRouter = router({
     .mutation(async ({ input, ctx }) => {
       const { prisma } = ctx;
 
-      const existingSubscriber = await prisma.emailSubscriber.findUniqueOrThrow({
+      const existingSubscriber = await prisma.emailSubscriber.findUnique({
         where: {
           email: input.email
         }
