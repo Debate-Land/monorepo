@@ -14,7 +14,7 @@ const Team = async (id: string) => {
         select: {
           code: true
         }
-      },
+    },
       subscribers: {
         select: {
           email: true
@@ -24,8 +24,8 @@ const Team = async (id: string) => {
   });
   const code = team.aliases[0].code;
 
-  team.subscribers.forEach(async ({ email }) => {
-    await resend.sendEmail({
+  await Promise.all(team.subscribers.map(({ email }) => (
+    resend.sendEmail({
       from: 'Debate Land Updates <mail@updates.debate.land>',
       to: email,
       subject: `Update for ${code} on Debate Land.`,
@@ -33,10 +33,14 @@ const Team = async (id: string) => {
       react: <TransactionalUpdateEmail
         updateTarget={code}
         actionUrl={`https://debate.land/teams/${id}`}
-        unsubscribeUrl={`https://debate.land/emails/unsubscribe?type=team&id=${id}&email=${email}`}
+        unsubscribe={{
+          type: "team",
+          id: id,
+          email: email,
+        }}
       />
     })
-  });
+  )));
 };
 
 export default Team;

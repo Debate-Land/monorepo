@@ -16,7 +16,11 @@ import * as React from 'react';
 interface TransactionalUpdateEmailProps {
   updateTarget: string;
   actionUrl: string;
-  unsubscribeUrl: string;
+  unsubscribe: {
+    type: string;
+    id: string;
+    email: string;
+  };
 }
 
 const baseUrl = 'https://debate.land';
@@ -24,7 +28,7 @@ const baseUrl = 'https://debate.land';
 export const TransactionalUpdateEmail = ({
   updateTarget,
   actionUrl,
-  unsubscribeUrl,
+  unsubscribe,
 }: TransactionalUpdateEmailProps) => (
   <Html>
     <Head />
@@ -49,7 +53,7 @@ export const TransactionalUpdateEmail = ({
         </Section>
 
         <Text style={text}>
-          If you {"didn't"} request this email or want to unsubscribe, <Link href={unsubscribeUrl}>click here</Link>.
+          If you {"didn't"} request this email or want to unsubscribe, <Link href={`https://debate.land/emails/unsubscribe?type=${unsubscribe.type}&id=${unsubscribe.id}&email=${unsubscribe.email}`}>click here</Link>.
         </Text>
 
         <Section>
