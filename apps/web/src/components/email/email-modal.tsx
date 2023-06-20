@@ -8,7 +8,7 @@ import { CloseIcon } from '@sanity/icons';
 interface EmailModalProps extends EmailInputProps {
   isOpen: boolean;
   setIsOpen(isOpen: boolean): void;
-  subscriptionName?: string
+  subscriptionName: string
 }
 
 const EmailModal = ({ isOpen, setIsOpen, subscriptionName, ...props}: EmailModalProps) => {

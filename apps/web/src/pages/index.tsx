@@ -43,6 +43,8 @@ import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { getClient } from '@src/lib/sanity';
 import { types } from '@shared/cms';
 import FeatureModal from '@src/components/features/FeatureModal';
+import { ArrowRightIcon } from '@sanity/icons';
+import EmailModal from '@src/components/email/email-modal';
 
 interface HomeSEOProps {
   title: string;
@@ -87,6 +89,7 @@ const Home = ({ tournaments, judges, competitors, rounds, changelog }: HomeProps
   const { theme } = useTheme();
   const router = useRouter();
   useEffect(() => { setMounted(true) }, []);
+  const [emailModalActive, setEmailModalActive] = useState(false);
 
   const SEO_TITLE = "Debate Land";
   const SEO_DESCRIPTION = "Data for all things debate.";
@@ -105,6 +108,11 @@ const Home = ({ tournaments, judges, competitors, rounds, changelog }: HomeProps
         description={SEO_DESCRIPTION}
       />
       <FeatureModal changelog={changelog} />
+      <EmailModal
+        isOpen={emailModalActive}
+        setIsOpen={setEmailModalActive}
+        subscriptionName='our mailing list'
+      />
       <GridLine position={20} outer />
       <GridLine position={35} />
       <GridLine position={50} />
@@ -173,6 +181,13 @@ const Home = ({ tournaments, judges, competitors, rounds, changelog }: HomeProps
                         && props.errors.query
                         && <p className="ml-1 text-red-400">{props.errors.query}</p>
                       }
+                      <button
+                        className="flex items-center space-x-1 group mx-auto mt-2 md:mx-0"
+                        onClick={() => setEmailModalActive(true)}
+                      >
+                        <p className="underline text-sm md:text-md text-blue-500">Stay in the loop</p>
+                        <ArrowRightIcon className="text-blue-500 group-hover:-rotate-45 group-hover:bg-gradient-to-r group-hover:!text-white from-sky-400 via-purple-500 to-red-400 rounded-full transition-all" />
+                      </button>
                     </div>
                   )
                 }
@@ -228,7 +243,7 @@ const Home = ({ tournaments, judges, competitors, rounds, changelog }: HomeProps
             <Text className="!text-gray-400 pb-4 sm:pb-0">Rounds</Text>
           </div>
       </section>
-      <section className="flex flex-col mt-12 2xl:mt-32">
+      <section className="flex flex-col mt-12 xl:mt-32">
         <h3 className="max-w-96 text-xl mx-auto">Backed by the best</h3>
         <div className="my-4 mx-auto flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
           <div className="flex mx-auto space-x-4">
@@ -289,7 +304,7 @@ const Home = ({ tournaments, judges, competitors, rounds, changelog }: HomeProps
           </div>
         </div>
       </section>
-      <section className="pt-20 mt-20 relative" id="query-tools">
+      <section className="pt-20 xl:pt-32 relative" id="query-tools">
         <span
           className="absolute w-full h-[70%] top-0 right-0 -z-10 bg-gradient-to-t from-sky-100 via-sky-100/90 dark:from-gray-900 dark:via-gray-900 dark:to-white/0"
           style={{
@@ -396,7 +411,7 @@ const Home = ({ tournaments, judges, competitors, rounds, changelog }: HomeProps
         </div>
       </section>
       <section className="pt-32 mb-32 relative h-[80rem] md:h-[50rem] flex flex-col justify-center" id="faq">
-        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-blue-900" />
+        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-slate-800" />
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
             The{' '}
