@@ -52,7 +52,7 @@ export const TransactionalUpdateEmail = ({
         </Section>
 
         <Text style={text}>
-          If you {"didn't"} request this email or want to unsubscribe, <Link href={`https://debate.land/emails/unsubscribe?type=${unsubscribe.type}&id=${unsubscribe.id}&email=${unsubscribe.email}`}>click here</Link>.
+          If you {"didn't"} request this email or want to unsubscribe, <Link href={`https://debate.land/emails/unsubscribe?type=${unsubscribe.type}${unsubscribe.id ? `&id=${unsubscribe.id}` : ''}&email=${unsubscribe.email}`}>click here</Link>.
         </Text>
 
         <Section>

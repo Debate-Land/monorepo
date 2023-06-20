@@ -87,20 +87,17 @@ const emailRouter = router({
       const { prisma } = ctx;
 
       let type: "judge" | "team" | "mailing list";
-      let targetId: string | undefined;
 
       if (input.teamId) {
         type = "team";
-        targetId = input.teamId
       } else if (input.judgeId) {
         type = "judge";
-        targetId = input.judgeId;
       } else {
         type = "mailing list";
       }
 
       if (type === "team") {
-        return prisma.emailSubscriber.update({
+        const subscriber = await prisma.emailSubscriber.update({
           where: {
             email: input.email
           },
@@ -110,7 +107,7 @@ const emailRouter = router({
                 id: input.teamId
               }
             }
-          }
+          },
         });
       } else if (type === "judge") {
         return prisma.emailSubscriber.update({
