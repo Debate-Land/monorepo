@@ -86,13 +86,15 @@ const emailRouter = router({
         confirmationEmails.push(mailingListSub);
       }
 
-      const transactionalSub = await Handlers.Subscriber({
-        subscriberId: subscriber.id,
-        type,
-        id: targetId,
-        action: "subscribed"
-      });
-      confirmationEmails.push(transactionalSub);
+      if (type !== "mailing list") {
+        const transactionalSub = await Handlers.Subscriber({
+          subscriberId: subscriber.id,
+          type,
+          id: targetId,
+          action: "subscribed"
+        });
+        confirmationEmails.push(transactionalSub);
+      }
 
       return {
         subscriber,

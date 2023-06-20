@@ -39,13 +39,15 @@ const CommandBar = ({ children, topics, subscriptionName, emailProps }: CommandB
             icon={<VscArrowSwap className="text-white text-lg" />}
             _type="primary"
             className="w-6 h-6 !mx-1 !p-0 !rounded"
+            customIcon
           />
           <Button
             onClick={() => setActiveModal("Email")}
             icon={<AiOutlineMail className="text-white text-lg" />}
             _type="primary"
             className="w-6 h-6 !mx-1 !p-0 !rounded"
-            />
+            customIcon
+          />
         </div>
       </div>
     </>
