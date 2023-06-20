@@ -21,7 +21,7 @@ const Overview = (props: OverviewProps) => {
   const { query, pathname, push } = useRouter();
 
   return (
-    <div className="group w-full flex flex-col bg-luka-100 overflow-hidden relative">
+    <div className="w-full flex flex-col bg-luka-100 overflow-hidden relative">
       {
         BACK_PATHS.includes(pathname) &&
         <div className="!cursor-pointer absolute top-5 left-5 z-20 w-6 h-6 flex justify-center items-center bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded-full">
@@ -40,7 +40,7 @@ const Overview = (props: OverviewProps) => {
       <div className="flex justify-center items-center w-full bg-luka-100 py-6">
         <div
           id="overview"
-          className="flex flex-col md:flex-row items-center md:items-start lg:w-[1050px] justify-between lg:justify-center px-2 lg:px-0 pb-4"
+          className="group flex flex-col md:flex-row items-center md:items-start lg:w-[1050px] justify-between lg:justify-center px-2 lg:px-0 pb-4"
         >
           <span id="entry-info" className="flex flex-col items-center md:items-start w-full md:w-[50%] p-2 relative">
             <div id="blob1" className='absolute hidden lg:block -top-50 right-0 w-72 h-72 bg-yellow-600 rounded-full mix-blend-lighten filter blur-xl' />

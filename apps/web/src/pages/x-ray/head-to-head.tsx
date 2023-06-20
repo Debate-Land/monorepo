@@ -151,7 +151,7 @@ const HeadToHead = () => {
             data
               ? <h1>
                 <button
-                  className="hover:text-indigo-200 group-hover:underline group-hover:decoration-dotted"
+                  className="group-hover:underline group-hover:decoration-dotted underline-offset-4 hover:opacity-80 active:opacity-100"
                   onClick={() => push({
                     pathname: `/teams/${query.team1}`,
                     query: {
@@ -164,7 +164,7 @@ const HeadToHead = () => {
                 </button>
                 {' vs '}
                 <button
-                  className="hover:text-indigo-200 group-hover:underline group-hover:decoration-dotted"
+                  className="group-hover:underline group-hover:decoration-dotted underline-offset-4 hover:opacity-80 active:opacity-100"
                   onClick={() => push({
                     pathname: `/teams/${query.team2}`,
                     query: {

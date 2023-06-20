@@ -63,9 +63,9 @@ const LoadingAnimation = ({ visible }: LoadingAnimationProps) => {
       className="z-50 w-full h-full fixed grid place-items-center place-content-center"
       {...transitionClasses}
     >
-      <div className="w-52 flex justify-center bg-gradient-to-r backdrop-blur-sm from-sky-400/70 via-purple-500/70 to-red-400/70 px-2 py-3 rounded-lg">
+      <div className="w-52 flex justify-center bg-gradient-to-r backdrop-blur-sm from-sky-400/70 via-purple-500/70 to-red-400/70 px-2 py-3 rounded-full">
         <h3>
-          <TextTransition springConfig={presets.stiff} className="animate-pulse">
+          <TextTransition springConfig={presets.stiff} className="text-white animate-pulse">
             {PHRASES[index % PHRASES.length]}
           </TextTransition>
         </h3>

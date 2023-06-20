@@ -14,12 +14,7 @@ import { prisma } from '@shared/database';
 import { omit } from 'lodash';
 import TeamCharts from '@src/components/charts/TeamCharts';
 import TeamInfoTable from '@src/components/tables/team/TeamInfoTable';
-import FilterModal from '@src/components/features/FilterModal';
 import TeamDifferentialTable from '@src/components/tables/team/TeamDifferentialTable';
-import EmailModal from '@src/components/email/email-modal';
-import { Button } from '@shared/components';
-import { VscArrowSwap } from 'react-icons/vsc';
-import { AiOutlineMail } from 'react-icons/ai'
 import CommandBar from '@src/components/features/CommandBar';
 
 
@@ -82,20 +77,30 @@ const Team = () => {
             data
               ? (
                 <>
-                  <button onClick={() => router.push({
-                    pathname: `/competitors/${data.competitors[0].id}`,
-                    query: omit(query, 'id')
-                  })}>
+                  <button
+                      onClick={
+                        () => router.push({
+                          pathname: `/competitors/${data.competitors[0].id}`,
+                          query: omit(query, 'id')
+                        })
+                      }
+                      className="group-hover:underline group-hover:decoration-dotted underline-offset-4 hover:opacity-80 active:opacity-100"
+                    >
                     {data.competitors[0].name}
                   </button>
                   {
                     data.competitors.length > 1 && (
                       <span>
                         {' & '}
-                        <button onClick={() => router.push({
-                          pathname: `/competitors/${data.competitors[1].id}`,
-                          query: omit(query, 'id')
-                        })}>
+                        <button
+                          onClick={
+                            () => router.push({
+                              pathname: `/competitors/${data.competitors[1].id}`,
+                              query: omit(query, 'id')
+                            })
+                          }
+                          className="group-hover:underline group-hover:decoration-dotted underline-offset-4 hover:opacity-80 active:opacity-100"
+                        >
                           {data.competitors[1].name}
                         </button>
                       </span>
