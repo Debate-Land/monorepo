@@ -36,13 +36,13 @@ const CommandBar = ({ children, topics, subscriptionName, emailProps }: CommandB
         <div className="flex w-fit">
           <Button
             onClick={() => setActiveModal("Filter")}
-            icon={<VscArrowSwap className="text-white" />}
+            icon={<VscArrowSwap className="text-white text-lg" />}
             _type="primary"
             className="w-6 h-6 !mx-1 !p-0 !rounded"
           />
           <Button
             onClick={() => setActiveModal("Email")}
-            icon={<AiOutlineMail className="text-white" />}
+            icon={<AiOutlineMail className="text-white text-lg" />}
             _type="primary"
             className="w-6 h-6 !mx-1 !p-0 !rounded"
             />
