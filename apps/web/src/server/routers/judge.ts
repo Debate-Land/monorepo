@@ -208,6 +208,28 @@ const judgeRouter = router({
                   }
                 }
               },
+              records: {
+                select: {
+                  judge: {
+                    select: {
+                      name: true,
+                      id: true
+                    }
+                  },
+                  decision: true,
+                  winner: {
+                    select: {
+                      aliases: {
+                        take: 1,
+                        select: {
+                          code: true,
+                        }
+                      },
+                      id: true,
+                    }
+                  }
+                }
+              }
             }
           },
           decision: true,

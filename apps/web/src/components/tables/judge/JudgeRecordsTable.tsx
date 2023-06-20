@@ -2,16 +2,30 @@ import React from 'react'
 import { Table } from '@shared/components'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import { ExpandedJudgeTournamentResult } from './JudgingHistoryTable';
-import { JudgeRecord, Round, RoundSpeakerResult, Competitor, Team, } from '@shared/database';
+import { JudgeRecord, Round, RoundSpeakerResult, Competitor, Team, Side, } from '@shared/database';
 import { trpc } from '@src/utils/trpc';
 import JudgeRecordTable from './JudgeRecordTable';
 import JudgeSpeakingTable from './JudgeSpeakingTable';
+import JudgePanelTable from './JudgePanelTable';
 
 export type ExpandedJudgeRecord = JudgeRecord & {
   rounds: (Round & {
     speaking: (RoundSpeakerResult & {
       competitor: Competitor;
     })[];
+    records: {
+      judge: {
+        name: string;
+        id: string;
+      };
+      decision: Side;
+      winner: {
+        aliases: {
+          code: string;
+        }[];
+        id: true
+      }
+    }[];
     result: {
       team: (Team & {
         aliases: {
@@ -39,7 +53,6 @@ const JudgeRecordsTable = ({ data: { id } }: JudgeRecordsTableProps) => {
     }
   );
   const column = createColumnHelper<ExpandedJudgeRecord>();
-  console.log(data)
 
   return (
     <Table
@@ -75,6 +88,7 @@ const JudgeRecordsTable = ({ data: { id } }: JudgeRecordsTableProps) => {
         <div className="space-y-2">
           <JudgeRecordTable data={parent} />
           <JudgeSpeakingTable data={parent} />
+          <JudgePanelTable data={parent} />
         </div>
       )}
       sortable
