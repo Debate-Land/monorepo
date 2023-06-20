@@ -1,0 +1,45 @@
+import { prisma } from '@shared/database';
+import resend from '../services/resend';
+import { TransactionalUpdateEmail } from '../emails';
+import React from 'react';
+
+const Team = async (id: string) => {
+  const team = await prisma.team.findUniqueOrThrow({
+    where: {
+      id
+    },
+    select: {
+      aliases: {
+        take: 1,
+        select: {
+          code: true
+        }
+      },
+      subscribers: {
+        select: {
+          email: true
+        }
+      }
+    }
+  });
+  const code = team.aliases[0].code;
+
+  console.log(code)
+
+  team.subscribers.forEach(async ({ email }) => {
+    await resend.sendEmail({
+      from: 'mail@updates.debate.land',
+      to: email,
+      subject: `Update for ${code} on Debate Land.`,
+      reply_to: 'support@debate.land',
+      react: <TransactionalUpdateEmail
+        title="You've got mail from Debate Land!"
+        message={`We just logged an update for ${code}. Click below to see what changed!`}
+        actionUrl={`https://debate.land/teams/${id}`}
+        unsubscribeUrl={`https://debate.land/emails/unsubscribe?type=team&id=${id}&email=${email}`}
+      />
+    })
+  });
+};
+
+export default Team;

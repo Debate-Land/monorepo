@@ -1,6 +1,6 @@
 import { Router } from "express";
-import teamRankingRouter from './team';
-import judgeRankingRouter from './judge';
+import teamRankingRouter from './team.router';
+import judgeRankingRouter from './judge.router';
 
 const rankingRouter = Router();
 

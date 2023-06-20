@@ -58,6 +58,14 @@ enum TopicType {
   Civics
 }
 
+model EmailSubscriber {
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  teams Team[]
+
+  @@map("email_subscribers")
+}
+
 model Season {
   id           Int            @id
   circuits     Circuit[]
@@ -337,6 +345,7 @@ model Team {
   seasons        Season[]
   schools        School[]
   bids           Bid[]
+  subscribers    EmailSubscriber[]
 
   @@map("teams")
 }
