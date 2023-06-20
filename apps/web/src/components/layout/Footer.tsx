@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 import React from 'react'
 import Image from 'next/image'
 import { Text, Link } from '@shared/components'
@@ -29,6 +30,10 @@ const Footer = () => {
 							className="cursor-pointer"
 							onClick={() => router.push('https://vercel.com?utm_source=debate-land&utm_campaign=oss')}
 						/>
+						<div className="space-x-2 text-xs text-blue-300">
+							<a href="/privacy-policy" className="hover:underline">Privacy Policy</a>
+							<a href="/terms-of-service" className="hover:underline">Terms of Service</a>
+						</div>
 					</div>
 					<div className="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
 						<div className="md:grid md:grid-cols-2 md:gap-8 ">

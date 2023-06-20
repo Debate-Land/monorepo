@@ -411,7 +411,7 @@ const Home = ({ tournaments, judges, competitors, rounds, changelog }: HomeProps
         </div>
       </section>
       <section className="pt-32 mb-32 relative h-[80rem] md:h-[50rem] flex flex-col justify-center" id="faq">
-        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-slate-800" />
+        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-slate-800 dark:bg-blue-900/50" />
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
             The{' '}
