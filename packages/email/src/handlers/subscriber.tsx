@@ -53,7 +53,7 @@ const Subscriber = async ({ subscriberId, id, type, action }: SubscriberProps) =
       break;
   }
 
-  resend.sendEmail({
+  return resend.sendEmail({
     from: 'Debate Land Updates <mail@updates.debate.land>',
     to: email,
     subject: `You\'ve  ${action} to ${target || "our mailing list"} successfully.`,

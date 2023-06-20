@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { Handlers } from '@shared/email';
+import { Handlers, Resend } from '@shared/email';
+import { EmailSubscriber } from '@shared/database';
 
 const emailRouter = router({
   subscribe: procedure
@@ -12,7 +13,7 @@ const emailRouter = router({
     .mutation(async ({ input, ctx }) => {
       const { prisma } = ctx;
 
-      const subscriber = await prisma.emailSubscriber.findUnique({
+      const existingSubscriber = await prisma.emailSubscriber.findUniqueOrThrow({
         where: {
           email: input.email
         }
@@ -31,10 +32,12 @@ const emailRouter = router({
         type = "mailing list";
       }
 
-      let id: number;
+      const confirmationEmails: any[] = [];
 
-      if (subscriber) {
-        const updatedSubscriber = await prisma.emailSubscriber.update({
+      let subscriber: EmailSubscriber;
+
+      if (existingSubscriber) {
+        subscriber = await prisma.emailSubscriber.update({
           where: {
             email: input.email
           },
@@ -45,12 +48,18 @@ const emailRouter = router({
                   id: input.teamId
                 }
               }
+            }),
+            ...(input.judgeId && {
+              judges: {
+                connect: {
+                  id: input.judgeId
+                }
+              }
             })
           }
         });
-        id = updatedSubscriber.id;
       } else {
-        const newSubscriber = await prisma.emailSubscriber.create({
+        subscriber = await prisma.emailSubscriber.create({
           data: {
             email: input.email,
             ...(input.teamId && {
@@ -59,23 +68,36 @@ const emailRouter = router({
                   id: input.teamId
                 }
               }
-            })
+            }),
+            ...(input.judgeId && {
+              judges: {
+                connect: {
+                  id: input.judgeId
+                }
+              }
+            }),
           }
         });
-        id = newSubscriber.id;
-        await Handlers.Subscriber({
-          subscriberId: id,
+        const mailingListSub = await Handlers.Subscriber({
+          subscriberId: subscriber.id,
           type: "mailing list",
           action: "subscribed"
         });
+        confirmationEmails.push(mailingListSub);
       }
 
-      await Handlers.Subscriber({
-        subscriberId: id,
+      const transactionalSub = await Handlers.Subscriber({
+        subscriberId: subscriber.id,
         type,
         id: targetId,
         action: "subscribed"
       });
+      confirmationEmails.push(transactionalSub);
+
+      return {
+        subscriber,
+        confirmationEmails
+      };
     }),
   unsubscribe: procedure
     .input(z.object({
