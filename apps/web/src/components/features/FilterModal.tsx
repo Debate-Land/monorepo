@@ -8,6 +8,7 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { HiCheck } from 'react-icons/hi';
 import { LuChevronsUpDown } from 'react-icons/lu';
 import { omit } from 'lodash';
+import { CloseIcon } from '@sanity/icons';
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -115,7 +116,13 @@ const FilterModal = ({ isOpen, setIsOpen, topics }: FilterModalProps) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md h-96 transform overflow-hidden rounded-lg bg-white dark:bg-coal p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="relative w-full max-w-md h-96 transform overflow-hidden rounded-lg bg-white dark:bg-coal p-6 text-left align-middle shadow-xl transition-all">
+                <button
+                  className="absolute right-5 top-6 hover:opacity-50 active:opacity-80 focus:outline-none focus:ring-0"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <CloseIcon fontSize={20} />
+                </button>
                 <Dialog.Title
                   as="h3"
                   className="text-xl leading-6 text-violet-400 dark:text-violet-300"

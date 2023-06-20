@@ -1,11 +1,9 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 import React, { Fragment } from 'react'
 import EmailInput, { EmailInputProps } from './email-input'
-import { Card } from '@shared/components'
-import { AiOutlineMail } from 'react-icons/ai'
 import { Transition } from '@headlessui/react';
 import { Dialog } from '@headlessui/react';
-import Link from 'next/link';
+import { CloseIcon } from '@sanity/icons';
 
 interface EmailModalProps extends EmailInputProps {
   isOpen: boolean;
@@ -39,7 +37,13 @@ const EmailModal = ({ isOpen, setIsOpen, subscriptionName, ...props}: EmailModal
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md h-26 transform overflow-hidden rounded-lg bg-white dark:bg-coal p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="relative w-full max-w-md h-26 transform overflow-hidden rounded-lg bg-white dark:bg-coal p-6 text-left align-middle shadow-xl transition-all">
+                <button
+                  className="absolute right-5 top-6 hover:opacity-50 active:opacity-80 focus:outline-none focus:ring-0"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <CloseIcon fontSize={20} />
+                </button>
                 <Dialog.Title
                   as="h3"
                   className="text-xl mb-2 leading-6 text-violet-400 dark:text-violet-300"
