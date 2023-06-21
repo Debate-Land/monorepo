@@ -32,8 +32,9 @@ const ImageComponent = ({ value }) => {
       objectFit="cover"
       sizes="(max-width: 800px) 100vw, 800px"
       alt={value.alt || " "}
-      loading="lazy"
+      loading="eager"
       draggable={false}
+      priority
     />
   );
 };
