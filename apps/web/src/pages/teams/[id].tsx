@@ -16,6 +16,7 @@ import TeamCharts from '@src/components/charts/TeamCharts';
 import TeamInfoTable from '@src/components/tables/team/TeamInfoTable';
 import TeamDifferentialTable from '@src/components/tables/team/TeamDifferentialTable';
 import CommandBar from '@src/components/features/CommandBar';
+import { BiLinkExternal } from 'react-icons/bi';
 
 
 const Team = () => {
@@ -84,8 +85,9 @@ const Team = () => {
                           query: omit(query, 'id')
                         })
                       }
-                      className="group-hover:underline group-hover:decoration-dotted underline-offset-4 hover:opacity-80 active:opacity-100"
-                    >
+                      className="relative hover:opacity-80 active:opacity-100 mr-3 md:mr-4"
+                  >
+                    <BiLinkExternal className="absolute text-xs p-px md:text-sm md:p-0 top-1 -right-3 md:-right-4" />
                     {data.competitors[0].name}
                   </button>
                   {
@@ -99,8 +101,9 @@ const Team = () => {
                               query: omit(query, 'id')
                             })
                           }
-                          className="group-hover:underline group-hover:decoration-dotted underline-offset-4 hover:opacity-80 active:opacity-100"
+                          className="relative hover:opacity-80 active:opacity-100 mr-3 md:mr-4"
                         >
+                          <BiLinkExternal className="absolute text-xs p-px md:text-sm md:p-0 top-1 -right-3 md:-right-4" />
                           {data.competitors[1].name}
                         </button>
                       </span>

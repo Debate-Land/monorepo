@@ -3,6 +3,7 @@ import { Button, Loader, Text } from '@shared/components'
 import { useRouter } from 'next/router';
 import { IoMdArrowBack } from 'react-icons/io';
 import { omit } from 'lodash';
+import { BsArrowLeft, BsArrowLeftShort } from 'react-icons/bs';
 
 interface OverviewProps {
   label: string | JSX.Element;
@@ -24,14 +25,14 @@ const Overview = (props: OverviewProps) => {
     <div className="w-full flex flex-col bg-luka-100 overflow-hidden relative">
       {
         BACK_PATHS.includes(pathname) &&
-        <div className="!cursor-pointer absolute top-5 left-5 z-20 w-6 h-6 flex justify-center items-center bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 rounded-full">
+        <div className="!cursor-pointer absolute top-5 left-5 z-20 w-6 h-6 flex justify-center items-center transition-all hover:bg-gradient-to-r hover:scale-110 active:scale-75 from-sky-400 via-purple-500 to-red-400 rounded-full">
           <button
             onClick={() => push({
               pathname: '/dataset',
               query: omit(query, ['id', 'topics', 'topicTags'])
             })}
           >
-            <IoMdArrowBack size={18} className="text-white" />
+            <BsArrowLeftShort size={24} className="text-white" />
           </button>
         </div>
       }
@@ -49,12 +50,12 @@ const Overview = (props: OverviewProps) => {
             <Text size="sm" className="mb-1 bg-violet-300/70 px-2 !text-white rounded-xl z-20">
               {props.label}
             </Text>
-            <Text className="text-xl !text-white sm:text-3xl lg:text-4xl min-w-[500px] mx-auto text-center md:text-left z-20">
+            <Text className="text-xl !text-white max-w-[300px] sm:max-w-none break-normal sm:text-3xl lg:text-4xl md:min-w-[500px] mx-auto text-center md:text-left z-20">
                 {props.heading || <Loader height={8} width="full"/>}
             </Text>
             {
               props.subheading && (
-                <Text className="text-md !text-white sm:text-xl lg:text-2xl min-w-[500px] mx-auto text-center md:text-left z-20">
+                <Text className="text-md !text-white max-w-[300px] sm:max-w-none break-normal sm:text-xl lg:text-2xl min-w-[500px] mx-auto text-center md:text-left z-20">
                   {props.subheading}
                 </Text>
               )
