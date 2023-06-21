@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, { useState } from 'react'
 import { BsJournalBookmark } from 'react-icons/bs'
-import { Tournament, TeamTournamentResult, Circuit, Alias, School, TournamentSpeakerResult, Competitor, Judge, Round, RoundSpeakerResult, Side, Bid } from '@shared/database'
+import { Tournament, TeamTournamentResult, Circuit, Alias, School, TournamentSpeakerResult, Competitor, Judge, Round, RoundSpeakerResult, Side, Bid, TopicTag, Topic } from '@shared/database'
 import { Table, Card } from '@shared/components'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import TournamentRoundsTable from './TournamentRoundsTable'
@@ -16,6 +16,9 @@ export type ExpandedTournamentSpeakerResult = TournamentSpeakerResult & {
 export type ExpandedTournamentResult = TeamTournamentResult & {
   tournament: Tournament & {
     circuits: Circuit[];
+    topic: (Topic & {
+      tags: TopicTag[];
+    }) | null;
   };
   alias: Alias;
   school: School;

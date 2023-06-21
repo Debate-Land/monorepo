@@ -4,6 +4,8 @@ import { Button, Card, Chart, Text } from '@shared/components';
 import { AiOutlineLineChart } from 'react-icons/ai';
 import { getDeflator } from '@src/utils/get-statistics';
 import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
+import clsx from 'clsx';
+import { BiErrorCircle } from 'react-icons/bi';
 
 interface TeamChartsProps {
   results: ExpandedTournamentResult[];
@@ -116,7 +118,7 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
           ? 1
           : 0
       }
-    }).filter(v => v !== null) as { date: string; break: number}[];
+    }).filter(v => v !== null) as { date: number; break: number}[];
   }, [results]);
 
   const breakCum = useMemo(() => {
@@ -177,8 +179,16 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
 
   return (
     <Card icon={<AiOutlineLineChart />} title="Analytics" className="relative max-w-[800px] mx-auto my-16">
-      <div className="grid sm:grid-cols-2 gap-4 max-w-[620px] mx-auto w-fit sm:ml-8 md:ml-12">
-        {ready && (
+      <div
+        className={clsx(
+          "w-full mx-auto grid",
+          {
+            "sm:grid-cols-2 gap-4": !ready || results.length > 1,
+            "grid place-items-center h-32 md:h-96 w-full": ready && results.length < 2,
+          }
+        )}
+      >
+        {ready && results.length > 1 && (
           <>
             <Chart
               title="Prelim Win Pct."
@@ -254,14 +264,26 @@ const TeamCharts = ({ results }: TeamChartsProps) => {
         {!ready && [1, 2, 3, 4, 5, 6].map(i => (
           <div key={i} className="ml-[20px] w-[280px] h-[200px] rounded-lg bg-gray-200 animate-pulse"></div>
         ))}
-        <Button
-          icon={<HiOutlineSwitchHorizontal className='mr-2' />}
-          onClick={() => setMode(mode === "Cumulative" ? "Point" : "Cumulative")}
-          className='h-7 absolute top-0 md:top-5 right-5 !bg-transparent !text-black dark:!text-white hover:opacity-70 active:opacity-90 w-36'
-          ghost
-        >
-          <p className='w-full text-start'>{mode}</p>
-        </Button>
+        {
+          results.length > 1 && (
+            <Button
+              icon={<HiOutlineSwitchHorizontal className='mr-2' />}
+              onClick={() => setMode(mode === "Cumulative" ? "Point" : "Cumulative")}
+              className='h-7 absolute top-0 md:top-5 right-5 !bg-transparent !text-black dark:!text-white hover:opacity-70 active:opacity-90 w-36'
+              ghost
+            >
+              <p className='w-full text-start'>{mode}</p>
+            </Button>
+          )
+        }
+        {
+          ready && results.length < 2 && (
+            <div className="flex text-center space-x-1 text-gray-600 dark:text-gray-400">
+              <BiErrorCircle size={32} />
+              <p className="mt-[2px] text-xl">Not enough history</p>
+            </div>
+          )
+        }
       </div>
     </Card>
   )

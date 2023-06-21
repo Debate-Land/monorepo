@@ -1,5 +1,5 @@
 import Page from "./page";
 import Author from "./author";
-import Email from "./email";
+import ChangelogPopup from "./changelog-popup";
 
-export type { Page, Author, Email };
+export type { Page, Author, ChangelogPopup };

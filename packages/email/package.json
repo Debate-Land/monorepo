@@ -1,0 +1,40 @@
+{
+  "name": "@shared/email",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm,cjs --dts --external react",
+    "dev": "tsup src/index.tsx --format esm,cjs --watch --dts --external react",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "dependencies": {
+    "@react-email/button": "0.0.9",
+    "@react-email/components": "^0.0.7",
+    "@react-email/html": "0.0.4",
+    "@shared/database": "*",
+    "clsx": "^1.2.1",
+    "lodash": "^4.17.21",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-email": "1.9.4",
+    "resend": "^0.15.3",
+    "typescript": "5.0.2"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.192",
+    "@types/node": "18.15.7",
+    "@types/react": "18.0.29",
+    "@types/react-dom": "18.0.11",
+    "config": "*",
+    "eslint": "8.36.0",
+    "tsup": "^5.10.1",
+    "typescript": "^4.5.3"
+  }
+}

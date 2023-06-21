@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import sortRecords from '@src/utils/sort-records';
+import { Topic, TopicTag } from '@shared/database';
 
 const judgeRouter = router({
   summary: procedure
@@ -9,11 +10,13 @@ const judgeRouter = router({
         id: z.string(),
         season: z.number().optional(),
         circuit: z.number().optional(),
+        topics: z.array(z.number()).optional(),
+        topicTags: z.array(z.number()).optional()
       })
     )
     .query(async ({ input, ctx }) => {
       const { prisma } = ctx;
-      const [judge, ranking] = await Promise.all([
+      const [judge, ranking, filterData] = await Promise.all([
         prisma.judge.findUnique({
           where: {
             id: input.id
@@ -36,6 +39,24 @@ const judgeRouter = router({
                       equals: input.season
                     }
                   }),
+                  ...(input.topics && {
+                    topic: {
+                      id: {
+                        in: input.topics
+                      }
+                    }
+                  }),
+                  ...(input.topicTags && {
+                    topic: {
+                      tags: {
+                        some: {
+                          id: {
+                            in: input.topicTags
+                          }
+                        }
+                      }
+                    }
+                  })
                 }
               },
               include: {
@@ -43,6 +64,11 @@ const judgeRouter = router({
                   select: {
                     name: true,
                     start: true,
+                    topic: {
+                      include: {
+                        tags: true
+                      }
+                    }
                   }
                 }
               },
@@ -78,6 +104,7 @@ const judgeRouter = router({
                 }),
               }
             },
+            paradigms: true,
             _count: {
               select: {
                 records: true
@@ -98,12 +125,51 @@ const judgeRouter = router({
               index: true
             }
           })
-          : null
+          : null,
+        prisma.judgeTournamentResult.findMany({
+          where: {
+            judgeId: {
+              equals: input.id
+            },
+            tournament: {
+              ...(input.season && {
+                seasonId: {
+                  equals: input.season
+                }
+              }),
+              ...(input.circuit && {
+                circuits: {
+                  some: {
+                    id: {
+                      equals: input.circuit
+                    }
+                  }
+                }
+              }),
+            }
+          },
+          select: {
+            tournament: {
+              select: {
+                topic: {
+                  include: {
+                    tags: true,
+                  }
+                }
+              }
+            }
+          }
+        })
+          .then(d => d
+          .map(({ tournament }) => tournament!.topic)
+          .filter(t => t !== null) as (Topic & { tags: TopicTag[] })[]
+        )
       ]);
 
       return judge
         ? {
           ...judge,
+          filterData,
           ...(ranking && { index: ranking.index })
         }
         : undefined
@@ -142,6 +208,28 @@ const judgeRouter = router({
                   }
                 }
               },
+              records: {
+                select: {
+                  judge: {
+                    select: {
+                      name: true,
+                      id: true
+                    }
+                  },
+                  decision: true,
+                  winner: {
+                    select: {
+                      aliases: {
+                        take: 1,
+                        select: {
+                          code: true,
+                        }
+                      },
+                      id: true,
+                    }
+                  }
+                }
+              }
             }
           },
           decision: true,

@@ -1,22 +1,26 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { trpc } from '@src/utils/trpc';
 import { TournamentHistoryTable } from '@src/components/tables/team'
 import { NextSeo } from 'next-seo';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
-import getEventName from '@src/utils/get-event-name';
+import getEnumName from '@src/utils/get-enum-name';
 import { appRouter } from '../../server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
 import { GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 import { prisma } from '@shared/database';
+import { omit } from 'lodash';
 import TeamCharts from '@src/components/charts/TeamCharts';
 import TeamInfoTable from '@src/components/tables/team/TeamInfoTable';
+import TeamDifferentialTable from '@src/components/tables/team/TeamDifferentialTable';
+import CommandBar from '@src/components/features/CommandBar';
+import { BiLinkExternal } from 'react-icons/bi';
 
-// TODO: National Rank at some point...
+
 const Team = () => {
-  const { query, isReady, asPath } = useRouter();
+  const { query, isReady, asPath, ...router } = useRouter();
   const { data } = trpc.team.summary.useQuery(
     {
       id: query.id as string,
@@ -25,6 +29,12 @@ const Team = () => {
       }),
       ...(query.season && {
         season: parseInt(query.season as unknown as string)
+      }),
+      ...(query.topics && {
+        topics: (query.topics as string).split(',').map(t => parseInt(t))
+      }),
+      ...(query.topicTags && {
+        topicTags: (query.topicTags as string).split(',').map(t => parseInt(t))
       })
     },
     {
@@ -37,7 +47,7 @@ const Team = () => {
   );
 
   const SEO_TITLE = `${data?.aliases[0]?.code || '--'}'s Profile — Debate Land`;
-  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${getEventName(data?.circuits[0].event)}, exclusively on Debate Land.`;
+  const SEO_DESCRIPTION = `${data?.aliases[0].code || '--'}'s competitive statistics for ${data ? getEnumName(data.circuits[0].event) : '--'}, exclusively on Debate Land.`;
 
   return (
     <>
@@ -68,16 +78,34 @@ const Team = () => {
             data
               ? (
                 <>
-                  <a href={`/competitors/${data.competitors[0].id}`}>
+                  <button
+                      onClick={
+                        () => router.push({
+                          pathname: `/competitors/${data.competitors[0].id}`,
+                          query: omit(query, 'id')
+                        })
+                      }
+                      className="relative hover:opacity-80 active:opacity-100 mr-3 md:mr-4"
+                  >
+                    <BiLinkExternal className="absolute text-xs p-px md:text-sm md:p-0 top-1 -right-3 md:-right-4" />
                     {data.competitors[0].name}
-                  </a>
+                  </button>
                   {
                     data.competitors.length > 1 && (
                       <span>
                         {' & '}
-                        <a href={`/competitors/${data.competitors[1].id}`}>
+                        <button
+                          onClick={
+                            () => router.push({
+                              pathname: `/competitors/${data.competitors[1].id}`,
+                              query: omit(query, 'id')
+                            })
+                          }
+                          className="relative hover:opacity-80 active:opacity-100 mr-3 md:mr-4"
+                        >
+                          <BiLinkExternal className="absolute text-xs p-px md:text-sm md:p-0 top-1 -right-3 md:-right-4" />
                           {data.competitors[1].name}
-                        </a>
+                        </button>
                       </span>
                     )
                   }
@@ -87,7 +115,17 @@ const Team = () => {
           }
           subtitle={
             data
-              ? `${getEventName(data.circuits[0].event)} | ${data.circuits[0].name} | ${data.seasons[0].id}`
+              ? (
+                <CommandBar
+                  topics={ data ? data.filterData : [] }
+                  subscriptionName={data?.aliases[0].code || ''}
+                  emailProps={{
+                    teamId: data?.id
+                  }}
+                >
+                  {getEnumName(data.circuits[0].event)} | {data.circuits[0].name} | {data.seasons[0].id.toString()}
+                </CommandBar>
+              )
               : undefined
           }
           underview={
@@ -166,6 +204,7 @@ const Team = () => {
         />
         <TournamentHistoryTable data={data?.results} />
         <TeamCharts results={data?.results.sort((a, b) => a.tournament.start - b.tournament.start) || []} />
+        <TeamDifferentialTable data={data?.results || []} />
         <TeamInfoTable aliases={data?.aliases} schools={data?.schools} />
       </div>
     </>
@@ -174,8 +213,10 @@ const Team = () => {
 
 interface TeamParams extends ParsedUrlQuery {
   id: string;
-  circuit: string;
-  season: string;
+  circuit?: string;
+  season?: string;
+  topics?: string;
+  topicTags?: string;
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -187,12 +228,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
   });
 
-  const { id, circuit, season } = ctx.query as TeamParams;
+  const { id, circuit, season, topics, topicTags } = ctx.query as TeamParams;
 
   await ssg.team.summary.prefetch({
     id,
-    circuit: parseInt(circuit),
-    season: parseInt(season)
+    ...(circuit && { circuit: parseInt(circuit) }),
+    ...(season && { season: parseInt(season) }),
+    ...(topics && { topics: topics?.split(',').map(t => parseInt(t)) }),
+    ...(topicTags && { topicTags: topicTags?.split(',').map(t => parseInt(t)) })
   });
 
   return {

@@ -4,6 +4,7 @@ import React, { ReactNode } from 'react'
 export interface ButtonProps {
   onClick?(): void
   icon?: ReactNode
+  customIcon?: boolean
   _type?: 'default' | 'secondary' | 'primary'
   className?: string
   children?: string | JSX.Element;
@@ -13,7 +14,7 @@ export interface ButtonProps {
   [key: string]: any
 }
 
-const Button = ({ onClick, icon, ghost, _type, children, size, className, disabled, ...props }: ButtonProps) => {
+const Button = ({ onClick, icon, customIcon = false, ghost, _type, children, size, className, disabled, ...props }: ButtonProps) => {
   return (
     <button
       onClick={disabled ? undefined : onClick}
@@ -39,7 +40,7 @@ const Button = ({ onClick, icon, ghost, _type, children, size, className, disabl
           'text-xl py-2 w-[200px]': size === 'xl',
         },
         {
-          '!p-2': icon,
+          '!p-2': icon && !customIcon,
           'dark:text-gray-900 dark:bg-gray-300 dark:border-gray-600': _type == 'default' || !_type,
           'hover:opacity-80': _type !== 'primary' && !disabled,
           'hover:shadow-halo transition-all': _type === 'primary' && !disabled

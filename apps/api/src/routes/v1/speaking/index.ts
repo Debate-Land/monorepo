@@ -1,6 +1,6 @@
 import { Router } from "express";
-import roundSpeakingRouter from './round';
-import tournamentSpeakingRouter from './tournament';
+import roundSpeakingRouter from './round.router';
+import tournamentSpeakingRouter from './tournament.router';
 
 const speakingRouter = Router();
 

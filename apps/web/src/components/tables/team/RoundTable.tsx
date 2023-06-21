@@ -46,7 +46,7 @@ const RoundTable = ({ row: { records: judgeRecords, speaking, ...round } }: Roun
         }}
         onRowClick={(row) => router.push({
           pathname: `/judges/${row.judge.id}`,
-          query: omit(query, ['id'])
+          query: omit(query, ['id', 'topics', 'topicTags'])
         })}
         sortable
       />

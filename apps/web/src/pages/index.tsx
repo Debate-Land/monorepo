@@ -40,6 +40,11 @@ import { prisma } from '@shared/database';
 import Link from 'next/link';
 import { appRouter } from '@src/server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
+import { getClient } from '@src/lib/sanity';
+import { types } from '@shared/cms';
+import FeatureModal from '@src/components/features/FeatureModal';
+import { ArrowRightIcon } from '@sanity/icons';
+import EmailModal from '@src/components/email/email-modal';
 
 interface HomeSEOProps {
   title: string;
@@ -73,9 +78,10 @@ interface HomeProps {
   judges: number;
   competitors: number;
   rounds: number;
+  changelog: types.ChangelogPopup;
 }
 
-const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
+const Home = ({ tournaments, judges, competitors, rounds, changelog }: HomeProps) => {
   const [mounted, setMounted] = useState(false);
   const isLarge = useMediaQuery({
     query: '(min-width: 768px)',
@@ -83,6 +89,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
   const { theme } = useTheme();
   const router = useRouter();
   useEffect(() => { setMounted(true) }, []);
+  const [emailModalActive, setEmailModalActive] = useState(false);
 
   const SEO_TITLE = "Debate Land";
   const SEO_DESCRIPTION = "Data for all things debate.";
@@ -100,12 +107,18 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
         title={SEO_TITLE}
         description={SEO_DESCRIPTION}
       />
+      <FeatureModal changelog={changelog} />
+      <EmailModal
+        isOpen={emailModalActive}
+        setIsOpen={setEmailModalActive}
+        subscriptionName='our mailing list'
+      />
       <GridLine position={20} outer />
       <GridLine position={35} />
       <GridLine position={50} />
       <GridLine position={65} />
       <GridLine position={80} outer />
-      <div id="dark-background" className="absolute inset-0 dark:coal fixed -z-40" />
+      <div id="dark-background" className="absolute inset-0 dark:coal -z-40" />
       <div
         id="slanted-hero-top"
         className="absolute -z-10 -top-[30%] w-full h-[60%] bg-gradient-to-r from-sky-400 via-purple-500 to-red-400 -skew-y-12 2xl:-skew-y-6"
@@ -168,6 +181,13 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
                         && props.errors.query
                         && <p className="ml-1 text-red-400">{props.errors.query}</p>
                       }
+                      <button
+                        className="flex items-center space-x-1 group mx-auto mt-2 md:mx-0"
+                        onClick={() => setEmailModalActive(true)}
+                      >
+                        <p className="underline text-sm md:text-md text-blue-500">Stay in the loop</p>
+                        <ArrowRightIcon className="text-blue-500 group-hover:-rotate-45 group-hover:bg-gradient-to-r group-hover:!text-white from-sky-400 via-purple-500 to-red-400 rounded-full transition-all" />
+                      </button>
                     </div>
                   )
                 }
@@ -223,7 +243,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
             <Text className="!text-gray-400 pb-4 sm:pb-0">Rounds</Text>
           </div>
       </section>
-      <section className="flex flex-col mt-12 2xl:mt-32">
+      <section className="flex flex-col mt-12 xl:mt-32">
         <h3 className="max-w-96 text-xl mx-auto">Backed by the best</h3>
         <div className="my-4 mx-auto flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
           <div className="flex mx-auto space-x-4">
@@ -284,7 +304,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
           </div>
         </div>
       </section>
-      <section className="pt-20 mt-20 relative" id="query-tools">
+      <section className="pt-20 xl:pt-32 relative" id="query-tools">
         <span
           className="absolute w-full h-[70%] top-0 right-0 -z-10 bg-gradient-to-t from-sky-100 via-sky-100/90 dark:from-gray-900 dark:via-gray-900 dark:to-white/0"
           style={{
@@ -391,7 +411,7 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
         </div>
       </section>
       <section className="pt-32 mb-32 relative h-[80rem] md:h-[50rem] flex flex-col justify-center" id="faq">
-        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-blue-900" />
+        <span className="absolute w-full h-full top-0 right-0 -z-20 -skew-y-6 bg-slate-800 dark:bg-blue-900/50" />
         <div>
           <h2 className="mb-10 text-5xl text-center text-white" id="about">
             The{' '}
@@ -546,12 +566,12 @@ const Home = ({ tournaments, judges, competitors, rounds }: HomeProps) => {
   )
 }
 
-// TODO: Use Sanity here?
-export const getStaticProps = async () => {
+export const getStaticProps = async ({ preview = false }) => {
   const tournaments = await prisma.tournament.count();
   const judges = await prisma.judge.count();
   const competitors = await prisma.competitor.count();
   const rounds = (await prisma.round.count()) / 2;
+  const changelog = (await getClient(preview).fetch<types.ChangelogPopup>(`*[_type=='changelogPopup' ] | order(publishedAt desc)`))[0];
 
   const ssg = createProxySSGHelpers({
     router: appRouter,
@@ -568,7 +588,8 @@ export const getStaticProps = async () => {
       judges,
       competitors,
       rounds,
-      trpcState: ssg.dehydrate()
+      trpcState: ssg.dehydrate(),
+      changelog
     },
     revalidate: 60 * 30 // Half hour
   }

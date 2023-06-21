@@ -3,14 +3,17 @@ import React, { useState } from 'react'
 import { BsJournalBookmark } from 'react-icons/bs'
 import { Table, Card } from '@shared/components'
 import { ColumnDef, createColumnHelper, SortingState } from '@tanstack/react-table'
-import { JudgeRecord, JudgeTournamentResult, RoundSpeakerResult } from '@shared/database';
+import { JudgeRecord, JudgeTournamentResult, RoundSpeakerResult, Topic, TopicTag } from '@shared/database';
 import JudgeRecordsTable from './JudgeRecordsTable';
 
 export type ExpandedJudgeTournamentResult = JudgeTournamentResult & {
   tournament: {
     name: string;
     start: number;
-  } | null
+    topic: (Topic & {
+      tags: TopicTag[]
+    }) | null;
+  }
 };
 
 export interface JudgingHistoryTableProps {

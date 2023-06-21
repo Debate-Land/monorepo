@@ -8,7 +8,7 @@ import HeadToHeadRoundsTable from '@src/components/tables/radar/head-to-head-rou
 import PreviousHistory from '@src/components/tables/radar/previous-history';
 import { appRouter } from '@src/server/routers/_app';
 import getClutchFactor, { getClutchFactorFromRoundHistory } from '@src/utils/get-clutch-factor';
-import getEventName from '@src/utils/get-event-name';
+import getEnumName from '@src/utils/get-enum-name';
 import getExpectedWP from '@src/utils/get-expected-wp';
 import { trpc } from '@src/utils/trpc';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import React, { useEffect, useMemo, useState } from 'react'
+import { BiLinkExternal } from 'react-icons/bi';
 import { BsLightbulb } from 'react-icons/bs';
 import { GiAtomicSlashes } from 'react-icons/gi';
 import { Bar, BarChart, LabelList, XAxis, YAxis } from 'recharts';
@@ -149,9 +150,9 @@ const HeadToHead = () => {
           label="Prediction"
           heading={
             data
-              ? <h1>
+              ? <span className="leading-6">
                 <button
-                  className="hover:text-indigo-200 group-hover:underline group-hover:decoration-dotted"
+                  className="relative hover:opacity-80 active:opacity-100 mr-3 md:mr-4"
                   onClick={() => push({
                     pathname: `/teams/${query.team1}`,
                     query: {
@@ -160,11 +161,12 @@ const HeadToHead = () => {
                     }
                   })}
                 >
+                  <BiLinkExternal className="absolute text-xs p-px md:text-sm md:p-0 top-1 -right-3 md:-right-4" />
                   {team1Code}
                 </button>
                 {' vs '}
                 <button
-                  className="hover:text-indigo-200 group-hover:underline group-hover:decoration-dotted"
+                  className="relative hover:opacity-80 active:opacity-100 mr-3 md:mr-4"
                   onClick={() => push({
                     pathname: `/teams/${query.team2}`,
                     query: {
@@ -173,14 +175,15 @@ const HeadToHead = () => {
                     }
                   })}
                 >
+                  <BiLinkExternal className="absolute text-xs p-px md:text-sm md:p-0 top-1 -right-3 md:-right-4" />
                   {team2Code}
                 </button>
-              </h1>
+              </span>
               : undefined
           }
           subtitle={
             isReady
-              ? `${query.season} ${getEventName(query.event as Event)}`
+              ? `${query.season} ${getEnumName(query.event as Event)}`
               : undefined
           }
           underview={<></>}

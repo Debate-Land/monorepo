@@ -23,7 +23,7 @@ const Chart = <T,>({ title, data, xKey, yKey, yTicks, range, isPercentage, isBoo
         height={200}
         data={data}
         title={title}
-        margin={{ top: 10, bottom: 5 }}
+        margin={{ top: 10, bottom: 5, right: 20 }}
       >
         <Line
           type="monotone"

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@shared/database": "*",
+    "@shared/email": "*",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "http-status": "^1.6.2",

@@ -1,12 +1,17 @@
 import '@src/styles/globals.css'
-import React, { useState, useEffect } from 'react'
+import '@src/styles/nprogress.css'
+import React, { useEffect, useState } from 'react'
 import { trpc } from '@src/utils/trpc'
 import { ThemeProvider } from 'next-themes'
 import Script from 'next/script'
 import type { AppProps } from 'next/app'
 // import { Poppins } from 'next/font/google'
 import clsx from 'clsx'
-import {Header, Footer} from '@src/components/layout'
+import NProgress from 'nprogress'
+import { Header, Footer } from '@src/components/layout'
+import LoadingAnimation from '@src/components/loading-animation'
+
+NProgress.configure({ showSpinner: false })
 
 // const poppins = Poppins({
 //   style: ['italic', 'normal'],
@@ -16,6 +21,22 @@ import {Header, Footer} from '@src/components/layout'
 // })
 
 const App = ({ Component, router, pageProps }: AppProps) => {
+  const [loadingAnimationIsVisibile, setLoadingAnimationIsVisible] = useState(false);
+  useEffect(() => {
+    router.events.on('routeChangeStart', () => {
+      NProgress.start();
+      setLoadingAnimationIsVisible(true);
+    });
+    router.events.on('routeChangeComplete', () => {
+      NProgress.done();
+      setLoadingAnimationIsVisible(false);
+    });
+    router.events.on('routeChangeError', () => {
+      NProgress.done();
+      setLoadingAnimationIsVisible(false);
+    });
+  }, []);
+
   return (
     <ThemeProvider attribute='class' defaultTheme='dark'>
       <div
@@ -24,7 +45,8 @@ const App = ({ Component, router, pageProps }: AppProps) => {
         })}
       >
         <Header />
-        <div className="mt-[3rem]"/>
+        <LoadingAnimation visible={loadingAnimationIsVisibile} />
+        <div className="mt-[3rem]" />
         <Component {...pageProps} />
         <Footer />
       </div>
@@ -38,7 +60,7 @@ const App = ({ Component, router, pageProps }: AppProps) => {
         `}
       </Script>
     </ThemeProvider>
-  )
-}
+  );
+};
 
 export default trpc.withTRPC(App);

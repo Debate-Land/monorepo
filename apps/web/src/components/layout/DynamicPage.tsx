@@ -4,7 +4,6 @@ import GetImage from '@src/utils/get-image';
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
 import { types } from '@shared/cms';
-import { parseISO, format } from "date-fns";
 import { useRouter } from 'next/router';
 import formatISO from '@src/utils/format-iso';
 

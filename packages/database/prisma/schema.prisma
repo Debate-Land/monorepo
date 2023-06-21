@@ -9,29 +9,6 @@ generator client {
   previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
-/// API Management Enums
-
-enum UserType {
-  Admin
-  User
-}
-
-enum AccessLevel {
-  God
-  App
-  User
-  Unauthenticated
-}
-
-enum ApiModelStatus {
-  Active
-  Paused
-  Disabled
-  Deleted
-}
-
-/// Debate Data Enums
-
 enum ElimRoundName {
   Finals
   Semifinals
@@ -73,50 +50,22 @@ enum BidType {
   Partial
 }
 
-/// API Management Models
-
-model User {
-  id      String         @id
-  type    UserType       @default(User)
-  status  ApiModelStatus @default(Active)
-  name    String
-  email   String?        @unique
-  authSub String         @unique @map("auth_sub")
-  apiKeys ApiKey[]
-
-  @@map("users")
+enum TopicType {
+  Economy
+  Technology
+  ForeignAffairs
+  Environmental
+  Civics
 }
 
-model Product {
-  id           Int         @id @default(autoincrement())
-  accessLevel  AccessLevel @map("access_level")
-  readAllowed  Boolean     @map("read_allowed")
-  writeAllowed Boolean     @map("write_allowed")
-  rateLimit    Int         @map("rate_limit")
-  devPrice     String      @unique @map("dev_price")
-  prodPrice    String      @unique @map("prod_price")
-  ApiKey       ApiKey[]
+model EmailSubscriber {
+  id     Int     @id @default(autoincrement())
+  email  String  @unique
+  teams  Team[]
+  judges Judge[]
 
-  @@map("products")
+  @@map("email_subscribers")
 }
-
-model ApiKey {
-  id               String         @id
-  role             AccessLevel
-  user             User           @relation(fields: [userId], references: [id])
-  userId           String         @map("user_id")
-  subscription     String         @unique
-  subscriptionItem String?        @map("subscription_item")
-  product          Product?       @relation(fields: [productId], references: [id])
-  productId        Int            @map("product_id")
-  status           ApiModelStatus @default(Active)
-
-  @@index([userId])
-  @@index([productId])
-  @@map("api_keys")
-}
-
-/// Debate Data Models
 
 model Season {
   id           Int            @id
@@ -178,15 +127,44 @@ model JudgeRanking {
   @@map("judge_rankings")
 }
 
+model TopicTag {
+  id     Int       @id @default(autoincrement())
+  tag    TopicType @unique
+  topics Topic[]
+
+  @@map("topic_tags")
+}
+
+model Topic {
+  id         Int          @id @default(autoincrement())
+  resolution String       @db.Text
+  event      Event
+  tags       TopicTag[]
+  tournament Tournament[]
+
+  @@map("topics")
+}
+
+model TournamentContact {
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  tournaments Tournament[]
+
+  @@map("tournament_contacts")
+}
+
 model Tournament {
   id             Int                     @id @default(autoincrement())
   name           String
   start          Int
   end            Int
+  contacts       TournamentContact[]
   event          Event
   tabEventId     Int                     @map("tab_event_id")
   tabTournId     Int                     @map("tab_tourn_id")
   location       String
+  topic          Topic?                  @relation(fields: [topicId], references: [id])
   isTocQualifier Boolean                 @map("is_toc_qualifier")
   bidLevel       ElimRoundName?          @map("bid_level")
   hasElimRounds  Boolean                 @map("has_elim_rounds")
@@ -198,9 +176,11 @@ model Tournament {
   records        JudgeRecord[]
   schools        School[]
   seasonId       Int                     @default(2023) @map("season_id")
+  topicId        Int?
 
   @@unique([tabTournId, tabEventId])
   @@index([seasonId])
+  @@index([topicId])
   @@fulltext([name])
   @@map("tournaments")
 }
@@ -269,8 +249,19 @@ model Alias {
   @@map("aliases")
 }
 
+model EntryGeography {
+  id      Int                    @id @default(autoincrement())
+  country String
+  state   String
+  result  TeamTournamentResult[]
+
+  @@map("entry_geography")
+}
+
 model TeamTournamentResult {
   id                Int                       @id @default(autoincrement())
+  geography         EntryGeography?           @relation(fields: [geographyId], references: [id])
+  geographyId       Int?
   tournament        Tournament                @relation(fields: [tournamentId], references: [id])
   tournamentId      Int                       @map("tournament_id")
   tabEntryId        Int                       @map("tab_entry_id")
@@ -301,6 +292,7 @@ model TeamTournamentResult {
   @@index([teamId])
   @@index([aliasId])
   @@index([schoolId])
+  @@index([geographyId])
   @@map("team_tournament_results")
 }
 
@@ -354,20 +346,36 @@ model Team {
   seasons        Season[]
   schools        School[]
   bids           Bid[]
+  subscribers    EmailSubscriber[]
 
   @@map("teams")
 }
 
 model Judge {
-  id       String                  @id
-  name     String
-  results  JudgeTournamentResult[]
-  records  JudgeRecord[]
-  speaking RoundSpeakerResult[]
-  rankings JudgeRanking[]
+  id          String                  @id
+  name        String
+  results     JudgeTournamentResult[]
+  records     JudgeRecord[]
+  speaking    RoundSpeakerResult[]
+  rankings    JudgeRanking[]
+  paradigms   Paradigm[]
+  subscribers EmailSubscriber[]
 
   @@fulltext([name])
   @@map("judges")
+}
+
+model Paradigm {
+  id        Int    @id @default(autoincrement())
+  scrapedAt Int    @map("scraped_at")
+  text      String @db.Text
+  html      String @db.Text
+  judge     Judge  @relation(fields: [judgeId], references: [id])
+  judgeId   String
+
+  @@index([judgeId])
+  @@fulltext([text])
+  @@map("paradigms")
 }
 
 model JudgeTournamentResult {

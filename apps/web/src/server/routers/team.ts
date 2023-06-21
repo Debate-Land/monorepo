@@ -3,7 +3,7 @@ import { procedure, router } from '../trpc';
 import sortRounds from '@src/utils/sort-rounds';
 import getStatistics from '@src/utils/get-statistics';
 import db from '@src/services/db.service';
-import { TeamRanking } from '@shared/database';
+import { TeamRanking, Topic, TopicTag } from '@shared/database';
 
 const teamRouter = router({
   summary: procedure
@@ -12,11 +12,13 @@ const teamRouter = router({
         id: z.string(),
         season: z.number().optional(),
         circuit: z.number().optional(),
+        topics: z.array(z.number()).optional(),
+        topicTags: z.array(z.number()).optional()
       })
     )
     .query(async ({ input, ctx }) => {
       const { prisma } = ctx;
-      let {rankings, ...team} = await prisma.team.findUniqueOrThrow({
+      let { rankings, ...team } = await prisma.team.findUniqueOrThrow({
         where: {
           id: input.id,
         },
@@ -26,7 +28,12 @@ const teamRouter = router({
             include: {
               tournament: {
                 include: {
-                  circuits: true
+                  circuits: true,
+                  topic: {
+                    include: {
+                      tags: true
+                    }
+                  },
                 }
               },
               bid: {
@@ -63,6 +70,24 @@ const teamRouter = router({
                     equals: input.season
                   }
                 }),
+                ...(input.topics && {
+                  topic: {
+                    id: {
+                      in: input.topics
+                    }
+                  }
+                }),
+                ...(input.topicTags && {
+                  topic: {
+                    tags: {
+                      some: {
+                        id: {
+                          in: input.topicTags
+                        }
+                      }
+                    }
+                  }
+                })
               },
             },
           },
@@ -108,7 +133,7 @@ const teamRouter = router({
         }
       });
       if (team) {
-        const circuitRankQuery = await (await db).query(`
+        const circuitRankQueryPromise = (await db).query(`
           SELECT * FROM (
             SELECT
               RANK() OVER (ORDER BY otr DESC) AS circuitRank,
@@ -125,14 +150,51 @@ const teamRouter = router({
           (TeamRanking & { circuitRank: number })[],
           object[],
         ];
+        const filterDataPromise = prisma.teamTournamentResult.findMany({
+          where: {
+            teamId: input.id,
+            tournament: {
+              ...(input.season && {
+                seasonId: {
+                  equals: input.season
+                }
+              }),
+              ...(input.circuit && {
+                circuits: {
+                  some: {
+                    id: {
+                      equals: input.circuit
+                    }
+                  }
+                }
+              }),
+            }
+          },
+          select: {
+            tournament: {
+              select: {
+                topic: {
+                  include: {
+                    tags: true,
+                  }
+                }
+              }
+            }
+          }
+        }).then(d => d
+            .map(({ tournament }) => tournament.topic)
+            .filter(t => t !== null) as (Topic & { tags: TopicTag[] })[]
+        );
+        const [circuitRankQuery, filterData] = await Promise.all([circuitRankQueryPromise, filterDataPromise]);
+
         return {
           ...team,
           ranking: {
             ...rankings[0],
             circuitRank: circuitRankQuery[0][0].circuitRank
           },
-          statistics: getStatistics({ rankings, ...team }
-          )
+          filterData,
+          statistics: getStatistics({ rankings, ...team })
         }
       }
       return null;

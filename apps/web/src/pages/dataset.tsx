@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import Overview from '@src/components/layout/Overview';
 import Statistics from '@src/components/layout/Statistics';
 import {CompetitorTable, TournamentTable, SchoolTable, LeaderboardTable, JudgeTable, BidTable} from '@src/components/tables/dataset';
-import getEventName from '@src/utils/get-event-name';
+import getEnumName from '@src/utils/get-enum-name';
 import { prisma } from '@shared/database';
 import { appRouter } from '@src/server/routers/_app';
 import { createProxySSGHelpers } from '@trpc/react-query/ssg';
@@ -28,7 +28,7 @@ const Dataset = () => {
     }
   );
 
-  const label = `${query.season as string} ${data?.circuit?.name} ${getEventName(data?.circuit?.event)}`;
+  const label = `${query.season as string} ${data?.circuit?.name} ${getEnumName(data?.circuit?.event)}`;
 
   const SEO_TITLE = `${label} Dataset — Debate Land`;
   const SEO_DESCRIPTION = `The latest ${label} dataset, exclusively on Debate Land.`;

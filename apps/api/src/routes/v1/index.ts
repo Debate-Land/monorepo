@@ -1,16 +1,21 @@
 import { Router } from "express";
-import aliasRouter from "./alias";
-import bidRouter from './bid';
+import aliasRouter from "./alias.router";
+import bidRouter from "./bid.router";
 import circuitRouter from "./circuit.router";
 import competitorRouter from "./competitor.router";
+import entryGeographyRouter from "./entry-geography.router";
 import judgeRecordRouter from "./judge-record.router";
 import judgeRouter from "./judge.router";
+import paradigmRouter from "./paradigm.router";
 import rankingRouter from "./rankings";
 import roundRouter from "./round.router";
 import seasonRouter from "./season.router";
 import speakingRouter from "./speaking";
 import teamRouter from "./team.router";
+import topicTagRouter from "./topic-tag.router";
+import topicRouter from "./topic.router";
 import tournamentResultRouter from "./results";
+import tournamentContactRouter from "./tournament-contact.router";
 import tournamentRouter from "./tournament.router";
 
 const coreV1Router = Router();
@@ -27,6 +32,11 @@ coreV1Router.use('/rounds', roundRouter);
 coreV1Router.use('/seasons', seasonRouter);
 coreV1Router.use('/speaking', speakingRouter);
 coreV1Router.use('/results', tournamentResultRouter);
+coreV1Router.use('/tournament-contacts', tournamentContactRouter);
 coreV1Router.use('/tournaments', tournamentRouter);
+coreV1Router.use('/topic-tags', topicTagRouter);
+coreV1Router.use('/topics', topicRouter);
+coreV1Router.use('/entry-geographies', entryGeographyRouter);
+coreV1Router.use('/paradigms', paradigmRouter);
 
 export default coreV1Router;
