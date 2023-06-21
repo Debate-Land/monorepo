@@ -1,6 +1,6 @@
 import { Button } from '@shared/components';
 import React, { useState } from 'react'
-import { AiOutlineMail } from 'react-icons/ai';
+import { AiOutlineFilter, AiOutlineMail } from 'react-icons/ai';
 import { VscArrowSwap } from 'react-icons/vsc';
 import EmailModal from '../email/email-modal';
 import FilterModal, { FilterModalProps } from './FilterModal';
@@ -31,23 +31,25 @@ const CommandBar = ({ children, topics, subscriptionName, emailProps }: CommandB
         subscriptionName={subscriptionName}
         {...emailProps}
       />
-      <div className="flex flex-col w-full items-center space-y-1">
+      <div className="flex flex-col w-full items-center space-y-2">
         <p>{children}</p>
-        <div className="flex w-fit">
+        <div className="flex flex-col space-y-1 sm:flex-row sm:space-y-0 w-fit">
           <Button
             onClick={() => setActiveModal("Filter")}
-            icon={<VscArrowSwap className="text-gray-300 hover:text-white hover:-rotate-12 active:rotate-0 active:scale-75 transition-all" />}
+            icon={<AiOutlineFilter className="!mr-1 text-indigo-100 group-hover:text-white group-hover:-rotate-12 active:rotate-0 active:scale-75 transition-all" />}
             _type="primary"
-            className="w-5 lg:w-6 h-5 lg:h-6 !mx-1 !p-0 border border-gray-300 group !rounded !bg-none hover:!bg-gradient-to-r hover:border-none"
-            customIcon
-          />
+            className="w-24 h-5 bg-purple-200/20 text-indigo-100 !mx-1 !text-xs !py-0 border border-indigo-300 group !rounded !bg-none hover:!bg-gradient-to-r hover:border-none"
+          >
+            Filter
+          </Button>
           <Button
             onClick={() => setActiveModal("Email")}
-            icon={<AiOutlineMail className="text-gray-300 hover:text-white hover:-rotate-12 active:rotate-0 active:scale-75 transition-all" />}
+            icon={<AiOutlineMail className="!mr-1 text-indigo-100 group-hover:text-white group-hover:-rotate-12 active:rotate-0 active:scale-75 transition-all" />}
             _type="primary"
-            className="w-5 lg:w-6 h-5 lg:h-6 !mx-1 !p-0 border border-gray-300 group !rounded !bg-none hover:!bg-gradient-to-r hover:border-none"
-            customIcon
-          />
+            className="w-24 h-5 bg-purple-200/20 text-indigo-100 !mx-1 !text-xs !py-0 border border-indigo-300 group !rounded !bg-none hover:!bg-gradient-to-r hover:border-none"
+          >
+            Updates
+          </Button>
         </div>
       </div>
     </>

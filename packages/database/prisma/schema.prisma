@@ -9,6 +9,18 @@ generator client {
   previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
+enum FlowType {
+  Flow
+  Flay
+  Lay
+}
+
+enum ProgressiveType {
+  Progressive
+  SemiProgressive
+  Traditional
+}
+
 enum ElimRoundName {
   Finals
   Semifinals
@@ -366,12 +378,14 @@ model Judge {
 }
 
 model Paradigm {
-  id        Int    @id @default(autoincrement())
-  scrapedAt Int    @map("scraped_at")
-  text      String @db.Text
-  html      String @db.Text
-  judge     Judge  @relation(fields: [judgeId], references: [id])
-  judgeId   String
+  id              Int              @id @default(autoincrement())
+  scrapedAt       Int              @map("scraped_at")
+  text            String           @db.Text
+  html            String           @db.Text
+  judge           Judge            @relation(fields: [judgeId], references: [id])
+  judgeId         String
+  flowType        FlowType?        @map("flow_type")
+  progressiveType ProgressiveType? @map("progressive_type")
 
   @@index([judgeId])
   @@fulltext([text])

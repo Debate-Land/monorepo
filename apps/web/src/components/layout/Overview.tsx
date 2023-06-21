@@ -41,7 +41,7 @@ const Overview = (props: OverviewProps) => {
       <div className="flex justify-center items-center w-full bg-luka-100 py-6">
         <div
           id="overview"
-          className="group flex flex-col md:flex-row items-center md:items-start lg:w-[1050px] justify-between lg:justify-center px-2 lg:px-0 pb-4"
+          className="flex flex-col md:flex-row items-center md:items-start lg:w-[1050px] justify-between lg:justify-center px-2 lg:px-0 pb-4"
         >
           <span id="entry-info" className="flex flex-col items-center md:items-start w-full md:w-[50%] p-2 relative">
             <div id="blob1" className='absolute hidden lg:block -top-50 right-0 w-72 h-72 bg-yellow-600 rounded-full mix-blend-lighten filter blur-xl' />
@@ -62,7 +62,7 @@ const Overview = (props: OverviewProps) => {
             }
 
           </span>
-          <Text className="!text-indigo-300 md:mt-4 text-xs md:text-md lg:text-lg z-20">
+          <Text className="!text-indigo-300 md:mt-4 text-xs md:text-lg z-20">
               {props.subtitle || <Loader height={4} width={64} />}
           </Text>
         </div>
