@@ -36,17 +36,17 @@ const CommandBar = ({ children, topics, subscriptionName, emailProps }: CommandB
         <div className="flex flex-col space-y-1 sm:flex-row sm:space-y-0 w-fit">
           <Button
             onClick={() => setActiveModal("Filter")}
-            icon={<AiOutlineFilter className="!mr-1 text-indigo-100 group-hover:text-white group-hover:-rotate-12 active:rotate-0 active:scale-75 transition-all" />}
+            icon={<AiOutlineFilter className="!mr-1 text-indigo-100 group-hover:text-white group-hover:-rotate-12 group-active:rotate-0 group-active:scale-75 transition-all" />}
             _type="primary"
-            className="w-24 h-5 bg-purple-200/20 text-indigo-100 !mx-1 !text-xs !py-0 border border-indigo-300 group !rounded !bg-none hover:!bg-gradient-to-r hover:border-none"
+            className="w-24 h-5 bg-purple-200/20 backdrop-blur-2xl text-indigo-100 !mx-1 !text-xs !py-0 border border-indigo-300 group !rounded !bg-none hover:!bg-gradient-to-r hover:border-none"
           >
             Filter
           </Button>
           <Button
             onClick={() => setActiveModal("Email")}
-            icon={<AiOutlineMail className="!mr-1 text-indigo-100 group-hover:text-white group-hover:-rotate-12 active:rotate-0 active:scale-75 transition-all" />}
+            icon={<AiOutlineMail className="!mr-1 text-indigo-100 group-hover:text-white group-hover:-rotate-12 group-active:rotate-0 group-active:scale-75 transition-all" />}
             _type="primary"
-            className="w-24 h-5 bg-purple-200/20 text-indigo-100 !mx-1 !text-xs !py-0 border border-indigo-300 group !rounded !bg-none hover:!bg-gradient-to-r hover:border-none"
+            className="w-24 h-5 bg-purple-200/20 backdrop-blur-2xl text-indigo-100 !mx-1 !text-xs !py-0 border border-indigo-300 group !rounded !bg-none hover:!bg-gradient-to-r hover:border-none"
           >
             Updates
           </Button>

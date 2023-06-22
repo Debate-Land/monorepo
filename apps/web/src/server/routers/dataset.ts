@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import { getAvg } from '@src/utils/get-statistics';
 import { sortBy } from 'lodash';
+import db from '@src/services/db.service';
 
 const datasetRouter = router({
   summary: procedure
@@ -375,65 +376,57 @@ const datasetRouter = router({
       })
     )
     .query(async ({ input, ctx }) => {
-      const { prisma } = ctx;
-      const result = await prisma.judgeRanking.findMany({
-        where: {
-          circuit: {
-            id: {
-              equals: input.circuit
-            }
-          },
-          season: {
-            id: {
-              equals: input.season
-            }
-          }
-        },
-        include: {
-          judge: {
-            include: {
-              records: {
-                where: {
-                  tournament: {
-                    circuits: {
-                      some: {
-                        id: {
-                          equals: input.circuit
-                        }
-                      }
-                    },
-                    season: {
-                      id: {
-                        equals: input.season
-                      }
-                    }
-                  }
-                },
-                select: {
-                  id: true,
-                  avgSpeakerPoints: true
-                }
-              },
-            }
-          },
-        },
-        orderBy: [
-          {
-            index: "desc"
-          },
-          {
-            judge: {
-              records: {
-                _count: "desc"
-              }
-            }
-          }
-        ],
-        skip: input.page * input.limit,
-        take: input.limit
-      })
+      const result = await (await db).query(`
+        SELECT
+          RANK() OVER (ORDER BY \`index\` DESC, t.numRounds DESC) AS circuitRank,
+          *
+        FROM (
+          SELECT DISTINCT
+            judge_rankings.judge_id,
+            judges.name,
+            judge_rankings.\`index\`,
+            t.numRounds,
+            t.avgSpeakerPoints
+          FROM judge_rankings
+          INNER JOIN judges ON judge_rankings.judge_id = judges.id
+          INNER JOIN (
+            SELECT
+              judgeId,
+              COUNT(*) / 2 as numRounds,
+              AVG(jr.avgSpeakerPoints) as avgSpeakerPoints
+            FROM _JudgeRecordToRound jrtr
+            INNER JOIN judge_records jr ON jrtr.A = jr.id
+            INNER JOIN tournaments t ON jr.tournamentId = t.id
+            WHERE
+              t.id IN (
+                SELECT ctt.B
+                FROM _CircuitToTournament ctt
+                WHERE ctt.A = ?
+              ) AND
+              t.season_id = ?
+            GROUP BY judgeId
+          ) as t ON judge_rankings.judge_id = t.judgeId
+          WHERE
+            judge_rankings.circuit_id = ? AND
+            judge_rankings.season_id = ?
+        ) t
+        ORDER BY circuitRank
+        LIMIT ?
+        OFFSET ?;
+      `,
+      [input.circuit, input.season, input.circuit, input.season, input.limit, input.page ? input.page * input.limit : 0]) as unknown as [
+        {
+          circuitRank: number;
+          judge_id: string;
+          name: string;
+          index: number;
+          numRounds: number;
+          avgSpeakerPoints: number | null;
+        }[],
+        object[]
+      ];
 
-      return result;
+      return result[0];
     }),
   schools: procedure
     .input(

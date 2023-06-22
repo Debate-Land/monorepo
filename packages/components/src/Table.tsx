@@ -283,14 +283,7 @@ const Table = <T,>({
         tableIsPaginateable && (
           <div className="flex flex-row justify-between mx-auto pl-1 mt-4 w-full">
             <div className="flex items-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mr-1">Page</p>
-              <button
-                onClick={() => {table.setPageIndex(0)}}
-                title="Go to start"
-              >
-                <p className="text-luka-200/70 dark:text-blue-500 text-sm mr-1">{table.getState().pagination.pageIndex + 1}</p>
-              </button>
-              <p className="text-sm mr-1 text-gray-600 dark:text-gray-400">of</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mr-1">Page {currentPage + 1} of</p>
               <button
                 onClick={() => {table.setPageIndex(table.getPageCount())}}
                 title="Go to end"
@@ -298,19 +291,35 @@ const Table = <T,>({
                 <p className="text-luka-200/70 dark:text-blue-500 text-sm">{table.getPageCount()}</p>
               </button>
               <p className="text-sm text-gray-600 dark:text-gray-400">.</p>
+              {
+                paginationConfig.pagination.pageIndex !== 0 && (
+                  <>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">&nbsp;Go to&nbsp;</p>
+                    <button
+                      onClick={() => {table.setPageIndex(0)}}
+                      title="Go to start"
+                    >
+                      <p className="text-luka-200/70 dark:text-blue-500 text-sm">start</p>
+                    </button>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">.</p>
+                  </>
+                )
+              }
             </div>
             <div className="flex items-center space-x-2">
               <button
                 onClick={table.previousPage}
                 disabled={currentPage == 0}
                 title="Go back a page"
+                className="disabled:opacity-50 disabled:pointer-events-none"
               >
                 <p className="cursor-pointer text-sm hover:bg-luka-200/10 text-gray-600 dark:text-gray-400 border dark:border-gray-200/20 rounded-md px-2 py-1">Previous</p>
               </button>
               <button
                 onClick={table.nextPage}
-                disabled={currentPage == table.getPageCount()}
+                disabled={currentPage + 1 == table.getPageCount()}
                 title="Go forward a page"
+                className="disabled:opacity-50 disabled:pointer-events-none"
               >
                 <p className="cursor-pointer text-sm hover:bg-luka-200/10 text-gray-600 dark:text-gray-400 border dark:border-gray-200/20 rounded-md px-2 py-1">Next</p>
               </button>

@@ -1,20 +1,18 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Card, Table } from '@shared/components'
-import { Judge, JudgeRanking } from '@shared/database';
 import { TbGavel } from 'react-icons/tb'
 import { useRouter } from 'next/router';
 import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
-import { getAvg } from '@src/utils/get-statistics';
 
-type ExpandedJudgeRanking = (JudgeRanking & {
-  judge: Judge & {
-    records: {
-      id: number;
-      avgSpeakerPoints: number | null;
-    }[];
-  };
-});
+type ExpandedJudgeRanking = {
+  circuitRank: number;
+  judge_id: string;
+  name: string;
+  index: number;
+  numRounds: number;
+  avgSpeakerPoints: number | null;
+};
 
 interface JudgeTableProps {
   count: number
@@ -47,43 +45,41 @@ const JudgeTable = ({ count }: JudgeTableProps) => {
         numLoadingRows={10}
         columnConfig={{
           core: [
+            column.accessor('circuitRank', {
+              header: "Pos.",
+              cell: props => props.cell.getValue(),
+            }),
             column.accessor('index', {
               header: "Index",
               cell: props => props.cell.getValue().toFixed(1),
             }),
-            column.accessor('judge.name', {
+            column.accessor('name', {
               header: "Name",
               cell: props => props.cell.getValue(),
             }),
+            column.accessor('numRounds', {
+              header: "Rounds",
+              cell: props => Math.round(props.cell.getValue()),
+            }),
           ] as ColumnDef<ExpandedJudgeRanking>[],
           lg: [
-            column.accessor('judge.records', {
-              header: "Avg. Spks.",
-              cell: props => {
-                const points = props.row.original.judge.records
-                  .filter(r => r.avgSpeakerPoints)
-                  .map(r => r.avgSpeakerPoints) as number[];
-                return points.length
-                  ? getAvg(points).toFixed(1)
-                  : '--'
-              },
-            }),
-            column.accessor('judge.records', {
-              header: "Rounds",
-              cell: props => props.cell.getValue().length,
+            column.accessor('avgSpeakerPoints', {
+              header: "Avg. Spks",
+              cell: props => props.cell.getValue()
+                ? (props.cell.getValue() as number).toFixed(1)
+                : '--',
             }),
           ] as ColumnDef<ExpandedJudgeRanking>[]
         }}
         paginationConfig={{
           pagination,
           setPagination,
-          totalPages: Math.ceil(count / pagination.pageSize)
+          totalPages: Math.floor(count / pagination.pageSize)
         }}
         onRowClick={(row) => router.push({
-          pathname: `/judges/${row.judge.id}`,
+          pathname: `/judges/${row.judge_id}`,
           query
         })}
-        showPosition
       />
     </Card>
   )
