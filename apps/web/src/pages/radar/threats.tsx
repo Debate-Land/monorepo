@@ -36,7 +36,7 @@ const ThreatSheet = () => {
 
   const SEO_TITLE = `${metadata?.name}: ${metadata?.location} Threat Sheet`;
   const SEO_DESCRIPTION = `Our analysis of the ${teamData?.length} teams competing at ${metadata?.name} in ${metadata?.location}, exclusively on Debate Land.`;
-  // console.log(teamData);
+
   return (
     <>
       <NextSeo
@@ -68,36 +68,36 @@ const ThreatSheet = () => {
           subtitle={metadata?.location}
           underview={<></>}
         />
-        {/* <ThreatTable data={teamData} /> */}
+        <ThreatTable data={teamData || []} />
       </div>
     </>
   );
 };
 
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   const ssg = createProxySSGHelpers({
-//     router: appRouter,
-//     ctx: {
-//       prisma,
-//     },
-//   });
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: {
+      prisma,
+    },
+  });
 
-//   const { tourn, event } = ctx.query as ThreatSheetParams;
+  const { tourn, event } = ctx.query as ThreatSheetParams;
 
-//   await ssg.scraping.metadata.prefetch({
-//     id: parseInt(tourn),
-//   });
+  await ssg.scraping.metadata.prefetch({
+    id: parseInt(tourn),
+  });
 
-//   await ssg.scraping.threats.prefetch({
-//     tournId: parseInt(tourn),
-//     eventId: parseInt(event),
-//   });
+  await ssg.scraping.threats.prefetch({
+    tournId: parseInt(tourn),
+    eventId: parseInt(event),
+  });
 
-//   return {
-//     props: {
-//       trpcState: ssg.dehydrate(),
-//     },
-//   };
-// };
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
+};
 
 export default ThreatSheet;

@@ -131,7 +131,7 @@ const scrapingRouter = router({
           } else if (idx === 3) {
             teamCodes.push($(cell).text().trim());
           }
-        })
+        });
       });
       const teams = (await Promise.all(teamLastNames.map((lastNames, idx) => prisma.team.findFirst({
         where: {
@@ -169,10 +169,15 @@ const scrapingRouter = router({
       }))));
 
       type Team = typeof teams[0];
+      const teamsWithCodes = teams.map((team, idx) => ({ code: teamCodes[idx], ...team })) as (Team & { code: string })[];
 
-      return (teams
-        .map((team, idx) => ({ code: teamCodes[idx], ...team })) as (Team & { code: string })[])
-        .sort((a, b) => (b?.rankings[0]?.otr || 0) - (a?.rankings[0]?.otr || 0));
+      return [
+        ...teamsWithCodes
+          .filter(t => !!t.id)
+          .sort((a, b) => (b?.rankings[0]?.otr || 0) - (a?.rankings[0]?.otr || 0)),
+        ...teamsWithCodes
+          .filter(t => !t.id)
+      ];
     }),
   strikes: procedure
     .input(z.object({
@@ -224,9 +229,15 @@ const scrapingRouter = router({
 
       type Judge = typeof judges[0];
 
-      return (judges
-        .map((judge, idx) => ({ ...judge, name: judgeNames[idx] })) as (Judge & { name: string })[])
-        .sort((a, b) => (b?.rankings[0]?.index || 0) - (a?.rankings[0]?.index || 0));
+      const judgesWithCodes = judges.map((judge, idx) => ({ ...judge, name: judgeNames[idx] })) as (Judge & { name: string })[];
+
+      return [
+        ...judgesWithCodes
+          .filter(t => !!t.id)
+          .sort((a, b) => (b?.rankings[0]?.index || 0) - (a?.rankings[0]?.index || 0)),
+        ...judgesWithCodes
+          .filter(t => !t.id)
+      ];
     })
 });
 
