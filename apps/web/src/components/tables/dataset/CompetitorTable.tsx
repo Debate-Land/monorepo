@@ -30,8 +30,11 @@ const CompetitorTable = ({count}: CompetitorTableProps) => {
       page: pagination.pageIndex
     },
     {
-      keepPreviousData: true,
-      enabled: isReady
+      enabled: isReady,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 60 * 24,
     }
   );
   const column = createColumnHelper<CompetitorTableRow>();

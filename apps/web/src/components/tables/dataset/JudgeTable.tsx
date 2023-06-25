@@ -32,8 +32,11 @@ const JudgeTable = ({ count }: JudgeTableProps) => {
       page: pagination.pageIndex
     },
     {
-      keepPreviousData: true,
-      enabled: isReady
+      enabled: isReady,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 60 * 24,
     }
   );
   const column = createColumnHelper<ExpandedJudgeRanking>();
@@ -64,7 +67,7 @@ const JudgeTable = ({ count }: JudgeTableProps) => {
           ] as ColumnDef<ExpandedJudgeRanking>[],
           lg: [
             column.accessor('avgSpeakerPoints', {
-              header: "Avg. Spks",
+              header: "Avg. Spks.",
               cell: props => props.cell.getValue()
                 ? (props.cell.getValue() as number).toFixed(1)
                 : '--',

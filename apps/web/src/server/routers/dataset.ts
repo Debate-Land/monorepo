@@ -3,6 +3,7 @@ import { procedure, router } from '../trpc';
 import { getAvg } from '@src/utils/get-statistics';
 import { sortBy } from 'lodash';
 import db from '@src/services/db.service';
+import { BidTableRow } from '@src/components/tables/dataset/BidTable';
 
 const datasetRouter = router({
   summary: procedure
@@ -131,6 +132,107 @@ const datasetRouter = router({
             }
           }
         }),
+        // # Gold Qualifiers
+        (await db).query(`
+          SELECT COUNT(*) AS numGoldQualifiers
+          FROM (
+            SELECT
+              fullBids.team_id,
+              fullBids.num AS full_num,
+              partialBids.num AS partial_num,
+              a.code AS code
+            FROM (
+              SELECT
+                b.team_id,
+                COUNT(*) AS num
+              FROM bids b
+              INNER JOIN team_tournament_results ttr ON b.result_id = ttr.id
+              INNER JOIN tournaments t ON t.id = ttr.tournament_id
+              INNER JOIN _CircuitToTournament ctt ON t.id = ctt.B
+              WHERE
+                ctt.A = 40 AND
+                t.season_id = 2023 AND
+                b.value = 'Full'
+              GROUP BY b.team_id
+            ) fullBids
+            INNER JOIN (
+              SELECT
+                b.team_id,
+                COUNT(*) AS num
+              FROM bids b
+              INNER JOIN team_tournament_results ttr ON b.result_id = ttr.id
+              INNER JOIN tournaments t ON t.id = ttr.tournament_id
+              INNER JOIN _CircuitToTournament ctt ON t.id = ctt.B
+              WHERE
+                ctt.A = 40 AND
+                t.season_id = 2023 AND
+                b.value = 'Partial'
+              GROUP BY b.team_id
+            ) partialBids ON fullBids.team_id = partialBids.team_id
+            INNER JOIN (
+              SELECT team_id, MIN(code) AS code
+              FROM aliases
+              GROUP BY team_id
+            ) a ON fullBids.team_id = a.team_id
+            WHERE fullBids.num >= 2
+            GROUP BY fullBids.team_id, partialBids.num, fullBids.num, a.code
+          ) AS subquery;
+        `) as unknown as [
+          {
+            numGoldQualifiers: number
+          }[],
+          object[]
+        ],
+        (await db).query(`
+          SELECT COUNT(*) AS numSilverQualifiers
+          FROM (
+            SELECT
+              fullBids.team_id,
+              fullBids.num AS full_num,
+              partialBids.num AS partial_num,
+              a.code AS code
+            FROM (
+              SELECT
+                b.team_id,
+                COUNT(*) AS num
+              FROM bids b
+              INNER JOIN team_tournament_results ttr ON b.result_id = ttr.id
+              INNER JOIN tournaments t ON t.id = ttr.tournament_id
+              INNER JOIN _CircuitToTournament ctt ON t.id = ctt.B
+              WHERE
+                ctt.A = 40 AND
+                t.season_id = 2023 AND
+                b.value = 'Full'
+              GROUP BY b.team_id
+            ) fullBids
+            INNER JOIN (
+              SELECT
+                b.team_id,
+                COUNT(*) AS num
+              FROM bids b
+              INNER JOIN team_tournament_results ttr ON b.result_id = ttr.id
+              INNER JOIN tournaments t ON t.id = ttr.tournament_id
+              INNER JOIN _CircuitToTournament ctt ON t.id = ctt.B
+              WHERE
+                ctt.A = 40 AND
+                t.season_id = 2023 AND
+                b.value = 'Partial'
+              GROUP BY b.team_id
+            ) partialBids ON fullBids.team_id = partialBids.team_id
+            INNER JOIN (
+              SELECT team_id, MIN(code) AS code
+              FROM aliases
+              GROUP BY team_id
+            ) a ON fullBids.team_id = a.team_id
+            WHERE fullBids.num < 2 AND partialBids.num > 0
+            GROUP BY fullBids.team_id, partialBids.num, fullBids.num, a.code
+          ) AS subquery;
+        `) as unknown as [
+          {
+            numSilverQualifiers: number
+          }[],
+          object[]
+        ],
         // # Judges
         prisma.judge.count({
           where: {
@@ -151,7 +253,7 @@ const datasetRouter = router({
               }
             }
           }
-        })
+        }),
       ]);
 
       return {
@@ -161,7 +263,9 @@ const datasetRouter = router({
         numCompetitors: data[3],
         numSchools: data[4],
         numBids: data[5],
-        numJudges: data[6],
+        numGoldQualifiers: data[6][0][0].numGoldQualifiers,
+        numSilverQualifiers: data[7][0][0].numSilverQualifiers,
+        numJudges: data[8],
       };
     }),
   leaderboard: procedure
@@ -375,7 +479,7 @@ const datasetRouter = router({
         limit: z.number()
       })
     )
-    .query(async ({ input, ctx }) => {
+    .query(async ({ input }) => {
       const result = await (await db).query(`
         SELECT
           RANK() OVER (ORDER BY \`index\` DESC, t.numRounds DESC) AS circuitRank,
@@ -535,77 +639,62 @@ const datasetRouter = router({
       z.object({
         circuit: z.number(),
         season: z.number(),
+        page: z.number(),
+        limit: z.number()
       })
     )
-    .query(async ({ input, ctx }) => {
-      const { prisma } = ctx;
-      let groups = await prisma.bid.groupBy({
-        by: ['teamId', 'value'],
-        where: {
-          result: {
-            tournament: {
-              circuits: {
-                some: {
-                  id: {
-                    equals: input.circuit
-                  }
-                }
-              },
-              season: {
-                id: {
-                  equals: input.season
-                }
-              }
-            }
-          }
-        },
-        _count: {
-          value: true
-        },
-      });
+    .query(async ({ input }) => {
+      const result = await (await db).query(`
+        SELECT
+          fullBids.team_id as teamId,
+          fullBids.num AS numFull,
+          partialBids.num AS numPartial,
+          a.code AS code,
+          RANK() OVER (ORDER BY fullBids.num DESC, partialBids.num DESC) as bidRank
+        FROM (
+          SELECT
+            b.team_id,
+            COUNT(*) AS num
+          FROM bids b
+          INNER JOIN team_tournament_results ttr ON b.result_id = ttr.id
+          INNER JOIN tournaments t ON t.id = ttr.tournament_id
+          INNER JOIN _CircuitToTournament ctt ON t.id = ctt.B
+          WHERE
+            ctt.A = ? AND
+            t.season_id = ? AND
+            b.value = 'Full'
+          GROUP BY b.team_id
+        ) fullBids
+        INNER JOIN (
+          SELECT
+            b.team_id,
+            COUNT(*) AS num
+          FROM bids b
+          INNER JOIN team_tournament_results ttr ON b.result_id = ttr.id
+          INNER JOIN tournaments t ON t.id = ttr.tournament_id
+          INNER JOIN _CircuitToTournament ctt ON t.id = ctt.B
+          WHERE
+            ctt.A = ? AND
+            t.season_id = ? AND
+            b.value = 'Partial'
+          GROUP BY b.team_id
+        ) partialBids ON fullBids.team_id = partialBids.team_id
+        INNER JOIN (
+          SELECT team_id, MIN(code) AS code
+          FROM aliases
+          GROUP BY team_id
+        ) a ON fullBids.team_id = a.team_id
+        GROUP BY fullBids.team_id, partialBids.num, fullBids.num, a.code
+        ORDER BY numFull DESC, numPartial DESC
+        LIMIT ?
+        OFFSET ?;
+      `,
+      [input.circuit, input.season, input.circuit, input.season, input.limit, input.page ? input.page * input.limit : 0]) as unknown as [
+        BidTableRow[],
+        object[]
+      ];
 
-      let lookup: {
-        [key: string]: {
-          fullBids: number;
-          partialBids: number;
-        }
-      } = {};
-
-      groups.forEach(group => {
-        let id = group['teamId'];
-        if (!lookup[id]) lookup[id] = {
-          fullBids: 0,
-          partialBids: 0,
-        };
-        if (group['value'] === 'Full') lookup[id]['fullBids'] += group._count.value;
-        else lookup[id]['partialBids'] += group._count.value;
-      });
-
-      let results: {
-        code: string;
-        teamId: string;
-        fullBids: number;
-        partialBids: number;
-      }[] = [];
-
-      for (const [teamId, data] of Object.entries(lookup)) {
-        const code = (await prisma.alias.findFirst({
-          where: {
-            teamId
-          },
-          select: {
-            code: true
-          }
-        }))!['code'];
-
-        results.push({
-          code,
-          teamId,
-          ...data
-        });
-      };
-
-      return sortBy(results, ['fullBids', 'partialBids']).reverse();
+      return result[0];
     })
 });
 

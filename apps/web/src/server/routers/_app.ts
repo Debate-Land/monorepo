@@ -6,6 +6,7 @@ import featureRouter from './feature';
 import feedbackRouter from './feedbackRouter';
 import competitorRouter from './competitor';
 import emailRouter from './email';
+import scrapingRouter from './scraping';
 
 export const appRouter = router({
   dataset: datasetRouter,
@@ -14,7 +15,8 @@ export const appRouter = router({
   feature: featureRouter,
   feedback: feedbackRouter,
   competitor: competitorRouter,
-  email: emailRouter
+  email: emailRouter,
+  scraping: scrapingRouter
 });
 
 // export type definition of API

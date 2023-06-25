@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import { Circuit, Event, RoundOutcome, Season, TeamRanking } from '@shared/database';
-import { HeadToHeadRound } from '@src/components/tables/radar/head-to-head-rounds';
-import { PreviousHistoryRound } from '@src/components/tables/radar/previous-history';
+import { HeadToHeadRound } from '@src/components/tables/radar/HeadToHeadRoundTable';
+import { PreviousHistoryRound } from '@src/components/tables/radar/PreviousHistoryTable';
 
 type EventDetails = {
   [key in Event]: (Circuit & {

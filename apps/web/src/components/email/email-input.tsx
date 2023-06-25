@@ -1,5 +1,6 @@
 import { Button, Card, Input } from '@shared/components'
 import { trpc } from '@src/utils/trpc';
+import clsx from 'clsx';
 import { Formik } from 'formik'
 import React, { useState } from 'react'
 import { AiOutlineArrowRight, AiOutlineMail } from 'react-icons/ai'
@@ -11,7 +12,7 @@ export interface EmailInputProps {
 }
 
 const EmailInput = (props: EmailInputProps) => {
-  const [subscribed, setSubscribed] = useState(false);
+  const [subscribed, setSubscribed] = useState<boolean | "in progress">(false);
 
   const { mutateAsync: subscribe } = trpc.email.subscribe.useMutation();
 
@@ -26,7 +27,8 @@ const EmailInput = (props: EmailInputProps) => {
             email: Yup.string().email('Please enter a valid email.').required('An email is required')
           })
         }
-        onSubmit={async({ email }) => {
+        onSubmit={async ({ email }) => {
+          setSubscribed("in progress");
           await subscribe({
             email,
             ...props
@@ -35,8 +37,8 @@ const EmailInput = (props: EmailInputProps) => {
         }}
       >
         {
-          !subscribed && ((props) => (
-            <div className="max-w-[400px] w-full mx-auto">
+          subscribed !== true && ((props) => (
+            <div className={clsx("max-w-[400px] w-full mx-auto", { "animate-pulse select-none pointer-events-none": subscribed === "in progress" })}>
               <form className="flex border rounded-l-lg rounded-r-xl border-r-0 dark:border-gray-600">
                 <Input
                   name="email"
@@ -62,7 +64,7 @@ const EmailInput = (props: EmailInputProps) => {
         }
       </Formik>
       {
-        subscribed && (
+        subscribed === true && (
           <p className="ml-1 mx-auto w-full text-center text-green-500">You've subscribed for updates!</p>
         )
       }

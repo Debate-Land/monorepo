@@ -96,7 +96,11 @@ const Dataset = () => {
         <LeaderboardTable count={data?.numTeams || 50} />
         <JudgeTable count={data?.numJudges || 50} />
         <TournamentTable count={data?.numTournaments || 50} />
-        <BidTable event={data?.circuit?.event} />
+        <BidTable
+          event={data?.circuit?.event}
+          numGoldQualifiers={data?.numGoldQualifiers}
+          numSilverQualifiers={data?.numSilverQualifiers}
+        />
         <SchoolTable count={data?.numSchools || 50} />
         <CompetitorTable count={data?.numCompetitors || 50} />
       </div>

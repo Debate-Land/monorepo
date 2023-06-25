@@ -6,18 +6,21 @@ import { trpc } from '@src/utils/trpc';
 import { ColumnDef, createColumnHelper, PaginationState } from '@tanstack/react-table';
 import { Event } from '@shared/database';
 
-type BidTableRow = {
+export type BidTableRow = {
+  bidRank: number;
   teamId: string;
   code: string;
-  fullBids: number;
-  partialBids: number;
+  numFull: number;
+  numPartial: number;
 };
 
 interface BidTableProps {
   event?: Event;
+  numGoldQualifiers?: number;
+  numSilverQualifiers?: number;
 };
 
-const BidTable = ({ event }: BidTableProps) => {
+const BidTable = ({ event, numGoldQualifiers, numSilverQualifiers }: BidTableProps) => {
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
@@ -27,33 +30,42 @@ const BidTable = ({ event }: BidTableProps) => {
     {
       season: parseInt(query.season as unknown as string),
       circuit: parseInt(query.circuit as unknown as string),
+      page: pagination.pageIndex,
+      limit: pagination.pageSize
     },
     {
-      keepPreviousData: true,
-      enabled: isReady
+      enabled: isReady,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 60 * 24,
     }
   );
-  const totalPages = useMemo(() => Math.floor((data?.length || 0)/pagination.pageSize), [data?.length, pagination.pageSize]);
+  const totalPages = useMemo(() => Math.ceil(((numGoldQualifiers || 0) + (numSilverQualifiers || 0))/pagination.pageSize), [numGoldQualifiers, numSilverQualifiers, pagination.pageSize]);
   const column = createColumnHelper<BidTableRow>();
 
   return (
     <Card icon={<IoMedalOutline />} title="Bids" className="max-w-[800px] mx-auto my-16">
       <Table
-        data={data?.slice(pagination.pageSize * pagination.pageIndex, pagination.pageSize * (pagination.pageIndex + 1))}
+        data={data}
         numLoadingRows={10}
         columnConfig={{
           core: [
+            column.accessor('bidRank', {
+              header: "Rank",
+              cell: props => props.cell.getValue()
+            }),
             column.accessor('code', {
               header: "Team",
               cell: props => props.cell.getValue()
             }),
-            column.accessor('fullBids', {
+            column.accessor('numFull', {
               header: "Full Bids",
               cell: props => props.cell.getValue()
             })
           ] as ColumnDef<BidTableRow>[],
           sm: [
-            column.accessor('partialBids', {
+            column.accessor('numPartial', {
               header: "Partial Bids",
               cell: props => props.cell.getValue()
             })
@@ -68,16 +80,16 @@ const BidTable = ({ event }: BidTableProps) => {
           pathname: `/teams/${row.teamId}`,
           query
         })}
-        showPosition
         sortable
       />
-      <Text className='mx-auto text-center'>
-        {data && data?.filter(r => r['fullBids'] >= 2).length} {data && event == 'PublicForum' ? 'gold' : ''} {data && event && 'qualifying teams'}.
-        {
-          event == 'PublicForum' && data &&
-            ` ${data?.filter(r => r['fullBids'] < 2 && (r['fullBids'] == 1 || r['partialBids'] == 2)).length} silver qualifying teams.`
-        }
-      </Text>
+      {
+        event && (
+          <Text className='mx-auto text-center'>
+            {numGoldQualifiers} {event === 'PublicForum' ? 'Gold Qualifiers' : 'Qualifiers'}. {event === 'PublicForum' && `${numSilverQualifiers} Silver Qualifiers.`}
+          </Text>
+        )
+      }
+
     </Card>
     )
 }

@@ -233,7 +233,8 @@ const judgeRouter = router({
             }
           },
           decision: true,
-          avgSpeakerPoints: true
+          avgSpeakerPoints: true,
+          wasSquirrel: true
         },
       });
 
