@@ -2,13 +2,13 @@ import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import * as cheerio from 'cheerio';
 
-interface SearchResult {
+export interface TournamentSearchResult {
   id: number;
-  date: Date;
+  date: string;
   name: string;
 };
 
-interface Option {
+export interface ScrapingOption {
   id: number;
   name: string;
 }
@@ -18,11 +18,11 @@ const scrapingRouter = router({
     .input(z.object({
       search: z.string()
     }))
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       const tabroomResponse = await fetch(`https://www.tabroom.com/index/search.mhtml?search=${input.search}`)
         .then(res => res.text());
       const $ = cheerio.load(tabroomResponse);
-      const results: SearchResult[] = [];
+      const results: TournamentSearchResult[] = [];
       $('tr').each((idx, row) => {
         if (idx === 0) return;
         const result: any = {}
@@ -39,7 +39,7 @@ const scrapingRouter = router({
               result.date = new Date($(cell).text());
             }
           });
-        results.push(result as SearchResult);
+        results.push(result as TournamentSearchResult);
       });
       return results;
     }),
@@ -47,11 +47,11 @@ const scrapingRouter = router({
     .input(z.object({
       id: z.number()
     }))
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       const tabroomResponse = await fetch(`https://www.tabroom.com/index/tourn/fields.mhtml?tourn_id=${input.id}`)
         .then(res => res.text());
       const $ = cheerio.load(tabroomResponse);
-      const events: Option[] = [];
+      const events: ScrapingOption[] = [];
       $('#content > div.menu > div.sidenote > a').each((idx, event) => {
         events.push({
           id: parseInt($(event)
@@ -66,11 +66,11 @@ const scrapingRouter = router({
     .input(z.object({
       id: z.number()
     }))
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       const tabroomResponse = await fetch(`https://www.tabroom.com/index/tourn/judges.mhtml?tourn_id=${input.id}`)
         .then(res => res.text());
       const $ = cheerio.load(tabroomResponse);
-      const pools: Option[] = [];
+      const pools: ScrapingOption[] = [];
       $('#content > div.menu > div.sidenote > div').each((idx, pool) => {
         let id: number = 0;
         let name: string = '';

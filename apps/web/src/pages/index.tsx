@@ -463,9 +463,9 @@ const Home = ({
             </div>
             <Fade left distance="20px">
               <div className="flex w-full relative">
-                <div className="absolute backdrop-blur-sm w-full h-full z-40 grid place-items-center">
+                {/* <div className="absolute backdrop-blur-sm w-full h-full z-40 grid place-items-center">
                   <p className="text-xl text-red-400">Coming soon . . .</p>
-                </div>
+                </div> */}
                 <Radar />
               </div>
             </Fade>
