@@ -1,26 +1,8 @@
-import React, {
-  ChangeEvent,
-  FormEvent,
-  Fragment,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import {
-  Text,
-  Button,
-  Input,
-  Group,
-  Card,
-  Select,
-  Label,
-} from "@shared/components";
+import React, { Fragment, useState, useEffect } from "react";
+import { Button, Group, Card, Label } from "@shared/components";
 import { Event } from "@shared/database";
 import { useRouter } from "next/router";
 import { trpc } from "@src/utils/trpc";
-import { Formik, FormikProps } from "formik";
-import * as Yup from "yup";
 import { BiRadar } from "react-icons/bi";
 import TournamentCombobox from "./TournamentCombobox";
 import {
@@ -28,24 +10,8 @@ import {
   TournamentSearchResult,
 } from "@src/server/routers/scraping";
 import { Listbox, Transition } from "@headlessui/react";
-import getEnumName from "@src/utils/get-enum-name";
 import { HiCheck } from "react-icons/hi";
 import { LuChevronsUpDown } from "react-icons/lu";
-
-interface Option {
-  name: string;
-  value: any;
-}
-
-interface FormOptions {
-  circuits: Option[];
-  seasons: Option[];
-}
-
-interface RefreshOptions {
-  event?: Event;
-  circuit?: number;
-}
 
 interface FieldSelectProps {
   tournId: number | undefined;
@@ -289,7 +255,6 @@ const Radar = () => {
           className="flex justify-center w-full"
         >
           <Button
-            type="submit"
             _type="primary"
             className="w-36 text-sm !mt-0"
             disabled={!tournament || !pool || !field}
@@ -309,7 +274,6 @@ const Radar = () => {
             OR
           </p>
           <Button
-            type="submit"
             _type="primary"
             className="w-36 text-sm !mt-0"
             disabled={!tournament || !pool || !field}

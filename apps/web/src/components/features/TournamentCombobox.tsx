@@ -71,7 +71,7 @@ export default function TournamentCombobox({
             onChange={(event) => {
               setQuery(event.target.value);
             }}
-            placeholder="Search for a tournamnet"
+            placeholder="Search for a tournament"
           />
           <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
             <LuChevronsUpDown
