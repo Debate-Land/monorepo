@@ -15,13 +15,16 @@ import {
   Select,
   Label,
 } from "@shared/components";
-import { Event } from "@shared/database";
+import { Event, Judge } from "@shared/database";
 import { useRouter } from "next/router";
 import { trpc } from "@src/utils/trpc";
 import { Formik, FormikProps } from "formik";
 import * as Yup from "yup";
 import TeamCombobox, { TeamComboboxValue } from "./TeamCombobox";
 import { RiBodyScanLine } from "react-icons/ri";
+import JudgeCombobox, { JudgeComboboxValue } from "./JudgeCombobox";
+import { BiX } from "react-icons/bi";
+import clsx from "clsx";
 
 interface Option {
   name: string;
@@ -62,6 +65,12 @@ const XRay = () => {
   });
   const [team1Value, setTeam1Value] = useState<TeamComboboxValue | undefined>();
   const [team2Value, setTeam2Value] = useState<TeamComboboxValue | undefined>();
+  const [selectedJudges, setSelectedJudges] = useState<JudgeComboboxValue[]>(
+    []
+  );
+  const [judgeValue, setJudgeValue] = useState<
+    JudgeComboboxValue | undefined
+  >();
 
   const refreshOptions = useCallback(
     ({ event, circuit }: RefreshOptions) => {
@@ -105,6 +114,13 @@ const XRay = () => {
   );
 
   useEffect(() => {
+    if (judgeValue) {
+      setSelectedJudges([...selectedJudges, judgeValue]);
+      setJudgeValue(undefined);
+    }
+  }, [judgeValue, selectedJudges]);
+
+  useEffect(() => {
     refreshOptions({});
   }, [refreshOptions]);
 
@@ -114,6 +130,13 @@ const XRay = () => {
       setTeam2Value(undefined);
     }
   };
+
+  const removeSelectedJudge = useCallback(
+    (id: string) => {
+      setSelectedJudges(selectedJudges.filter((judge) => judge.id !== id));
+    },
+    [selectedJudges]
+  );
 
   const TeamSelection = useCallback(() => {
     const formik = formikRef.current;
@@ -167,6 +190,7 @@ const XRay = () => {
               ...values,
               team1: team1Value.teamId,
               team2: team2Value.teamId,
+              judges: selectedJudges.map((judge) => judge.id).join(","),
             },
           });
         }}
@@ -230,6 +254,37 @@ const XRay = () => {
             </Group>
             <Group
               character="3"
+              legend="Add judge(s)"
+              className="grid sm:gap-4 w-full md:w-[95%] px-4 sm:px-8 md:px-0 sm:mx-auto"
+            >
+              <JudgeCombobox
+                alreadyChosenJudges={selectedJudges}
+                selected={judgeValue}
+                setSelected={setJudgeValue}
+              />
+              <ul
+                className={clsx("border-t pt-2 border-gray-400/50", {
+                  hidden: !selectedJudges.length,
+                })}
+              >
+                {selectedJudges.map((judge) => (
+                  <li
+                    key={judge.id}
+                    className="flex items-center space-x-2 group"
+                  >
+                    <span>{judge.name}</span>
+                    <button
+                      className="group-hover:bg-red-400 group-hover:text-white transition-all text-red-400 rounded-full"
+                      onClick={() => removeSelectedJudge(judge.id)}
+                    >
+                      <BiX />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </Group>
+            <Group
+              character="4"
               legend="Get your results"
               className="flex justify-center w-full"
             >

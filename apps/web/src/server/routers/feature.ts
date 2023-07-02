@@ -235,6 +235,30 @@ const featureRouter = router({
 
       return results;
     }),
+    judgeSearch: procedure
+    .input(
+      z.object({
+        search: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { prisma } = ctx;
+
+      const results = await prisma.judge.findMany({
+        where: {
+          name: {
+            search: input.search
+          }
+        },
+        select: {
+          name: true,
+          id: true,
+        },
+        take: 10
+      });
+
+      return results;
+    }),
   headToHead: procedure
     .input(
       z.object({
