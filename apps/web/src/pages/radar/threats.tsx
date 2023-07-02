@@ -83,7 +83,7 @@ const ThreatSheet = () => {
                 d.rankings?.length ? d.rankings[0].otr : 0
               ) || []
             }
-            title="OTR Distribution"
+            dataType="OTR"
           />
         </Card>
         <ThreatTable

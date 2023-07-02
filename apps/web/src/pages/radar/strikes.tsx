@@ -81,7 +81,7 @@ const StrikeSheet = () => {
                 d.rankings?.length ? d.rankings[0].index : 0
               ) || []
             }
-            title="Index Distribution"
+            dataType="Index"
           />
         </Card>
         <StrikeTable data={judgeData || []} />
