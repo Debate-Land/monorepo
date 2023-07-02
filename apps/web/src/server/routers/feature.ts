@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { Circuit, Event, RoundOutcome, Season, TeamRanking } from '@shared/database';
+import { Circuit, Event, JudgeRanking, RoundOutcome, Season, TeamRanking } from '@shared/database';
 import { HeadToHeadRound } from '@src/components/tables/radar/HeadToHeadRoundTable';
 import { PreviousHistoryRound } from '@src/components/tables/radar/PreviousHistoryTable';
+import _ from 'lodash';
 
 type EventDetails = {
   [key in Event]: (Circuit & {
@@ -267,6 +268,7 @@ const featureRouter = router({
         season: z.number(),
         team1: z.string(),
         team2: z.string(),
+        judges: z.array(z.string())
       })
     )
     .query(async ({ input, ctx }) => {
@@ -297,7 +299,7 @@ const featureRouter = router({
         }
       });
 
-      const getRanking = (teamId: string) => (
+      const getTeamRanking = (teamId: string) => (
         prisma.teamRanking.findUniqueOrThrow({
           where: {
             teamId_circuitId_seasonId: {
@@ -321,8 +323,57 @@ const featureRouter = router({
         })
       );
 
-      const team1Ranking = await getRanking(input.team1);
-      const team2Ranking = await getRanking(input.team2);
+      const getJudgeRanking = async (judgeId: string) => {
+        const preferredRanking = await prisma.judgeRanking.findUnique({
+          where: {
+            judgeId_circuitId_seasonId: {
+              judgeId,
+              circuitId: input.circuit,
+              seasonId: input.season
+            }
+          },
+          include: {
+            judge: {
+              select: {
+                name: true,
+                id: true
+              }
+            }
+          }
+        });
+
+        if (preferredRanking) {
+          return {
+            index: preferredRanking.index,
+            ...preferredRanking.judge
+          };
+        }
+
+        const allRankings = await prisma.judgeRanking.findMany({
+          where: {
+            judgeId
+          },
+          include: {
+            judge: {
+              select: {
+                name: true,
+                id: true
+              }
+            }
+          }
+        });
+
+        return {
+          index: _.sum(allRankings.map(r => r.index)) / allRankings.length,
+          ...allRankings[0].judge
+        }
+
+      }
+
+      const team1Ranking = await getTeamRanking(input.team1);
+      const team2Ranking = await getTeamRanking(input.team2);
+      const judgeRankings = (await Promise.all(input.judges.map(id => getJudgeRanking(id))));
+      const avgJudgeIndex = input.judges ? _.sum(judgeRankings) / judgeRankings.length : 10;
 
       const getRounds = (teamId: string) => (
         prisma.round.findMany({
@@ -442,6 +493,8 @@ const featureRouter = router({
           ranking: team2Ranking
         },
         matchupHistory,
+        judgeRankings,
+        avgJudgeIndex
       };
     }),
   seasons: procedure

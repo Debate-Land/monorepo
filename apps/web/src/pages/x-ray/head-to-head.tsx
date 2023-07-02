@@ -14,16 +14,18 @@ import getEnumName from "@src/utils/get-enum-name";
 import getExpectedWP from "@src/utils/get-expected-wp";
 import { trpc } from "@src/utils/trpc";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import clsx from "clsx";
 import { GetServerSideProps } from "next";
 import { NextSeo } from "next-seo";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BiLinkExternal } from "react-icons/bi";
 import { BsLightbulb } from "react-icons/bs";
 import { GiAtomicSlashes } from "react-icons/gi";
+import { HiOutlineSwitchHorizontal } from "react-icons/hi";
 import { Bar, BarChart, Cell, LabelList, XAxis, YAxis } from "recharts";
 
 interface HeadToHeadParams extends ParsedUrlQuery {
@@ -32,6 +34,7 @@ interface HeadToHeadParams extends ParsedUrlQuery {
   season: string;
   team1: string;
   team2: string;
+  judges?: string;
 }
 
 const boundWp = (wp: number) => {
@@ -54,6 +57,7 @@ const truncateTeamCode = (code: string) => {
 const HeadToHead = () => {
   const { query, isReady, asPath, push } = useRouter();
   const { theme } = useTheme();
+  const [usingJudges, setUsingJudges] = useState<undefined | boolean>(true);
   const { data } = trpc.feature.headToHead.useQuery(
     {
       event: query.event as string,
@@ -61,6 +65,7 @@ const HeadToHead = () => {
       season: parseInt(query.season as string),
       team1: query.team1 as string,
       team2: query.team2 as string,
+      judges: query.judges ? (query.judges as string).split(",") : [],
     },
     {
       enabled: isReady,
@@ -94,22 +99,44 @@ const HeadToHead = () => {
       team1Otr && team2Otr
         ? boundWp(
             team1Otr > team2Otr
-              ? 100 * getExpectedWP(team1Otr, team2Otr)
-              : 100 - 100 * getExpectedWP(team1Otr, team2Otr)
+              ? 100 *
+                  getExpectedWP(
+                    team1Otr,
+                    team2Otr,
+                    usingJudges ? data?.avgJudgeIndex : undefined
+                  )
+              : 100 -
+                  100 *
+                    getExpectedWP(
+                      team1Otr,
+                      team2Otr,
+                      usingJudges ? data?.avgJudgeIndex : undefined
+                    )
           )
         : undefined,
-    [team1Otr, team2Otr]
+    [data?.avgJudgeIndex, team1Otr, team2Otr, usingJudges]
   );
   const team2Wp = useMemo(
     () =>
       team1Otr && team2Otr
         ? boundWp(
             team1Otr > team2Otr
-              ? 100 - 100 * getExpectedWP(team1Otr, team2Otr)
-              : 100 * getExpectedWP(team1Otr, team2Otr)
+              ? 100 -
+                  100 *
+                    getExpectedWP(
+                      team1Otr,
+                      team2Otr,
+                      usingJudges ? data?.avgJudgeIndex : undefined
+                    )
+              : 100 *
+                  getExpectedWP(
+                    team1Otr,
+                    team2Otr,
+                    usingJudges ? data?.avgJudgeIndex : undefined
+                  )
           )
         : undefined,
-    [team1Otr, team2Otr]
+    [data?.avgJudgeIndex, team1Otr, team2Otr, usingJudges]
   );
   const chartData = useMemo(
     () =>
@@ -143,6 +170,34 @@ const HeadToHead = () => {
         )
       : "--";
   }, [data]);
+
+  const JudgingInfoSentence = useCallback(() => {
+    return (
+      <>
+        {" (with "}
+        {data?.judgeRankings.map((j, idx) => (
+          <span key={j.id}>
+            <span>
+              {data?.judgeRankings.length > 1 &&
+                idx == data?.judgeRankings.length - 1 &&
+                "and "}
+            </span>
+            <Link
+              href={`/judges/${j.id}`}
+              className="w-fit inline-flex space-x-1 hover:opacity-80 active:opacity-100"
+            >
+              <span>
+                {j.name} [{j.index.toFixed(1)}]
+              </span>
+              <BiLinkExternal size={12} />
+            </Link>
+            <span>,&nbsp;</span>
+          </span>
+        ))}
+        {"judging) "}
+      </>
+    );
+  }, [data?.judgeRankings]);
 
   const SEO_TITLE = `Round Prediction: ${team1Code} vs ${team2Code}`;
   const SEO_DESCRIPTION = `Our prediction of the winning team in a round between ${team1Code} and ${team2Code}, exclusively on Debate Land.`;
@@ -221,8 +276,23 @@ const HeadToHead = () => {
         <Card
           icon={<BsLightbulb />}
           title="Prediction"
-          className="max-w-[800px] mx-auto my-16"
+          className="max-w-[800px] mx-auto my-16 relative"
         >
+          <div className="w-full px-4">
+            <Button
+              icon={<HiOutlineSwitchHorizontal className="mr-2" />}
+              onClick={() => {
+                setTimeout(() => setUsingJudges(!usingJudges), 750);
+                setUsingJudges(undefined);
+              }}
+              className="sm:absolute top-0 right-1 md:top-5 md:right-5 h-7 ml-0 !mr-0 !bg-transparent !text-black dark:!text-white hover:opacity-70 active:opacity-90 w-full sm:w-48"
+              ghost
+            >
+              <p className="w-full text-start">
+                {usingJudges ? "Using Judges" : "Ignoring Judges"}
+              </p>
+            </Button>
+          </div>
           <div className="flex justify-center w-full">
             <BarChart width={300} height={200} data={chartData || []}>
               <XAxis dataKey="label" />
@@ -248,11 +318,12 @@ const HeadToHead = () => {
             </BarChart>
           </div>
           <div className="w-full text-center">
-            <p>
+            <p className={clsx({ hidden: usingJudges === undefined })}>
               In a matchup between{" "}
               <span className="text-sky-400">{team1Code}</span> and{" "}
-              <span className="text-violet-400">{team2Code}</span>, our model
-              trained on over 100,000 rounds expects{" "}
+              <span className="text-violet-400">{team2Code}</span>
+              {data?.judgeRankings && <JudgingInfoSentence />}
+              our model trained on over 100,000 rounds expects{" "}
               {team1Otr && team2Otr ? (
                 team1Otr > team2Otr ? (
                   <span className="text-sky-400">{team1Code}</span>
@@ -266,7 +337,13 @@ const HeadToHead = () => {
               {team1Otr && team2Otr ? (
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-400">
                   {Math.floor(
-                    boundWp(getExpectedWP(team1Otr, team2Otr) * 100) * 10
+                    boundWp(
+                      getExpectedWP(
+                        team1Otr,
+                        team2Otr,
+                        usingJudges ? data?.avgJudgeIndex : undefined
+                      ) * 100
+                    ) * 10
                   ) / 10}
                   %
                 </span>
@@ -275,6 +352,18 @@ const HeadToHead = () => {
               )}
               .
             </p>
+            <div
+              className={clsx("flex flex-col space-y-1", {
+                hidden: usingJudges !== undefined,
+              })}
+            >
+              <p className="w-[70%] mx-auto rounded-lg h-6 bg-gray-200/30 animate-pulse" />
+              <p className="w-[80%] mx-auto rounded-lg h-6 bg-gray-200/30 animate-pulse" />
+              <p className="w-[50%] mx-auto rounded-lg h-6 bg-gray-200/30 animate-pulse" />
+              <p className="w-[60%] sm:hidden mx-auto rounded-lg h-6 bg-gray-200/30 animate-pulse" />
+              <p className="w-[70%] sm:hidden mx-auto rounded-lg h-6 bg-gray-200/30 animate-pulse" />
+              <p className="w-[50%] sm:hidden mx-auto rounded-lg h-6 bg-gray-200/30 animate-pulse" />
+            </div>
           </div>
         </Card>
         <PreviousHistory
@@ -289,7 +378,6 @@ const HeadToHead = () => {
           className="max-w-[800px] mx-auto my-16"
         >
           <HeadToHeadRoundsTable
-            teamNo={1}
             data={data?.team1.rounds}
             code={team1Code}
             isFavorite={isTeam1Favorite}
@@ -298,7 +386,6 @@ const HeadToHead = () => {
             numRounds={data?.team1.history.length}
           />
           <HeadToHeadRoundsTable
-            teamNo={2}
             data={data?.team2.rounds}
             code={team2Code}
             isFavorite={!isTeam1Favorite}
@@ -320,7 +407,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
   });
 
-  const { event, circuit, season, team1, team2 } =
+  const { event, circuit, season, team1, team2, judges } =
     ctx.query as HeadToHeadParams;
 
   await ssg.feature.headToHead.prefetch({
@@ -329,6 +416,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     season: parseInt(season as string),
     team1: team1 as string,
     team2: team2 as string,
+    judges: judges ? judges.split(",") : [],
   });
 
   return {

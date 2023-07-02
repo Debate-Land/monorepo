@@ -21,7 +21,6 @@ export interface HeadToHeadRound {
 }
 
 export interface RoundSpeakingResultProps {
-  teamNo: 1 | 2;
   data?: HeadToHeadRound[];
   code?: string;
   isFavorite?: boolean;
@@ -31,7 +30,6 @@ export interface RoundSpeakingResultProps {
 }
 
 const HeadToHeadRoundsTable = ({
-  teamNo,
   data,
   code,
   isFavorite,
@@ -76,7 +74,7 @@ const HeadToHeadRoundsTable = ({
         <h3 className="text-lg">
           {code} ({isFavorite ? "Favorite" : "Underdog"})
         </h3>
-        <p className="text-sm">
+        <p className="text-sm italic">
           Based on {numRounds || "--"} rounds, {code} has a clutch factor of{" "}
           {clutchFactor !== undefined
             ? clutchFactor === "--"
