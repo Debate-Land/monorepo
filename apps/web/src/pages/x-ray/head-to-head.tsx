@@ -27,6 +27,7 @@ import { BsLightbulb } from "react-icons/bs";
 import { GiAtomicSlashes } from "react-icons/gi";
 import { HiOutlineSwitchHorizontal } from "react-icons/hi";
 import { Bar, BarChart, Cell, LabelList, XAxis, YAxis } from "recharts";
+import _ from "lodash";
 
 interface HeadToHeadParams extends ParsedUrlQuery {
   event: string;
@@ -75,6 +76,12 @@ const HeadToHead = () => {
       staleTime: 1000 * 60 * 60 * 24,
     }
   );
+  const avgJudgeIndex = useMemo(
+    () =>
+      usingJudges ? _.mean(data?.judgeRankings.map((r) => r.index)) : undefined,
+    [data?.judgeRankings, usingJudges]
+  );
+
   const { team1Code, team2Code, team1Otr, team2Otr } = useMemo(
     () => ({
       team1Code: data?.team1.ranking.team.aliases[0].code,
@@ -99,44 +106,22 @@ const HeadToHead = () => {
       team1Otr && team2Otr
         ? boundWp(
             team1Otr > team2Otr
-              ? 100 *
-                  getExpectedWP(
-                    team1Otr,
-                    team2Otr,
-                    usingJudges ? data?.avgJudgeIndex : undefined
-                  )
-              : 100 -
-                  100 *
-                    getExpectedWP(
-                      team1Otr,
-                      team2Otr,
-                      usingJudges ? data?.avgJudgeIndex : undefined
-                    )
+              ? 100 * getExpectedWP(team1Otr, team2Otr, avgJudgeIndex)
+              : 100 - 100 * getExpectedWP(team1Otr, team2Otr, avgJudgeIndex)
           )
         : undefined,
-    [data?.avgJudgeIndex, team1Otr, team2Otr, usingJudges]
+    [team1Otr, team2Otr, avgJudgeIndex]
   );
   const team2Wp = useMemo(
     () =>
       team1Otr && team2Otr
         ? boundWp(
             team1Otr > team2Otr
-              ? 100 -
-                  100 *
-                    getExpectedWP(
-                      team1Otr,
-                      team2Otr,
-                      usingJudges ? data?.avgJudgeIndex : undefined
-                    )
-              : 100 *
-                  getExpectedWP(
-                    team1Otr,
-                    team2Otr,
-                    usingJudges ? data?.avgJudgeIndex : undefined
-                  )
+              ? 100 - 100 * getExpectedWP(team1Otr, team2Otr, avgJudgeIndex)
+              : 100 * getExpectedWP(team1Otr, team2Otr, avgJudgeIndex)
           )
         : undefined,
-    [data?.avgJudgeIndex, team1Otr, team2Otr, usingJudges]
+    [avgJudgeIndex, team1Otr, team2Otr]
   );
   const chartData = useMemo(
     () =>
@@ -194,7 +179,7 @@ const HeadToHead = () => {
             <span>,&nbsp;</span>
           </span>
         ))}
-        {"judging) "}
+        {"judging)"}
       </>
     );
   }, [data?.judgeRankings]);
@@ -285,7 +270,12 @@ const HeadToHead = () => {
                 setTimeout(() => setUsingJudges(!usingJudges), 750);
                 setUsingJudges(undefined);
               }}
-              className="sm:absolute top-0 right-1 md:top-5 md:right-5 h-7 ml-0 !mr-0 !bg-transparent !text-black dark:!text-white hover:opacity-70 active:opacity-90 w-full sm:w-48"
+              className={clsx(
+                "sm:absolute top-0 right-1 md:top-5 md:right-5 h-7 ml-0 !mr-0 !bg-transparent !text-black dark:!text-white hover:opacity-70 active:opacity-90 w-full sm:w-48",
+                {
+                  hidden: !data?.judgeRankings.length,
+                }
+              )}
               ghost
             >
               <p className="w-full text-start">
@@ -322,7 +312,9 @@ const HeadToHead = () => {
               In a matchup between{" "}
               <span className="text-sky-400">{team1Code}</span> and{" "}
               <span className="text-violet-400">{team2Code}</span>
-              {data?.judgeRankings && <JudgingInfoSentence />}
+              {data?.judgeRankings && usingJudges && (
+                <JudgingInfoSentence />
+              )}{" "}
               our model trained on over 100,000 rounds expects{" "}
               {team1Otr && team2Otr ? (
                 team1Otr > team2Otr ? (
@@ -338,11 +330,7 @@ const HeadToHead = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-violet-400">
                   {Math.floor(
                     boundWp(
-                      getExpectedWP(
-                        team1Otr,
-                        team2Otr,
-                        usingJudges ? data?.avgJudgeIndex : undefined
-                      ) * 100
+                      getExpectedWP(team1Otr, team2Otr, avgJudgeIndex) * 100
                     ) * 10
                   ) / 10}
                   %

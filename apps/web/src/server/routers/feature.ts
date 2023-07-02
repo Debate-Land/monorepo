@@ -373,7 +373,6 @@ const featureRouter = router({
       const team1Ranking = await getTeamRanking(input.team1);
       const team2Ranking = await getTeamRanking(input.team2);
       const judgeRankings = (await Promise.all(input.judges.map(id => getJudgeRanking(id))));
-      const avgJudgeIndex = input.judges ? _.sum(judgeRankings) / judgeRankings.length : 10;
 
       const getRounds = (teamId: string) => (
         prisma.round.findMany({
@@ -493,8 +492,7 @@ const featureRouter = router({
           ranking: team2Ranking
         },
         matchupHistory,
-        judgeRankings,
-        avgJudgeIndex
+        judgeRankings
       };
     }),
   seasons: procedure

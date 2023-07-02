@@ -119,7 +119,7 @@ const HeadToHeadRoundsTable = ({
                 cell: (props) => {
                   const { otr, opponentOtr } = props.row.original;
                   let expHiWinProp =
-                    Math.floor(getExpectedWP(otr, opponentOtr) * 1000) / 10;
+                    Math.floor(getExpectedWP(otr, opponentOtr, 10) * 1000) / 10;
                   if (expHiWinProp >= 99) expHiWinProp = 99;
 
                   return `${
