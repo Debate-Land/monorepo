@@ -1,24 +1,41 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React, { useState } from 'react'
-import { BsJournalBookmark } from 'react-icons/bs'
-import { Tournament, TeamTournamentResult, Circuit, Alias, School, TournamentSpeakerResult, Competitor, Judge, Round, RoundSpeakerResult, Side, Bid, TopicTag, Topic } from '@shared/database'
-import { Table, Card } from '@shared/components'
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
-import TournamentRoundsTable from './TournamentRoundsTable'
-import TournamentSpeakingResultTable from './TournamentSpeakingResultTable'
+import React, { useState } from "react";
+import { BsJournalBookmark } from "react-icons/bs";
+import {
+  Tournament,
+  TeamTournamentResult,
+  Circuit,
+  Alias,
+  School,
+  TournamentSpeakerResult,
+  Competitor,
+  Judge,
+  Round,
+  RoundSpeakerResult,
+  Side,
+  Bid,
+  TopicTag,
+  Topic,
+} from "@shared/database";
+import { Table, Card } from "@shared/components";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import TournamentRoundsTable from "./TournamentRoundsTable";
+import TournamentSpeakingResultTable from "./TournamentSpeakingResultTable";
 
 export type ExpandedTournamentSpeakerResult = TournamentSpeakerResult & {
   competitor: {
-    name: string
-  }
+    name: string;
+  };
 };
 
 export type ExpandedTournamentResult = TeamTournamentResult & {
   tournament: Tournament & {
     circuits: Circuit[];
-    topic: (Topic & {
-      tags: TopicTag[];
-    }) | null;
+    topic:
+      | (Topic & {
+          tags: TopicTag[];
+        })
+      | null;
   };
   alias: Alias;
   school: School;
@@ -33,7 +50,7 @@ export type ExpandedRoundJudgeRecord = {
 
 export type ExpandedRoundSpeakerResult = RoundSpeakerResult & {
   competitor: Competitor;
-}
+};
 
 export type ExpandedRound = Round & {
   records: ExpandedRoundJudgeRecord[];
@@ -42,80 +59,88 @@ export type ExpandedRound = Round & {
     id: string;
     aliases: Alias[];
   } | null;
-}
+};
 
 export interface TournamentHistoryTableProps {
-  data?: ExpandedTournamentResult[]
+  data?: ExpandedTournamentResult[];
 }
 
 const TournamentHistoryTable = ({ data }: TournamentHistoryTableProps) => {
   const column = createColumnHelper<ExpandedTournamentResult>();
 
   return (
-    <Card icon={<BsJournalBookmark />} title="Tournament History" className="max-w-[800px] mx-auto my-16">
+    <Card
+      icon={<BsJournalBookmark />}
+      title="Tournament History"
+      className="max-w-[800px] mx-auto my-16"
+    >
       <Table
         data={data}
         numLoadingRows={5}
         columnConfig={{
           core: [
-            column.accessor('tournament.name', {
+            column.accessor("tournament.name", {
               header: "Name",
-              cell: props => props.cell.getValue(),
+              cell: (props) => props.cell.getValue(),
               enableSorting: false,
             }),
-            column.accessor('tournament.start', {
+            column.accessor("tournament.start", {
               header: "Date",
-              cell: props => new Date(props.cell.getValue() as number * 1000).toLocaleDateString("en-us")
+              cell: (props) =>
+                new Date(
+                  (props.cell.getValue() as number) * 1000
+                ).toLocaleDateString("en-us"),
             }),
-            column.accessor('prelimPos', {
+            column.accessor("prelimPos", {
               header: "P.RK",
-              cell: props => `${props.row.original.prelimPos}/${props.row.original.prelimPoolSize}`
+              cell: (props) =>
+                `${props.row.original.prelimPos}/${props.row.original.prelimPoolSize}`,
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
           sm: [
-            column.accessor('prelimBallotsWon', {
+            column.accessor("prelimBallotsWon", {
               header: "P.RC",
-              cell: props => {
+              cell: (props) => {
                 const won = props.row.original.prelimBallotsWon;
                 const lost = props.row.original.prelimBallotsLost;
-                return `${won}-${lost}`
-              }
+                return `${won}-${lost}`;
+              },
             }),
-            column.accessor('elimWins', {
+            column.accessor("elimWins", {
               header: "E.RC",
-              cell: props => {
+              cell: (props) => {
                 const won = props.row.original.elimWins || 0;
                 const lost = props.row.original.elimLosses || 0;
-                if (won + lost == 0) return '--';
+                if (won + lost == 0) return "--";
                 return `${won}-${lost}`;
-              }
+              },
             }),
-            column.accessor('bid', {
+            column.accessor("bid", {
               header: "Bid",
-              cell: props => {
+              cell: (props) => {
                 let bid = props.row.original.bid;
-                if (!bid) return '--';
-                return `${bid.value} ${bid.isGhostBid ? '(ghost)' : ''}`;
-              }
+                if (!bid) return "--";
+                return `${bid.value} ${bid.isGhostBid ? "(ghost)" : ""}`;
+              },
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
           lg: [
-            column.accessor('opWpM', {
+            column.accessor("opWpM", {
               header: "OpWpM",
-              cell: props => (props.cell.getValue() * 100).toFixed(1) + '%',
+              cell: (props) => (props.cell.getValue() * 100).toFixed(1) + "%",
             }),
           ] as ColumnDef<ExpandedTournamentResult>[],
         }}
         child={({ row: parent }) => (
           <div className="space-y-2">
-            <TournamentRoundsTable id={parent.id} />
+            <TournamentRoundsTable parent={parent} />
             <TournamentSpeakingResultTable data={parent.speaking} />
           </div>
         )}
         sortable
       />
     </Card>
-  )
-}
+  );
+};
 
-export default TournamentHistoryTable
+export default TournamentHistoryTable;

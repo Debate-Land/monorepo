@@ -1,9 +1,17 @@
-import React, { useState } from 'react'
-import { Alias, Competitor, Judge, Round, RoundSpeakerResult, Side } from '@shared/database'
-import { Table, Text } from '@shared/components'
-import { trpc } from '@src/utils/trpc'
-import RoundTable from './RoundTable'
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
+import React, { useState } from "react";
+import {
+  Alias,
+  Competitor,
+  Judge,
+  Round,
+  RoundSpeakerResult,
+  Side,
+} from "@shared/database";
+import { Table, Text } from "@shared/components";
+import { trpc } from "@src/utils/trpc";
+import RoundTable from "./RoundTable";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { ExpandedTournamentResult } from "./TournamentHistoryTable";
 
 export type ExpandedRoundJudgeRecord = {
   judge: Judge;
@@ -12,7 +20,7 @@ export type ExpandedRoundJudgeRecord = {
 
 export type ExpandedRoundSpeakerResult = RoundSpeakerResult & {
   competitor: Competitor;
-}
+};
 
 export type ExpandedRound = Round & {
   records: ExpandedRoundJudgeRecord[];
@@ -21,16 +29,16 @@ export type ExpandedRound = Round & {
     id: string;
     aliases: Alias[];
   } | null;
-}
-
-export interface TournamentRoundsTableProps {
-  id: number;
 };
 
-const TournamentRoundsTable = ({ id }: TournamentRoundsTableProps) => {
+export interface TournamentRoundsTableProps {
+  parent: ExpandedTournamentResult;
+}
+
+const TournamentRoundsTable = ({ parent }: TournamentRoundsTableProps) => {
   const { data } = trpc.team.rounds.useQuery(
     {
-      id
+      id: parent.id,
     },
     {
       refetchOnWindowFocus: false,
@@ -43,42 +51,46 @@ const TournamentRoundsTable = ({ id }: TournamentRoundsTableProps) => {
 
   return (
     <div>
-      <Text className="text-xl font-bold dark:text-gray-300 text-gray-700 mb-1">Rounds</Text>
+      <Text className="text-xl font-bold dark:text-gray-300 text-gray-700 mb-1">
+        Rounds
+      </Text>
       <Table
         data={data}
         numLoadingRows={5}
         columnConfig={{
           core: [
-            column.accessor('nameStd', {
+            column.accessor("nameStd", {
               header: "Round",
-              cell: props => props.cell.getValue()
+              cell: (props) => props.cell.getValue(),
             }),
-            column.accessor('opponent', {
+            column.accessor("opponent", {
               header: "Opponent",
-              cell: props => props.row.original.opponent?.aliases[0].code || '--',
-              enableSorting: false
+              cell: (props) =>
+                props.row.original.opponent?.aliases[0].code || "--",
+              enableSorting: false,
             }),
-            column.accessor('outcome', {
+            column.accessor("outcome", {
               header: "Res.",
-              cell: props => props.cell.getValue()
+              cell: (props) => props.cell.getValue(),
             }),
           ] as ColumnDef<ExpandedRound>[],
           sm: [
-            column.accessor('ballotsWon', {
+            column.accessor("ballotsWon", {
               header: "Dec.",
-              cell: props => `${props.row.original.ballotsWon}-${props.row.original.ballotsLost}`
+              cell: (props) =>
+                `${props.row.original.ballotsWon}-${props.row.original.ballotsLost}`,
             }),
-            column.accessor('side', {
+            column.accessor("side", {
               header: "Side",
-              cell: props => props.cell.getValue()
+              cell: (props) => props.cell.getValue(),
             }),
           ] as ColumnDef<ExpandedRound>[],
         }}
-        child={RoundTable}
+        child={({ row }) => <RoundTable row={row} result={parent} />}
         sortable
       />
     </div>
-  )
-}
+  );
+};
 
-export default TournamentRoundsTable
+export default TournamentRoundsTable;
