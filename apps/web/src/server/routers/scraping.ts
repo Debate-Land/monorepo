@@ -106,7 +106,7 @@ const scrapingRouter = router({
       const tabroomResponse = await fetch(`https://www.tabroom.com/index/tourn/index.mhtml?tourn_id=${input.id}`)
         .then(res => res.text());
       const $ = cheerio.load(tabroomResponse);
-      const subtitle = $('#content > div.main > h5')
+      const subtitle = $($('#content > div.main > h5')[0])
         .text()
         .trim()
         .split('—');

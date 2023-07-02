@@ -72,7 +72,7 @@ const Histogram = ({ data, dataType }: HistogramProps) => {
           dataKey="count"
           strokeWidth={2}
           z={5}
-          stroke="#a3e635"
+          stroke="#22d3ee"
         />
       </ComposedChart>
     </div>
