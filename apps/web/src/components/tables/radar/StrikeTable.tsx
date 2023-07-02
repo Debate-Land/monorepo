@@ -9,8 +9,12 @@ import {
   TeamTournamentResult,
   TournamentSpeakerResult,
 } from "@shared/database";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import React from "react";
+import {
+  ColumnDef,
+  PaginationState,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import React, { useState } from "react";
 import _ from "lodash";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 
@@ -37,6 +41,10 @@ interface StrikeTableProps {
 const StrikeTable = ({ data }: StrikeTableProps) => {
   const knownJudgeColumn = createColumnHelper<ExpandedJudge>();
   const unknownJudgeColumn = createColumnHelper<UnknownJudge>();
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 25,
+  });
 
   return (
     <Card
@@ -47,7 +55,12 @@ const StrikeTable = ({ data }: StrikeTableProps) => {
       <Text>Known Judges</Text>
       {data.filter((d) => !!d.id).length ? (
         <Table
-          data={data.filter((d) => !!d.id)}
+          data={data
+            .filter((d) => !!d.id)
+            .slice(
+              pagination.pageIndex * pagination.pageSize,
+              (pagination.pageIndex + 1) * pagination.pageSize
+            )}
           columnConfig={{
             core: [
               knownJudgeColumn.accessor("name", {
@@ -94,6 +107,13 @@ const StrikeTable = ({ data }: StrikeTableProps) => {
                 },
               }),
             ] as ColumnDef<ExpandedJudge>[],
+          }}
+          paginationConfig={{
+            pagination,
+            setPagination,
+            totalPages: Math.ceil(
+              data.filter((d) => !!d.id).length / pagination.pageSize
+            ),
           }}
           sortable
           showPosition

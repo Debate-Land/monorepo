@@ -277,8 +277,8 @@ const HeadToHead = () => {
             </p>
           </div>
         </Card>
-        {/* @ts-ignore */}
         <PreviousHistory
+          // @ts-ignore
           data={data?.matchupHistory}
           team1Code={team1Code}
           team2Code={team2Code}

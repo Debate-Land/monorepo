@@ -1,4 +1,5 @@
-import { prisma } from "@shared/database";
+import { Season, prisma } from "@shared/database";
+import { Card, Histogram } from "@shared/components";
 import Overview from "@src/components/layout/Overview";
 import ThreatTable from "@src/components/tables/radar/ThreatTable";
 import { appRouter } from "@src/server/routers/_app";
@@ -8,7 +9,8 @@ import { GetServerSideProps } from "next";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
-import React from "react";
+import React, { useState } from "react";
+import { AiOutlineLineChart } from "react-icons/ai";
 
 interface ThreatSheetParams extends ParsedUrlQuery {
   tourn: string;
@@ -17,10 +19,12 @@ interface ThreatSheetParams extends ParsedUrlQuery {
 
 const ThreatSheet = () => {
   const { query, isReady, asPath } = useRouter();
+  const [season, setSeason] = useState<Season | undefined>();
   const { data: teamData } = trpc.scraping.threats.useQuery(
     {
       tournId: parseInt(query.tourn as string),
       eventId: parseInt(query.event as string),
+      seasonId: season?.id,
     },
     {
       enabled: isReady,
@@ -68,7 +72,25 @@ const ThreatSheet = () => {
           subtitle={metadata?.location}
           underview={<></>}
         />
-        <ThreatTable data={teamData || []} />
+        <Card
+          icon={<AiOutlineLineChart />}
+          title="Field Analytics"
+          className="max-w-[800px] mx-auto my-16 relative"
+        >
+          <Histogram
+            data={
+              teamData?.map((d) =>
+                d.rankings?.length ? d.rankings[0].otr : 0
+              ) || []
+            }
+            title="OTR Distribution"
+          />
+        </Card>
+        <ThreatTable
+          data={teamData || []}
+          selected={season}
+          setSelected={setSeason}
+        />
       </div>
     </>
   );

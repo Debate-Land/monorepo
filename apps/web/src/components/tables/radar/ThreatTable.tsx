@@ -6,12 +6,19 @@ import {
   TeamTournamentResult,
   TournamentSpeakerResult,
 } from "@shared/database";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import React from "react";
+import {
+  ColumnDef,
+  PaginationState,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import React, { useState } from "react";
 import { FaCrosshairs } from "react-icons/fa";
 import _ from "lodash";
+import SeasonSelect, {
+  SeasonSelectProps,
+} from "@src/components/features/SeasonSelect";
 
-interface ExpandedTeam extends Team {
+export interface ExpandedTeam extends Team {
   code: string;
   results: (TeamTournamentResult & {
     speaking: TournamentSpeakerResult[] | null;
@@ -28,24 +35,34 @@ interface UnknownTeam {
   code: string;
 }
 
-interface ThreatTableProps {
+interface ThreatTableProps extends SeasonSelectProps {
   data: ExpandedTeam[];
 }
 
-const ThreatTable = ({ data }: ThreatTableProps) => {
+const ThreatTable = ({ data, ...props }: ThreatTableProps) => {
   const knownTeamColumn = createColumnHelper<ExpandedTeam>();
   const unknownTeamColumn = createColumnHelper<UnknownTeam>();
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 25,
+  });
 
   return (
     <Card
       icon={<FaCrosshairs />}
       title="Threat Sheet"
-      className="max-w-[800px] mx-auto my-16"
+      className="max-w-[800px] mx-auto my-16 relative"
     >
+      <SeasonSelect {...props} />
       <Text>Known Entries</Text>
       {data.filter((d) => !!d.id).length ? (
         <Table
-          data={data.filter((d) => !!d.id)}
+          data={data
+            .filter((d) => !!d.id)
+            .slice(
+              pagination.pageIndex * pagination.pageSize,
+              (pagination.pageIndex + 1) * pagination.pageSize
+            )}
           columnConfig={{
             core: [
               knownTeamColumn.accessor("code", {
@@ -107,6 +124,13 @@ const ThreatTable = ({ data }: ThreatTableProps) => {
                 },
               }),
             ] as ColumnDef<ExpandedTeam>[],
+          }}
+          paginationConfig={{
+            pagination,
+            setPagination,
+            totalPages: Math.ceil(
+              data.filter((d) => !!d.id).length / pagination.pageSize
+            ),
           }}
           sortable
           showPosition

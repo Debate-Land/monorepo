@@ -106,15 +106,22 @@ const scrapingRouter = router({
       const tabroomResponse = await fetch(`https://www.tabroom.com/index/tourn/index.mhtml?tourn_id=${input.id}`)
         .then(res => res.text());
       const $ = cheerio.load(tabroomResponse);
+      const subtitle = $('#content > div.main > h5')
+        .text()
+        .trim()
+        .split('—');
+      const year = subtitle[0].trim().split(' ')[0];
       return {
         name: $('#content > div.main > h2').text().trim(),
-        location: $('#content > div.main > h5').text().trim()
+        location: subtitle[1].trim(),
+        year
       };
     }),
   threats: procedure
     .input(z.object({
       tournId: z.number(),
       eventId: z.number(),
+      seasonId: z.number().optional()
     }))
     .query(async ({ input, ctx }) => {
       const { prisma } = ctx;
@@ -150,6 +157,15 @@ const scrapingRouter = router({
             include: {
               speaking: true,
               bid: true
+            },
+            where: {
+              ...(input.seasonId && {
+                tournament: {
+                  seasonId: {
+                    equals: input.seasonId
+                  }
+                }
+              })
             }
           },
           rankings: {
@@ -157,6 +173,18 @@ const scrapingRouter = router({
               otr: 'desc'
             },
             take: 1,
+            where: {
+              ...(input.seasonId && {
+                seasonId: {
+                  equals: input.seasonId
+                },
+                circuit: {
+                  name: {
+                    equals: "Global"
+                  }
+                }
+              })
+            },
             include: {
               circuit: {
                 select: {

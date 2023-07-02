@@ -1,4 +1,4 @@
-import { Button, Card } from "@shared/components";
+import { Button, Card, Histogram } from "@shared/components";
 import { prisma } from "@shared/database";
 import Overview from "@src/components/layout/Overview";
 import StrikeTable from "@src/components/tables/radar/StrikeTable";
@@ -10,6 +10,7 @@ import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import React from "react";
+import { AiOutlineLineChart } from "react-icons/ai";
 
 interface StrikeSheetParams extends ParsedUrlQuery {
   tourn: string;
@@ -69,6 +70,20 @@ const StrikeSheet = () => {
           subtitle={metadata?.location}
           underview={<></>}
         />
+        <Card
+          icon={<AiOutlineLineChart />}
+          title="Pool Analytics"
+          className="max-w-[800px] mx-auto my-16 relative"
+        >
+          <Histogram
+            data={
+              judgeData?.map((d) =>
+                d.rankings?.length ? d.rankings[0].index : 0
+              ) || []
+            }
+            title="Index Distribution"
+          />
+        </Card>
         <StrikeTable data={judgeData || []} />
       </div>
     </>

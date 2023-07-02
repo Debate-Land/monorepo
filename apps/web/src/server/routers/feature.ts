@@ -419,6 +419,16 @@ const featureRouter = router({
         },
         matchupHistory,
       };
+    }),
+  seasons: procedure
+    .input(z.object({}))
+    .query(({ ctx }) => {
+      const { prisma } = ctx;
+      return prisma.season.findMany({
+        orderBy: {
+          id: 'desc'
+        }
+      });
     })
 });
 

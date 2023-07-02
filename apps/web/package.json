@@ -33,6 +33,7 @@
     "@vercel/og": "^0.5.3",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^1.2.1",
+    "d3-array": "^3.2.4",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "formik": "^2.2.9",
