@@ -70,6 +70,7 @@ const RoundTable = ({
         <Text>
           Want more? See our{" "}
           <Link
+            target="_blank"
             href={{
               pathname: "/x-ray/head-to-head",
               query: {

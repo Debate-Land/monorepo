@@ -24,11 +24,7 @@ export interface ExpandedTeam extends Team {
     speaking: TournamentSpeakerResult[] | null;
     bid: Bid | null;
   })[];
-  rankings: (TeamRanking & {
-    circuit: {
-      name: string;
-    };
-  })[];
+  rank: (TeamRanking & { circuitRank: number }) | null;
 }
 
 interface UnknownTeam {
@@ -69,16 +65,20 @@ const ThreatTable = ({ data, ...props }: ThreatTableProps) => {
                 header: "Team",
                 cell: (props) => props.cell.getValue(),
               }),
-              knownTeamColumn.accessor("rankings", {
-                header: "OTR",
-                cell: (props) => props.cell.getValue()[0].otr.toFixed(1),
+              knownTeamColumn.accessor("rank", {
+                header: "Rank",
+                cell: (props) => props.cell.getValue()?.circuitRank || "--",
               }),
+              knownTeamColumn.accessor("rank", {
+                header: "OTR",
+                cell: (props) => props.cell.getValue()?.otr.toFixed(1) || "--",
+              }),
+            ] as ColumnDef<ExpandedTeam>[],
+            lg: [
               knownTeamColumn.accessor("results", {
                 header: "# Tourns.",
                 cell: (props) => props.cell.getValue().length,
               }),
-            ] as ColumnDef<ExpandedTeam>[],
-            lg: [
               knownTeamColumn.accessor("results", {
                 header: "Prelim Win %",
                 cell: (props) => {

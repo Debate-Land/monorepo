@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
 import * as cheerio from 'cheerio';
+import db from '@src/services/db.service';
+import { JudgeRanking, TeamRanking } from '@shared/database';
 
 export interface TournamentSearchResult {
   id: number;
@@ -121,7 +123,8 @@ const scrapingRouter = router({
     .input(z.object({
       tournId: z.number(),
       eventId: z.number(),
-      seasonId: z.number().optional()
+      circuitId: z.number(),
+      seasonId: z.number()
     }))
     .query(async ({ input, ctx }) => {
       const { prisma } = ctx;
@@ -140,61 +143,67 @@ const scrapingRouter = router({
           }
         });
       });
-      const teams = (await Promise.all(teamLastNames.map((lastNames, idx) => prisma.team.findFirst({
-        where: {
-          AND: lastNames.map(lastName => ({
-            competitors: {
-              some: {
-                name: {
-                  endsWith: lastName
-                }
-              }
-            }
-          }))
-        },
-        include: {
-          results: {
-            include: {
-              speaking: true,
-              bid: true
-            },
-            where: {
-              ...(input.seasonId && {
-                tournament: {
-                  seasonId: {
-                    equals: input.seasonId
-                  }
-                }
-              })
-            }
-          },
-          rankings: {
-            orderBy: {
-              otr: 'desc'
-            },
-            take: 1,
-            where: {
-              ...(input.seasonId && {
-                seasonId: {
-                  equals: input.seasonId
-                },
-                circuit: {
+
+      const getRank = async (teamId: string) => {
+        const circuitRank = await (await db).query(`
+          SELECT * FROM (
+            SELECT
+              RANK() OVER (ORDER BY otr DESC) AS circuitRank,
+              team_id,
+              otr
+            FROM
+              team_rankings
+            WHERE
+              circuit_id = ? AND
+              season_id = ?
+          ) t
+          WHERE team_id = ?;
+        `, [input.circuitId, input.seasonId, teamId]) as unknown as [
+            (TeamRanking & { circuitRank: number })[],
+            object[],
+          ];
+        return circuitRank[0][0];
+      };
+
+      const teams = (await Promise.all(teamLastNames.map(async (lastNames, idx) => {
+        const team = await prisma.team.findFirst({
+          where: {
+            AND: lastNames.map(lastName => ({
+              competitors: {
+                some: {
                   name: {
-                    equals: "Global"
+                    endsWith: lastName
                   }
                 }
-              })
-            },
-            include: {
-              circuit: {
-                select: {
-                  name: true
-                }
               }
-            }
+            }))
+          },
+          include: {
+            results: {
+              include: {
+                speaking: true,
+                bid: true
+              },
+              where: {
+                ...(input.seasonId && {
+                  tournament: {
+                    seasonId: {
+                      equals: input.seasonId
+                    }
+                  }
+                })
+              }
+            },
           }
+        });
+
+        if (team) {
+          const rank = (await getRank(team.id)) as TeamRanking & { circuitRank: number };
+          return {...team, rank: rank ? rank : null}
+        } else {
+          return team;
         }
-      }))));
+      })));
 
       type Team = typeof teams[0];
       const teamsWithCodes = teams.map((team, idx) => ({ code: teamCodes[idx], ...team })) as (Team & { code: string })[];
@@ -202,7 +211,7 @@ const scrapingRouter = router({
       return [
         ...teamsWithCodes
           .filter(t => !!t.id)
-          .sort((a, b) => (b?.rankings[0]?.otr || 0) - (a?.rankings[0]?.otr || 0)),
+          .sort((a, b) => (a?.rank?.circuitRank || Infinity) - (b?.rank?.circuitRank || Infinity)),
         ...teamsWithCodes
           .filter(t => !t.id)
       ];
@@ -211,6 +220,8 @@ const scrapingRouter = router({
     .input(z.object({
       tournId: z.number(),
       poolId: z.number(),
+      seasonId: z.number(),
+      circuitId: z.number()
     }))
     .query(async ({ input, ctx }) => {
       const { prisma } = ctx;
@@ -231,29 +242,68 @@ const scrapingRouter = router({
         judgeNames.push(names.join(' '))
       });
 
-      const judges = await Promise.all(judgeNames.map((name, idx) => prisma.judge.findFirst({
-        where: {
-          name: {
-            equals: name
-          }
-        },
-        include: {
-          results: true,
-          rankings: {
-            orderBy: {
-              index: 'desc'
-            },
-            take: 1,
-            include: {
-              circuit: {
-                select: {
-                  name: true
-                }
-              }
+      const getRank = async (judgeId: string) => {
+        const circuitRank = await (await db).query(`
+          SELECT * FROM (
+            SELECT
+              RANK() OVER (ORDER BY \`index\` DESC, t.numRounds DESC) AS circuitRank,
+              \`index\`,
+              judge_id
+            FROM (
+              SELECT DISTINCT
+                judge_rankings.judge_id,
+                judges.name,
+                judge_rankings.\`index\`,
+                t.numRounds,
+                t.avgSpeakerPoints
+              FROM judge_rankings
+              INNER JOIN judges ON judge_rankings.judge_id = judges.id
+              INNER JOIN (
+                SELECT
+                  judgeId,
+                  COUNT(*) / 2 as numRounds,
+                  AVG(jr.avgSpeakerPoints) as avgSpeakerPoints
+                FROM _JudgeRecordToRound jrtr
+                INNER JOIN judge_records jr ON jrtr.A = jr.id
+                INNER JOIN tournaments t ON jr.tournamentId = t.id
+                WHERE
+                  t.id IN (
+                    SELECT ctt.B
+                    FROM _CircuitToTournament ctt
+                    WHERE ctt.A = ?
+                  ) AND
+                  t.season_id = ?
+                GROUP BY judgeId
+              ) as t ON judge_rankings.judge_id = t.judgeId
+              WHERE
+                judge_rankings.circuit_id = ? AND
+                judge_rankings.season_id = ?
+              ) t
+            ) q WHERE q.judge_id = ?;
+        `, [input.circuitId, input.seasonId, input.circuitId, input.seasonId, judgeId]) as unknown as [
+            (JudgeRanking & { circuitRank: number })[],
+            object[],
+          ];
+        return circuitRank[0][0];
+      };
+
+      const judges = await Promise.all(judgeNames.map(async (name, idx) => {
+        const judge = await prisma.judge.findFirst({
+          where: {
+            name: {
+              equals: name
             }
+          },
+          include: {
+            results: true,
           }
+        });
+
+        if (judge) {
+          const rank = await getRank(judge.id);
+          return { ...judge, rank: rank ? rank : null}
         }
-      })));
+      }));
 
       type Judge = typeof judges[0];
 
@@ -262,7 +312,7 @@ const scrapingRouter = router({
       return [
         ...judgesWithCodes
           .filter(t => !!t.id)
-          .sort((a, b) => (b?.rankings[0]?.index || 0) - (a?.rankings[0]?.index || 0)),
+          .sort((a, b) => (a?.rank?.circuitRank || Infinity) - (b?.rank?.circuitRank || Infinity)),
         ...judgesWithCodes
           .filter(t => !t.id)
       ];

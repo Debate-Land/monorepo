@@ -176,7 +176,7 @@ const HeadToHead = () => {
               </span>
               <BiLinkExternal size={12} />
             </Link>
-            <span>{data?.judgeRankings.length > 1 && ","}&nbsp;</span>
+            <span>{idx !== data?.judgeRankings.length - 1 && ","}&nbsp;</span>
           </span>
         ))}
         {"judging)"}

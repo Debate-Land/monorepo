@@ -23,6 +23,8 @@ const StrikeSheet = () => {
     {
       tournId: parseInt(query.tourn as string),
       poolId: parseInt(query.pool as string),
+      circuitId: 40,
+      seasonId: 2023,
     },
     {
       enabled: isReady,
@@ -77,9 +79,9 @@ const StrikeSheet = () => {
         >
           <Histogram
             data={
-              judgeData?.map((d) =>
-                d.rankings?.length ? d.rankings[0].index : 0
-              ) || []
+              (judgeData
+                ?.map((d) => d.rank?.index)
+                .filter((o) => !!o) as number[]) || []
             }
             dataType="Index"
           />
@@ -107,6 +109,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   await ssg.scraping.strikes.prefetch({
     tournId: parseInt(tourn),
     poolId: parseInt(pool),
+    circuitId: 40,
+    seasonId: 2023,
   });
 
   return {

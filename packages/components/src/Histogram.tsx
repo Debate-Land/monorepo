@@ -41,14 +41,14 @@ const Histogram = ({ data, dataType }: HistogramProps) => {
         height={200}
         data={chartData}
         barCategoryGap={3}
-        margin={{ top: 10, bottom: 20, right: 30 }}
+        margin={{ top: 10, bottom: 25, right: 30 }}
       >
         <XAxis dataKey="range" hide />
         <XAxis dataKey="x0" xAxisId="values" tickMargin={8}>
           <Label
             position="centerBottom"
             value={dataType}
-            dy={25}
+            dy={30}
             transform="10"
           />
         </XAxis>
@@ -57,7 +57,7 @@ const Histogram = ({ data, dataType }: HistogramProps) => {
             position="centerTop"
             value="Frequency"
             offset={20}
-            dx={-15}
+            dx={-20}
             angle={270}
           />
         </YAxis>

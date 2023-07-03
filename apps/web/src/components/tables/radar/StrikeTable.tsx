@@ -23,11 +23,7 @@ interface ExpandedJudge extends Judge {
     // speaking: TournamentSpeakerResult[] | null;
     // bid: Bid | null
   })[];
-  rankings: (JudgeRanking & {
-    circuit: {
-      name: string;
-    };
-  })[];
+  rank: (JudgeRanking & { circuitRank: number }) | null;
 }
 
 interface UnknownJudge {
@@ -67,16 +63,21 @@ const StrikeTable = ({ data }: StrikeTableProps) => {
                 header: "Judge",
                 cell: (props) => props.cell.getValue(),
               }),
-              knownJudgeColumn.accessor("rankings", {
-                header: "Index",
-                cell: (props) => props.cell.getValue()[0].index.toFixed(1),
+              knownJudgeColumn.accessor("rank", {
+                header: "Rank",
+                cell: (props) => props.cell.getValue()?.circuitRank || "--",
               }),
+              knownJudgeColumn.accessor("rank", {
+                header: "Index",
+                cell: (props) =>
+                  props.cell.getValue()?.index.toFixed(1) || "--",
+              }),
+            ] as ColumnDef<ExpandedJudge>[],
+            lg: [
               knownJudgeColumn.accessor("results", {
                 header: "# Tourns.",
                 cell: (props) => props.cell.getValue().length,
               }),
-            ] as ColumnDef<ExpandedJudge>[],
-            lg: [
               knownJudgeColumn.accessor("results", {
                 header: "Pro/Aff %",
                 cell: (props) => {

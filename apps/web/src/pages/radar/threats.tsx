@@ -24,7 +24,8 @@ const ThreatSheet = () => {
     {
       tournId: parseInt(query.tourn as string),
       eventId: parseInt(query.event as string),
-      seasonId: season?.id,
+      seasonId: 2023,
+      circuitId: 40,
     },
     {
       enabled: isReady,
@@ -79,9 +80,9 @@ const ThreatSheet = () => {
         >
           <Histogram
             data={
-              teamData?.map((d) =>
-                d.rankings?.length ? d.rankings[0].otr : 0
-              ) || []
+              (teamData
+                ?.map((d) => d.rank?.otr)
+                .filter((o) => !!o) as number[]) || []
             }
             dataType="OTR"
           />
@@ -113,6 +114,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   await ssg.scraping.threats.prefetch({
     tournId: parseInt(tourn),
     eventId: parseInt(event),
+    circuitId: 40,
+    seasonId: 2023,
   });
 
   return {
