@@ -132,6 +132,20 @@ const teamRouter = router({
           }
         }
       });
+      const topics = await prisma.topic.findMany({
+        where: {
+          id: {
+            in: input.topics || []
+          }
+        }
+      });
+      const topicTags = await prisma.topicTag.findMany({
+        where: {
+          id: {
+            in: input.topicTags || []
+          }
+        }
+      });
       if (team) {
         const circuitRankQueryPromise = (await db).query(`
           SELECT * FROM (
@@ -194,7 +208,11 @@ const teamRouter = router({
             circuitRank: circuitRankQuery[0][0].circuitRank
           },
           filterData,
-          statistics: getStatistics({ rankings, ...team })
+          statistics: getStatistics({ rankings, ...team }),
+          filter: {
+            topics,
+            topicTags
+          }
         }
       }
       return null;

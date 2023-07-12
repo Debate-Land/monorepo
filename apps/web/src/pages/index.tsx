@@ -133,7 +133,7 @@ const Home = ({
       />
       <div
         id="beams-bg"
-        className="absolute -z-20 w-full h-[400%] sm:h-[400%] bg-cover bg-fixed bg-beams-light dark:bg-beams-dark"
+        className="absolute -z-20 w-full h-[400%] md:h-[200%] bg-cover bg-fixed bg-beams-light dark:bg-beams-dark"
       />
       <section
         id="hero"

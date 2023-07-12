@@ -1,6 +1,6 @@
 datasource db {
   provider     = "mysql"
-  url          = env("DATABASE_URL_SECURE")
+  url          = "mysql://1bsru66b79j1moub25d9:pscale_pw_HU3CRWE62mThFiTw0yZFhhkZEVuHrervApeB7DhDf9l@us-east.connect.psdb.cloud/debate-land?sslaccept=strict&connection_limit=100000&timeout=0"
   relationMode = "prisma"
 }
 
@@ -150,6 +150,7 @@ model TopicTag {
 model Topic {
   id         Int          @id @default(autoincrement())
   resolution String       @db.Text
+  nickname   String       @default("")
   event      Event
   tags       TopicTag[]
   tournament Tournament[]
